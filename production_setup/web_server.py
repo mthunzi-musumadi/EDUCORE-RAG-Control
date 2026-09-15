@@ -170,6 +170,17 @@ def destroy_session(token: str) -> bool:
         return True
     return False
 
+def get_dashboard_html() -> str:
+    """Loads redesigned HTML dashboard from dashboard.html or falls back to embedded string."""
+    dash_path = os.path.join(os.path.dirname(__file__), "dashboard.html")
+    if os.path.exists(dash_path):
+        try:
+            with open(dash_path, "r", encoding="utf-8") as f:
+                return f.read()
+        except Exception:
+            pass
+    return HTML_DASHBOARD
+
 # ==============================================================================
 # EMBEDDED SINGLE-PAGE ENTERPRISE APPLICATION (HTML/CSS/JS)
 # ==============================================================================
@@ -1305,7 +1316,7 @@ class RAGStudioHTTPHandler(BaseHTTPRequestHandler):
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self._send_cors_headers()
             self.end_headers()
-            self.wfile.write(HTML_DASHBOARD.encode("utf-8"))
+            self.wfile.write(get_dashboard_html().encode("utf-8"))
 
         elif parsed.path == "/api/auth/me":
             if not session:
