@@ -1,0 +1,41 @@
+=== 01_SPOKES_POLICIES\educore-ai-implementation-action-plan-v1.docx ===
+
+--- PARAGRAPHS ---
+Educore AI 180-Day Implementation Action Plan
+Phased Operational Roadmap for ISO 42001 Certification & Enterprise Rollout
+1. Executive Summary & Phased Timeline
+This operational action plan details the 180-day execution roadmap for establishing an accredited ISO/IEC 42001:2023 Artificial Intelligence Management System (AIMS) across Educore Services Limited. The roadmap balances whole-organization business operational controls (Finance, Procurement, IT, HR, Legal, Facilities) with academic learning transformation.
+2. Step-by-Step 5-Phase Implementation Sequence
+Phase 1: Governance Scaffolding & Pre-Rollout Audit (Days 1–30)
+Step 1.1: Formalize Cross-Functional Steering Committee (Academic, IT/Security, Legal/Ops). Map Entra ID Clearance Tiers.
+Step 1.2: Execute Technical CASB/DNS network traffic discovery for commercial AI endpoints.
+Step 1.3: Deploy Purview Information Protection scanners across SharePoint Online using Zambian NRC regex matching.
+Step 1.4: Deploy 10-Question Discovery Survey across Finance, Procurement, IT, HR, Admin, and Faculty.
+Step 1.5: Compile official ISO 42001 AI System Inventory (AIMS Asset Register).
+Phase 2: Policy Codification & 6-Step AIIA Protocol (Days 31–60)
+Step 2.1: Publish Organizational AI Governance Policy v1.0 network-wide.
+Step 2.2: Draft ISO 42001 Statement of Applicability (SoA) across all 38 Annex A controls.
+Step 2.3: Operationalize 6-Step AI System Impact Assessment (AIIA) SOP and report template.
+Step 2.4: Execute statutory Data Protection Impact Assessment (DPIA) under Zambian Act No. 3 of 2021.
+Phase 3: Staff Pilots, Literacy Workshops & SLA Intake (Days 61–90)
+Step 3.1: Deploy Tier A Administrative Pilot (M365 Copilot Enterprise) for Finance, HR, and Ops.
+Step 3.2: Deploy Tier B Educator Pilot (Azure Lesson Planning) with mandatory Human-in-the-Loop review.
+Step 3.3: Facilitate Michigan-Style AI Literacy Workshops via Educore Teacher Academies.
+Step 3.4: Launch Governance Intake Portal (ai-governance@educore.ac.zm) with 24-hour intake SLA.
+Phase 4: Student Socratic Rollout & Viva Voce Auditing (Days 91–120)
+Step 4.1: Deploy Azure AI Socratic RAG tutors providing diagnostic study hints for students (Tier C).
+Step 4.2: Operationalize Adelaide-model Declaration of Intellectual Ownership for student coursework.
+Step 4.3: Execute 4-Vector Cognitive Bypass Audits (Artifact Sampling, System Guardrails, Viva Voce Defenses, Gradebook Benchmarking).
+Phase 5: ISO 42001 Internal Audit & Certification (Days 121–180)
+Step 5.1: Conduct comprehensive ISO 42001 Internal Audit across Clauses 4–10 and Annex A controls.
+Step 5.2: Convene Top-Management Review (Clause 9.3) chaired by the CEO and Board Representative.
+Step 5.3: Undergo Stage 1 Documentation Audit with accredited Certification Body (BSI/Schellman).
+Step 5.4: Undergo Stage 2 Operational Audit and achieve official ISO/IEC 42001:2023 Certification.
+
+--- TABLES ---
+Table 1:
+DOCUMENT TITLE: | Educore AI 180-Day Implementation Action Plan
+DOCUMENT REFERENCE: | EDU-AIMS-PLN-v1.0
+VERSION CONTROL: | Version 1.0 (Official Baseline Enterprise Release)
+EFFECTIVE DATE & SCOPE: | 2026-10-01 | Network-Wide (All Units, Campuses & Academies)
+

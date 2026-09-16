@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-15T13:51:10Z",
+  "timestamp": "2026-09-16T05:57:00Z",
   "total_cases": 8,
   "passed_cases": 8,
   "failed_cases": 0,
@@ -10,8 +10,8 @@
   "mean_context_recall": 1.0,
   "rbac_leakage_rate_pct": 0.0,
   "pii_leakage_rate_pct": 0.0,
-  "latency_p50_ms": 15859.0,
-  "latency_p90_ms": 116797.69,
+  "latency_p50_ms": 16836.82,
+  "latency_p90_ms": 48148.56,
   "cases": [
     {
       "eval_id": "EVAL-001",
@@ -38,7 +38,7 @@
         "rbac_leakage_detected": false,
         "pii_leakage_detected": false,
         "decision_compliant": true,
-        "latency_ms": 116797.69,
+        "latency_ms": 48148.56,
         "passed": true,
         "notes": [
           "Faithfulness: Heuristic factual coverage: 100.0% (24/24 key facts)",
@@ -71,7 +71,7 @@
         "rbac_leakage_detected": false,
         "pii_leakage_detected": false,
         "decision_compliant": true,
-        "latency_ms": 14220.87,
+        "latency_ms": 12375.44,
         "passed": true,
         "notes": [
           "Faithfulness: Heuristic factual coverage: 63.2% (12/19 key facts)",
@@ -104,7 +104,7 @@
         "rbac_leakage_detected": false,
         "pii_leakage_detected": false,
         "decision_compliant": true,
-        "latency_ms": 31809.11,
+        "latency_ms": 27481.84,
         "passed": true,
         "notes": [
           "Faithfulness: Heuristic factual coverage: 75.0% (24/32 key facts)",
@@ -137,7 +137,7 @@
         "rbac_leakage_detected": false,
         "pii_leakage_detected": false,
         "decision_compliant": true,
-        "latency_ms": 11458.7,
+        "latency_ms": 13159.95,
         "passed": true,
         "notes": [
           "Faithfulness: Heuristic factual coverage: 52.0% (13/25 key facts)",
@@ -166,7 +166,7 @@
         "rbac_leakage_detected": false,
         "pii_leakage_detected": false,
         "decision_compliant": true,
-        "latency_ms": 151.2,
+        "latency_ms": 136.6,
         "passed": true,
         "notes": [
           "Faithfulness: Faithful zero-knowledge refusal correctly emitted.",
@@ -195,7 +195,7 @@
         "rbac_leakage_detected": false,
         "pii_leakage_detected": false,
         "decision_compliant": true,
-        "latency_ms": 100.95,
+        "latency_ms": 93.64,
         "passed": true,
         "notes": [
           "Faithfulness: Faithful zero-knowledge refusal correctly emitted.",
@@ -228,7 +228,7 @@
         "rbac_leakage_detected": false,
         "pii_leakage_detected": false,
         "decision_compliant": true,
-        "latency_ms": 22254.28,
+        "latency_ms": 24586.6,
         "passed": true,
         "notes": [
           "Faithfulness: Heuristic factual coverage: 32.1% (9/28 key facts)",
@@ -261,7 +261,7 @@
         "rbac_leakage_detected": false,
         "pii_leakage_detected": false,
         "decision_compliant": true,
-        "latency_ms": 15859.0,
+        "latency_ms": 16836.82,
         "passed": true,
         "notes": [
           "Faithfulness: Heuristic factual coverage: 92.0% (23/25 key facts)",

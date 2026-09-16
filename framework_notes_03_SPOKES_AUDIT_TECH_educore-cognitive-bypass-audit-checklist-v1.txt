@@ -1,0 +1,19 @@
+=== 03_SPOKES_AUDIT_TECH\educore-cognitive-bypass-audit-checklist-v1.docx ===
+
+--- PARAGRAPHS ---
+Educore Academic Cognitive Bypass Audit Checklist
+Internal Quality Verification Matrix for Process-Based Learning
+1. Operational Purpose & 4-Vector Audit Structure
+This checklist provides internal auditors, campus principals, and department heads with a quantitative verification matrix to audit whether AI is supporting genuine student learning or causing cognitive bypass. It operates across 4 verification vectors:
+Vector 1: Artifact Sampling — Comparing submitted coursework against raw student prompt logs and draft histories.
+Vector 2: System Guardrails — Auditing Azure Socratic RAG bot logs in Microsoft Purview to verify diagnostic hint enforcement.
+Vector 3: Viva Voce Oral Defenses — Conducting 3-minute unassisted oral spot-checks where students explain their submitted reasoning.
+Vector 4: Gradebook Variance Benchmarking — Comparing take-home AI-assisted assignment marks against unassisted in-class exam baselines.
+
+--- TABLES ---
+Table 1:
+DOCUMENT TITLE: | Educore Academic Cognitive Bypass Audit Checklist
+DOCUMENT REFERENCE: | EDU-AIMS-CHK-v1.0
+VERSION CONTROL: | Version 1.0 (Official Baseline Enterprise Release)
+EFFECTIVE DATE & SCOPE: | 2026-10-01 | Network-Wide (All Units, Campuses & Academies)
+

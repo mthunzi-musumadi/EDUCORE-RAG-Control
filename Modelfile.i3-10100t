@@ -1,0 +1,20 @@
+# Optimized Modelfile for Intel Core i3-10100T (4 Cores / 8 Threads, 35W TDP, 6MB L3 Cache)
+FROM llama3.2:1b
+
+# CPU Core Thread Alignment: Matches 4 physical cores to prevent SMT hyperthread cache thrashing
+PARAMETER num_thread 4
+
+# Context Window: Constrained to 2048 tokens to keep KV cache footprint compact inside 6MB L3 cache & DDR4-2666 bandwidth
+PARAMETER num_ctx 2048
+
+# Prompt Processing Batch: 256 tokens per batch to prevent memory bus saturation on 35W desktop package
+PARAMETER num_batch 256
+
+# Maximum Generation Horizon: Prevents runaway token loops on CPU
+PARAMETER num_predict 512
+
+# Sampling & Determinism: Low temperature and high precision for RAG grounding
+PARAMETER temperature 0.1
+PARAMETER top_k 40
+PARAMETER top_p 0.9
+PARAMETER repeat_penalty 1.15

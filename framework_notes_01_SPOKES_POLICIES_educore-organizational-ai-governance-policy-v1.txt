@@ -1,0 +1,95 @@
+=== 01_SPOKES_POLICIES\educore-organizational-ai-governance-policy-v1.docx ===
+
+--- PARAGRAPHS ---
+EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY
+Comprehensive Network-Wide Operational Rules, Authorized Tooling Tiers, Departmental Dos and Don'ts, Failure Edge Cases, and Non-Software Guardrails
+1. Executive Policy Authority, Scope & Institutional Applicability
+This policy establishes the official operational rules governing Artificial Intelligence (AI) deployment across Educore Services Limited. Applicable across all central administrative departments, Educore Teacher Academies, and individual campus sites (Sentinel Kabitaka, Trident College, Frontier), this policy operates under a Dual-Track Governance Architecture to balance corporate operational security with pedagogical excellence:
+• Track 1: Enterprise Business Operations — Governs Finance, Procurement, IT Infrastructure, HR, Legal, Facilities, and Corporate Operations. Focuses strictly on data security, financial calculation accuracy, vendor contract vetting, PII protection, and statutory legal compliance under the Zambian Data Protection Act (No. 3 of 2021).
+• Track 2: Academic & Pedagogical Learning — Governs Teaching Faculty, Curriculum Leads, Academy Instructors, and Students. Focuses on process-based learning, human-in-the-loop verification, Adelaide-style intellectual ownership declarations, and oral defense evaluations (Viva Voce).
+2. Organization-Wide AI Software Classification Registry
+To mitigate data leakage, regulatory liability, and unvetted vendor risk, all software applications utilized across Educore are categorized into three mandatory operational tiers. Use of unsanctioned tools is strictly prohibited.
+3. Departmental Use-Cases, Operational Edge Cases & Non-Software Guardrails
+Software firewalls and DLP rules can be bypassed by 4G cellular hotspots or personal devices. Therefore, this policy establishes mandatory Functional Non-Software Guardrails—procedural rules, dual-key human audits, and process redesigns that mitigate risk regardless of technical configuration across all eight operational domains:
+3.1 Finance, Accounting & Bursar Operations
+• Permitted Workflows: Routine spreadsheet formatting, financial variance analysis, and memo summarization using M365 Copilot Finance.
+• Failure Edge Scenario: AI models hallucinating formula syntax or rounding numbers, introducing errors into student fee arrear ledgers, cash flow forecasts, or subsidy allocations.
+✔ Guardrail Fin-01 (Dual-Key Manual Audit): Independent human manual verification required for all AI-assisted financial calculations and balance sheet entries before ledger posting.
+✔ Guardrail Fin-02 (PII & Commercial Data Masking): Mandatory depersonalization of all student NRC numbers, names, and FQM mining partner subsidy data prior to AI prompt submission.
+✔ Guardrail Fin-03 (Hardship Allocation Committee): Financial hardship or bursary decisions cannot rely on AI scoring and require unanimous human committee sign-off.
+3.2 Procurement & Supply Chain Management
+• Permitted Workflows: Summarizing vendor contracts, drafting RFP templates, and performing market research across educational suppliers.
+• Failure Edge Scenario: Procuring third-party SaaS applications containing hidden 'Trojan' AI features that ingest company data for public LLM retraining, or leaking tender pricing.
+✔ Guardrail Pro-01 (Pre-Procurement Vendor AI Addendum): Mandatory vendor sign-off certifying zero data retention, zero model retraining, and IP indemnification before software purchase.
+✔ Guardrail Pro-02 (Air-Gapped Tender Evaluations): Sealed tender bids, competitive pricing, and supplier proposals must be evaluated on offline, air-gapped spreadsheets.
+✔ Guardrail Pro-03 (Legal Counsel Contract Sign-off): Legal Counsel must inspect all AI-assisted procurement contracts for IP liability before execution.
+3.3 IT Infrastructure, Systems & Software Development
+• Permitted Workflows: Boilerplate code generation, shell script debugging, and network documentation via GitHub Copilot Enterprise.
+• Failure Edge Scenario: Accidental insertion of database connection strings, API keys, passwords, or internal server IP addresses into AI prompts, or deploying buggy AI code.
+✔ Guardrail IT-01 (Pre-Commit Secret Scanning): Automated git pre-commit hooks and local secret-scanning pipelines to block prompts containing API keys or credentials.
+✔ Guardrail IT-02 (Mandatory SAST & Senior Peer Review): All AI-generated scripts require automated security testing and Senior Engineer peer review sign-off before production release.
+✔ Guardrail IT-03 (48-Hour Staging Sandbox Isolation): AI-generated network or system scripts must undergo 48 hours of testing in isolated staging sandboxes before live execution.
+3.4 Human Resources & Personnel Management
+• Permitted Workflows: Drafting job descriptions, anonymizing employee survey responses, and structuring staff professional development modules.
+• Failure Edge Scenario: Algorithmic bias in candidate CV screening leading to unfair rejection, employee privacy violations, or statutory liability under Zambian Law.
+✔ Guardrail HR-01 (Ban on Automated Candidate Rejection): Absolute prohibition on automated candidate rejection; human HR officers must conduct all shortlisting and performance appraisals.
+✔ Guardrail HR-02 (Statutory Zambian DPIA Compliance): Mandatory Data Protection Impact Assessment (DPIA) for all HR data processing systems under Act No. 3 of 2021.
+✔ Guardrail HR-03 (Appraisal Observation Evidence Logs): Annual employee appraisals must reflect direct human supervisor observation logs, not AI-summarized feedback.
+3.5 Legal, Compliance & Executive Administration
+• Permitted Workflows: Contract clause extraction, regulatory tracking, and formatting executive board briefing materials.
+• Failure Edge Scenario: AI hallucinating false Zambian statutory acts, legal precedents, or court rulings, or delegating executive governance decisions to predictive AI models.
+✔ Guardrail Leg-01 (Statutory Legal Verification): Legal Counsel must verify all AI-extracted legal references against official Republic of Zambia statutory books.
+✔ Guardrail Leg-02 (Executive Non-Delegable Accountability): Board risk decisions and institutional policies cannot be delegated to AI models under ISO 42001 Clause 5.1.
+3.6 Academic Faculty & Classroom Educators
+• Permitted Workflows: Azure-hosted lesson planning, rubric criteria design, and formatting differentiated reading materials.
+• Failure Edge Scenario: AI generating incorrect academic facts in student handouts or automated grading tools mis-scoring summative exams.
+✔ Guardrail Edu-01 (Prohibition of Automated Summative Grading): Summative exam scoring and final report card marks must be assigned by human educators.
+✔ Guardrail Edu-02 (Human-in-the-Loop Syllabus Verification): Faculty must verify all AI-generated teaching resources against official Cambridge and Zambian syllabi.
+✔ Guardrail Edu-03 (Student Depersonalization Rule): Educators must strip all student names, IDs, and pastoral notes before using AI for lesson differentiation.
+3.7 Students & Learners (Tier C)
+• Permitted Workflows: Interactive study guidance via Azure Socratic RAG tutors (Math/Physics) providing step-by-step diagnostic hints without direct answers.
+• Failure Edge Scenario: Cognitive bypass (students generating complete essays or fake prompt logs using AI) or using 4G mobile hotspots to bypass campus firewalls.
+✔ Guardrail Stu-01 (Process-Based Viva Voce Oral Defenses): Educators conduct unassisted in-class oral defenses and timed synoptic writes to verify genuine student mastery.
+✔ Guardrail Stu-02 (Declaration of Intellectual Ownership): Students attach signed sole-authorship pledges to all major assignments, taking full responsibility for submitted ideas.
+✔ Guardrail Stu-03 (Individual Viva Voce for Group Work): Group project submissions require individual oral spot-checks to ensure equal contribution and prevent AI free-riding.
+3.8 Facilities, Physical Security & Logistics
+• Permitted Workflows: Campus maintenance route optimization, energy tracking, and containerized IT helpdesk ticket triage.
+• Failure Edge Scenario: Deploying facial recognition or emotion tracking at campus entry gates, or AI bots auto-closing critical physical safety hazard tickets.
+✔ Guardrail Fac-01 (EU AI Act Article 5 Emotion/Facial Ban): Strict prohibition on facial recognition or emotion tracking at school gates or workplaces.
+✔ Guardrail Fac-02 (Immediate Human Emergency Dispatch): Physical safety, electrical hazard, or security tickets automatically bypass AI triage and dispatch human responders instantly.
+4. Microsoft Purview Labeling Containers & Data Boundaries
+All institutional document libraries across SharePoint Online and OneDrive are mapped to four Microsoft Purview sensitivity containers to enforce strict data access boundaries:
+5. Statutory Safeguards & Prohibited AI Red Lines
+In accordance with the EU AI Act (Article 5), the Zambian Data Protection Act (No. 3 of 2021), and ISO/IEC 42001:2023, Educore Services enforces zero-tolerance statutory prohibitions against the following AI practices:
+❌ Emotion Tracking Prohibitions: Strictly banning all AI systems designed to analyze or track student or staff emotional states at campus gates or workplaces.
+❌ Subliminal Manipulation & Profiling: Prohibiting AI applications that use subliminal techniques to manipulate student behavior or build secret risk profiles.
+❌ Un-Bounded PII Export: Prohibiting the transmission of unencrypted Zambian NRC numbers, health data, or financial records to external public servers.
+❌ Unassisted High-Risk Decision Making: Prohibiting fully automated AI systems from executing employment termination, candidate rejection, or final student exam scoring.
+6. Incident Reporting, Support & Governance SLA
+All employees and students have a duty to report suspected AI security breaches, data leaks, algorithmic hallucinations, or policy violations to the central intake channel:
+• Proposed Governance Intake Portal: [ai-governance@educoreservices.com]
+• Initial Acknowledgment SLA: Within 24 Hours of submission.
+• Steering Committee Resolution SLA: Within 5 business days, including full investigation and corrective action logging under ISO 42001 Clause 10.1.
+
+--- TABLES ---
+Table 1:
+DOCUMENT TITLE: | Educore Services Organizational AI Governance & Operational Policy
+DOCUMENT REFERENCE: | EDU-AIMS-POL-v1.0 (Master Baseline Release)
+VERSION CONTROL: | Version 1.0 (Official Baseline Enterprise Release)
+EFFECTIVE DATE & SCOPE: | October 1, 2026 | Network-Wide (All Units, Campuses & Academies)
+GOVERNING AUTHORITY: | Educore Cross-Functional AI Steering Committee & Executive Directorate
+STATUTORY ALIGNMENT: | Zambian Data Protection Act No. 3 of 2021 | ISO/IEC 42001:2023 | EU AI Act | NIST AI RMF
+
+Table 2:
+CLASSIFICATION TIER | APPROVED SOFTWARE PLATFORMS | OPERATIONAL CONDITIONS & BOUNDARIES
+Tier 1: Authorized Enterprise AI | Microsoft 365 Copilot Enterprise, Azure OpenAI Services, Azure AI Search (SharePoint RAG), M365 Copilot Finance. | Fully authorized for work purposes. Operating under Enterprise Data Protection agreements with zero model retraining on Educore data. Authenticated via Entra ID SSO with Purview container controls.
+Tier 2: Conditionally Permitted SSO | Grammarly Business Enterprise, Canva AI Enterprise, Zoom AI Companion Enterprise. | Permitted exclusively using official Educore M365 SSO logins. Strictly prohibited using personal email logins or for processing unencrypted student PII, health notes, or financial ledgers.
+Tier 3: Strictly Prohibited Consumer LLMs | Unsanctioned Public LLMs (ChatGPT Free/Plus personal accounts, Gemini Free personal accounts, Claude Personal, DeepL Free, Midjourney personal accounts). | STRICTLY BANNED for inputting any Educore work data, financial spreadsheets, payroll records, student PII, HR files, or proprietary code. Inputting company data into Tier 3 tools constitutes a major security breach.
+
+Table 3:
+PURVIEW SENSITIVITY LABEL | DATA SCOPE & CONTENT DESCRIPTION | PERMITTED AI PROCESSING BOUNDARY
+Confidential - Admin / Finance | Financial ledgers, payroll, bursaries, executive board papers, legal contracts, HR personnel records. | Restricted exclusively to M365 Copilot Enterprise and Azure AI Search within secure admin tenants.
+Restricted - IT / Systems | Network topologies, API keys, database schemas, security script repositories, server configurations. | Restricted to authenticated IT personnel using GitHub Copilot Enterprise with pre-commit secret scanning.
+Internal - Educational | Curriculum plans, assessment rubrics, teaching guides, internal staff announcements, academy modules. | Accessible to teaching faculty for lesson design and resource formatting via M365 Copilot.
+Public / Educational | Published syllabi, textbook indices, public school announcements, general educational resources. | Approved for read-only access by student-facing Azure Socratic RAG tutors and public web portals.
+

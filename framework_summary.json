@@ -1,0 +1,406 @@
+{
+  "educore-ai-hub-and-spoke-launch-index-v1.docx": {
+    "text": [
+      "Educore AI Hub-and-Spoke Master Launch Index",
+      "Central Directory, Version Control Registry & Document Cross-Reference Grid",
+      "1. Executive Launch Directory & Version Control Registry",
+      "This Master Launch Index serves as the central directory and version control registry for the official Educore AI Governance Framework (v1.0). All documents in this baseline suite are synchronized across Central Administration, Sentinel, Trident and Frontier campuses, as well as the Teacher Academies:",
+      "2. Inter-Document Cross-Reference Grid",
+      "The cross-reference grid below maps functional operational requirements across the active v1.0 document suite:",
+      "Finance Calculation Audits: Policy v1.0 (Sec 3.1) <-> Handbook v1.0 (Sec 3) <-> Action Plan v1.0 (Phase 1/3) <-> Audit Survey v1.0 (Q3)",
+      "Procurement Vendor AI Addendums: Policy v1.0 (Sec 3.2) <-> Handbook v1.0 (Sec 3) <-> Action Plan v1.0 (Phase 2) <-> Audit Survey v1.0 (Q8)",
+      "IT Git Pre-Commit Secret Scanning: Policy v1.0 (Sec 3.3) <-> Handbook v1.0 (Sec 2/3) <-> Action Plan v1.0 (Phase 1) <-> Audit Survey v1.0 (Q8)",
+      "HR Statutory Zambian DPIA: Policy v1.0 (Sec 3.4) <-> Handbook v1.0 (Sec 3) <-> Action Plan v1.0 (Phase 2 DPIA) <-> Audit Survey v1.0 (Q3)",
+      "Student Viva Voce Oral Defenses: Policy v1.0 (Sec 3.6) <-> Handbook v1.0 (Sec 3) <-> Action Plan v1.0 (Phase 4) <-> Bypass Checklist v1.0 (Vec 3)"
+    ],
+    "tables": [
+      [
+        [
+          "DOCUMENT TITLE:",
+          "Educore AI Hub-and-Spoke Master Launch Index"
+        ],
+        [
+          "DOCUMENT REFERENCE:",
+          "EDU-AIMS-IDX-v1.0"
+        ],
+        [
+          "VERSION CONTROL:",
+          "Version 1.0 (Official Baseline Enterprise Release)"
+        ],
+        [
+          "EFFECTIVE DATE & SCOPE:",
+          "2026-10-01 | Network-Wide (All Units, Campuses & Academies)"
+        ]
+      ],
+      [
+        [
+          "DOCUMENT ROLE",
+          "OFFICIAL FILE ARTIFACT NAME",
+          "VERSION",
+          "PRIMARY GOVERNING DOMAIN"
+        ],
+        [
+          "Central Operational Policy",
+          "educore-organizational-ai-governance-policy-v1.docx",
+          "v1.0",
+          "Enterprise Ops & Academic Rules"
+        ],
+        [
+          "Master Governing Handbook",
+          "educore-ai-framework-implementation-handbook-v1.docx",
+          "v1.0",
+          "Whole-Organization Governance & AIMS"
+        ],
+        [
+          "Operational Implementation Plan",
+          "educore-ai-implementation-action-plan-v1.docx",
+          "v1.0",
+          "180-Day ISO 42001 & DPIA Roadmap"
+        ],
+        [
+          "Pre-Rollout Audit Strategy",
+          "educore-pre-rollout-ai-audit-and-discovery-survey-v1.docx",
+          "v1.0",
+          "Phase 1 Technical & Survey Discovery"
+        ],
+        [
+          "Academic Audit Checklist",
+          "educore-cognitive-bypass-audit-checklist-v1.docx",
+          "v1.0",
+          "Viva Voce & Academic Quality Audit"
+        ]
+      ]
+    ]
+  },
+  "00_HUB_MASTER\\educore-ai-framework-implementation-handbook-v1.docx": {
+    "text": [
+      "Educore AI Framework Implementation Handbook",
+      "Master Governing Authority for Enterprise Operations & Academic Learning",
+      "1. Executive Summary & Dual-Track Organizational Charter",
+      "This Master Implementation Handbook serves as the central governing authority for Artificial Intelligence (AI) integration across Educore Services Limited. It establishes a certifiable Artificial Intelligence Management System (AIMS) aligned with ISO/IEC 42001:2023, the EU AI Act, and the Zambian Data Protection Act (No. 3 of 2021). The framework operates across two distinct operational tracks:",
+      "Track 1: Enterprise Business Operations — Governing Finance, Procurement, IT/DevOps, HR, Legal, Facilities, and Operations. Focuses on data protection, financial accuracy, software vendor vetting, and secret-scanning.",
+      "Track 2: Academic & Pedagogical Transformation — Governing Faculty, Curriculum Leads, Teacher Academies, and Students across Sentinel Kabitaka, Trident, and Frontier. Focuses on human-in-the-loop review, Adelaide-model intellectual ownership declarations, and Viva Voce oral defenses.",
+      "2. Microsoft Cloud Architecture & Purview Container Security",
+      "Educore leverages its existing Microsoft 365, SharePoint Online, and Entra ID (Azure AD) environment, hosting custom RAG agents on Azure Cloud Services governed by Microsoft Purview Data Loss Prevention (DLP):",
+      "Confidential - Admin / Finance: M365 Copilot Enterprise for central administration, HR, and legal operations.",
+      "Confidential - Finance: M365 Copilot Finance with dual-key calculation audits for bursars and accounting staff.",
+      "Restricted - IT / Systems: GitHub Copilot Enterprise with pre-commit git hooks and automated secret scanning for IT engineers.",
+      "Internal - Educational: Azure OpenAI lesson design tools for faculty, operating under mandatory Human-in-the-Loop review.",
+      "Public / Educational: Azure AI Search Socratic tutors providing diagnostic hints for students without direct answer dumping.",
+      "3. 8 Departmental Edge-Case & Functional Non-Software Guardrails",
+      "The handbook codifies explicit non-software guardrails to mitigate risks that network firewalls cannot catch:",
+      "Finance: Dual-key independent calculation audits; anonymization of student NRCs and FQM mining subsidy data.",
+      "Procurement: Pre-procurement Vendor AI Addendums certifying zero data retention; air-gapped tender evaluations.",
+      "IT / DevOps: Git pre-commit secret scanning; mandatory SAST & Senior Engineer peer review sign-offs.",
+      "HR & Personnel: Absolute prohibition on automated candidate rejection; mandatory statutory DPIAs under Act No. 3 of 2021.",
+      "Faculty: Prohibition of automated summative exam grading; mandatory syllabus alignment verification.",
+      "Students (Tier C): Adelaide-model Declaration of Intellectual Ownership; process-based Viva Voce oral defenses.",
+      "Facilities & Security: EU AI Act Article 5 prohibition on facial recognition/emotion tracking; human emergency ticket dispatch.",
+      "Legal & Executive: Statutory verification against official Zambian law books; non-delegable executive accountability.",
+      "4. ISO 42001 Statement of Applicability & 6-Step AIIA SOP",
+      "The handbook incorporates all 38 ISO/IEC 42001:2023 Annex A reference controls and mandates the 6-Step AI System Impact Assessment (AIIA) workflow before deploying any new AI tool:",
+      "AIIA 6-Step Sequence: 1. Trigger Screening -> 2. Data Provenance & Purview Review -> 3. Rights & Harm Mapping -> 4. Safeguard & DLP Stop Conditions -> 5. Unanimous Steering Approval -> 6. Risk Registration & 12+ Month Purview Event Logging.",
+      "5. Governance Incident SLA",
+      "All AI queries, security incidents, or policy intake reports are routed to ai-governance@educore.ac.zm, with a mandatory 24-hour intake SLA and a 5-day formal resolution SLA."
+    ],
+    "tables": [
+      [
+        [
+          "DOCUMENT TITLE:",
+          "Educore AI Framework Implementation Handbook"
+        ],
+        [
+          "DOCUMENT REFERENCE:",
+          "EDU-AIMS-HBK-v1.0"
+        ],
+        [
+          "VERSION CONTROL:",
+          "Version 1.0 (Official Baseline Enterprise Release)"
+        ],
+        [
+          "EFFECTIVE DATE & SCOPE:",
+          "2026-10-01 | Network-Wide (All Units, Campuses & Academies)"
+        ]
+      ]
+    ]
+  },
+  "01_SPOKES_POLICIES\\educore-ai-implementation-action-plan-v1.docx": {
+    "text": [
+      "Educore AI 180-Day Implementation Action Plan",
+      "Phased Operational Roadmap for ISO 42001 Certification & Enterprise Rollout",
+      "1. Executive Summary & Phased Timeline",
+      "This operational action plan details the 180-day execution roadmap for establishing an accredited ISO/IEC 42001:2023 Artificial Intelligence Management System (AIMS) across Educore Services Limited. The roadmap balances whole-organization business operational controls (Finance, Procurement, IT, HR, Legal, Facilities) with academic learning transformation.",
+      "2. Step-by-Step 5-Phase Implementation Sequence",
+      "Phase 1: Governance Scaffolding & Pre-Rollout Audit (Days 1–30)",
+      "Step 1.1: Formalize Cross-Functional Steering Committee (Academic, IT/Security, Legal/Ops). Map Entra ID Clearance Tiers.",
+      "Step 1.2: Execute Technical CASB/DNS network traffic discovery for commercial AI endpoints.",
+      "Step 1.3: Deploy Purview Information Protection scanners across SharePoint Online using Zambian NRC regex matching.",
+      "Step 1.4: Deploy 10-Question Discovery Survey across Finance, Procurement, IT, HR, Admin, and Faculty.",
+      "Step 1.5: Compile official ISO 42001 AI System Inventory (AIMS Asset Register).",
+      "Phase 2: Policy Codification & 6-Step AIIA Protocol (Days 31–60)",
+      "Step 2.1: Publish Organizational AI Governance Policy v1.0 network-wide.",
+      "Step 2.2: Draft ISO 42001 Statement of Applicability (SoA) across all 38 Annex A controls.",
+      "Step 2.3: Operationalize 6-Step AI System Impact Assessment (AIIA) SOP and report template.",
+      "Step 2.4: Execute statutory Data Protection Impact Assessment (DPIA) under Zambian Act No. 3 of 2021.",
+      "Phase 3: Staff Pilots, Literacy Workshops & SLA Intake (Days 61–90)",
+      "Step 3.1: Deploy Tier A Administrative Pilot (M365 Copilot Enterprise) for Finance, HR, and Ops.",
+      "Step 3.2: Deploy Tier B Educator Pilot (Azure Lesson Planning) with mandatory Human-in-the-Loop review.",
+      "Step 3.3: Facilitate Michigan-Style AI Literacy Workshops via Educore Teacher Academies.",
+      "Step 3.4: Launch Governance Intake Portal (ai-governance@educore.ac.zm) with 24-hour intake SLA.",
+      "Phase 4: Student Socratic Rollout & Viva Voce Auditing (Days 91–120)",
+      "Step 4.1: Deploy Azure AI Socratic RAG tutors providing diagnostic study hints for students (Tier C).",
+      "Step 4.2: Operationalize Adelaide-model Declaration of Intellectual Ownership for student coursework.",
+      "Step 4.3: Execute 4-Vector Cognitive Bypass Audits (Artifact Sampling, System Guardrails, Viva Voce Defenses, Gradebook Benchmarking).",
+      "Phase 5: ISO 42001 Internal Audit & Certification (Days 121–180)",
+      "Step 5.1: Conduct comprehensive ISO 42001 Internal Audit across Clauses 4–10 and Annex A controls.",
+      "Step 5.2: Convene Top-Management Review (Clause 9.3) chaired by the CEO and Board Representative.",
+      "Step 5.3: Undergo Stage 1 Documentation Audit with accredited Certification Body (BSI/Schellman).",
+      "Step 5.4: Undergo Stage 2 Operational Audit and achieve official ISO/IEC 42001:2023 Certification."
+    ],
+    "tables": [
+      [
+        [
+          "DOCUMENT TITLE:",
+          "Educore AI 180-Day Implementation Action Plan"
+        ],
+        [
+          "DOCUMENT REFERENCE:",
+          "EDU-AIMS-PLN-v1.0"
+        ],
+        [
+          "VERSION CONTROL:",
+          "Version 1.0 (Official Baseline Enterprise Release)"
+        ],
+        [
+          "EFFECTIVE DATE & SCOPE:",
+          "2026-10-01 | Network-Wide (All Units, Campuses & Academies)"
+        ]
+      ]
+    ]
+  },
+  "01_SPOKES_POLICIES\\educore-organizational-ai-governance-policy-v1.docx": {
+    "text": [
+      "EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY",
+      "Comprehensive Network-Wide Operational Rules, Authorized Tooling Tiers, Departmental Dos and Don'ts, Failure Edge Cases, and Non-Software Guardrails",
+      "1. Executive Policy Authority, Scope & Institutional Applicability",
+      "This policy establishes the official operational rules governing Artificial Intelligence (AI) deployment across Educore Services Limited. Applicable across all central administrative departments, Educore Teacher Academies, and individual campus sites (Sentinel Kabitaka, Trident College, Frontier), this policy operates under a Dual-Track Governance Architecture to balance corporate operational security with pedagogical excellence:",
+      "• Track 1: Enterprise Business Operations — Governs Finance, Procurement, IT Infrastructure, HR, Legal, Facilities, and Corporate Operations. Focuses strictly on data security, financial calculation accuracy, vendor contract vetting, PII protection, and statutory legal compliance under the Zambian Data Protection Act (No. 3 of 2021).",
+      "• Track 2: Academic & Pedagogical Learning — Governs Teaching Faculty, Curriculum Leads, Academy Instructors, and Students. Focuses on process-based learning, human-in-the-loop verification, Adelaide-style intellectual ownership declarations, and oral defense evaluations (Viva Voce).",
+      "2. Organization-Wide AI Software Classification Registry",
+      "To mitigate data leakage, regulatory liability, and unvetted vendor risk, all software applications utilized across Educore are categorized into three mandatory operational tiers. Use of unsanctioned tools is strictly prohibited.",
+      "3. Departmental Use-Cases, Operational Edge Cases & Non-Software Guardrails",
+      "Software firewalls and DLP rules can be bypassed by 4G cellular hotspots or personal devices. Therefore, this policy establishes mandatory Functional Non-Software Guardrails—procedural rules, dual-key human audits, and process redesigns that mitigate risk regardless of technical configuration across all eight operational domains:",
+      "3.1 Finance, Accounting & Bursar Operations",
+      "• Permitted Workflows: Routine spreadsheet formatting, financial variance analysis, and memo summarization using M365 Copilot Finance.",
+      "• Failure Edge Scenario: AI models hallucinating formula syntax or rounding numbers, introducing errors into student fee arrear ledgers, cash flow forecasts, or subsidy allocations.",
+      "✔ Guardrail Fin-01 (Dual-Key Manual Audit): Independent human manual verification required for all AI-assisted financial calculations and balance sheet entries before ledger posting.",
+      "✔ Guardrail Fin-02 (PII & Commercial Data Masking): Mandatory depersonalization of all student NRC numbers, names, and FQM mining partner subsidy data prior to AI prompt submission.",
+      "✔ Guardrail Fin-03 (Hardship Allocation Committee): Financial hardship or bursary decisions cannot rely on AI scoring and require unanimous human committee sign-off.",
+      "3.2 Procurement & Supply Chain Management",
+      "• Permitted Workflows: Summarizing vendor contracts, drafting RFP templates, and performing market research across educational suppliers.",
+      "• Failure Edge Scenario: Procuring third-party SaaS applications containing hidden 'Trojan' AI features that ingest company data for public LLM retraining, or leaking tender pricing.",
+      "✔ Guardrail Pro-01 (Pre-Procurement Vendor AI Addendum): Mandatory vendor sign-off certifying zero data retention, zero model retraining, and IP indemnification before software purchase.",
+      "✔ Guardrail Pro-02 (Air-Gapped Tender Evaluations): Sealed tender bids, competitive pricing, and supplier proposals must be evaluated on offline, air-gapped spreadsheets.",
+      "✔ Guardrail Pro-03 (Legal Counsel Contract Sign-off): Legal Counsel must inspect all AI-assisted procurement contracts for IP liability before execution.",
+      "3.3 IT Infrastructure, Systems & Software Development",
+      "• Permitted Workflows: Boilerplate code generation, shell script debugging, and network documentation via GitHub Copilot Enterprise.",
+      "• Failure Edge Scenario: Accidental insertion of database connection strings, API keys, passwords, or internal server IP addresses into AI prompts, or deploying buggy AI code.",
+      "✔ Guardrail IT-01 (Pre-Commit Secret Scanning): Automated git pre-commit hooks and local secret-scanning pipelines to block prompts containing API keys or credentials.",
+      "✔ Guardrail IT-02 (Mandatory SAST & Senior Peer Review): All AI-generated scripts require automated security testing and Senior Engineer peer review sign-off before production release.",
+      "✔ Guardrail IT-03 (48-Hour Staging Sandbox Isolation): AI-generated network or system scripts must undergo 48 hours of testing in isolated staging sandboxes before live execution.",
+      "3.4 Human Resources & Personnel Management",
+      "• Permitted Workflows: Drafting job descriptions, anonymizing employee survey responses, and structuring staff professional development modules.",
+      "• Failure Edge Scenario: Algorithmic bias in candidate CV screening leading to unfair rejection, employee privacy violations, or statutory liability under Zambian Law.",
+      "✔ Guardrail HR-01 (Ban on Automated Candidate Rejection): Absolute prohibition on automated candidate rejection; human HR officers must conduct all shortlisting and performance appraisals.",
+      "✔ Guardrail HR-02 (Statutory Zambian DPIA Compliance): Mandatory Data Protection Impact Assessment (DPIA) for all HR data processing systems under Act No. 3 of 2021.",
+      "✔ Guardrail HR-03 (Appraisal Observation Evidence Logs): Annual employee appraisals must reflect direct human supervisor observation logs, not AI-summarized feedback.",
+      "3.5 Legal, Compliance & Executive Administration",
+      "• Permitted Workflows: Contract clause extraction, regulatory tracking, and formatting executive board briefing materials.",
+      "• Failure Edge Scenario: AI hallucinating false Zambian statutory acts, legal precedents, or court rulings, or delegating executive governance decisions to predictive AI models.",
+      "✔ Guardrail Leg-01 (Statutory Legal Verification): Legal Counsel must verify all AI-extracted legal references against official Republic of Zambia statutory books.",
+      "✔ Guardrail Leg-02 (Executive Non-Delegable Accountability): Board risk decisions and institutional policies cannot be delegated to AI models under ISO 42001 Clause 5.1.",
+      "3.6 Academic Faculty & Classroom Educators",
+      "• Permitted Workflows: Azure-hosted lesson planning, rubric criteria design, and formatting differentiated reading materials.",
+      "• Failure Edge Scenario: AI generating incorrect academic facts in student handouts or automated grading tools mis-scoring summative exams.",
+      "✔ Guardrail Edu-01 (Prohibition of Automated Summative Grading): Summative exam scoring and final report card marks must be assigned by human educators.",
+      "✔ Guardrail Edu-02 (Human-in-the-Loop Syllabus Verification): Faculty must verify all AI-generated teaching resources against official Cambridge and Zambian syllabi.",
+      "✔ Guardrail Edu-03 (Student Depersonalization Rule): Educators must strip all student names, IDs, and pastoral notes before using AI for lesson differentiation.",
+      "3.7 Students & Learners (Tier C)",
+      "• Permitted Workflows: Interactive study guidance via Azure Socratic RAG tutors (Math/Physics) providing step-by-step diagnostic hints without direct answers.",
+      "• Failure Edge Scenario: Cognitive bypass (students generating complete essays or fake prompt logs using AI) or using 4G mobile hotspots to bypass campus firewalls.",
+      "✔ Guardrail Stu-01 (Process-Based Viva Voce Oral Defenses): Educators conduct unassisted in-class oral defenses and timed synoptic writes to verify genuine student mastery.",
+      "✔ Guardrail Stu-02 (Declaration of Intellectual Ownership): Students attach signed sole-authorship pledges to all major assignments, taking full responsibility for submitted ideas.",
+      "✔ Guardrail Stu-03 (Individual Viva Voce for Group Work): Group project submissions require individual oral spot-checks to ensure equal contribution and prevent AI free-riding.",
+      "3.8 Facilities, Physical Security & Logistics",
+      "• Permitted Workflows: Campus maintenance route optimization, energy tracking, and containerized IT helpdesk ticket triage.",
+      "• Failure Edge Scenario: Deploying facial recognition or emotion tracking at campus entry gates, or AI bots auto-closing critical physical safety hazard tickets.",
+      "✔ Guardrail Fac-01 (EU AI Act Article 5 Emotion/Facial Ban): Strict prohibition on facial recognition or emotion tracking at school gates or workplaces.",
+      "✔ Guardrail Fac-02 (Immediate Human Emergency Dispatch): Physical safety, electrical hazard, or security tickets automatically bypass AI triage and dispatch human responders instantly.",
+      "4. Microsoft Purview Labeling Containers & Data Boundaries",
+      "All institutional document libraries across SharePoint Online and OneDrive are mapped to four Microsoft Purview sensitivity containers to enforce strict data access boundaries:",
+      "5. Statutory Safeguards & Prohibited AI Red Lines",
+      "In accordance with the EU AI Act (Article 5), the Zambian Data Protection Act (No. 3 of 2021), and ISO/IEC 42001:2023, Educore Services enforces zero-tolerance statutory prohibitions against the following AI practices:",
+      "❌ Emotion Tracking Prohibitions: Strictly banning all AI systems designed to analyze or track student or staff emotional states at campus gates or workplaces.",
+      "❌ Subliminal Manipulation & Profiling: Prohibiting AI applications that use subliminal techniques to manipulate student behavior or build secret risk profiles.",
+      "❌ Un-Bounded PII Export: Prohibiting the transmission of unencrypted Zambian NRC numbers, health data, or financial records to external public servers.",
+      "❌ Unassisted High-Risk Decision Making: Prohibiting fully automated AI systems from executing employment termination, candidate rejection, or final student exam scoring.",
+      "6. Incident Reporting, Support & Governance SLA",
+      "All employees and students have a duty to report suspected AI security breaches, data leaks, algorithmic hallucinations, or policy violations to the central intake channel:",
+      "• Proposed Governance Intake Portal: [ai-governance@educoreservices.com]",
+      "• Initial Acknowledgment SLA: Within 24 Hours of submission.",
+      "• Steering Committee Resolution SLA: Within 5 business days, including full investigation and corrective action logging under ISO 42001 Clause 10.1."
+    ],
+    "tables": [
+      [
+        [
+          "DOCUMENT TITLE:",
+          "Educore Services Organizational AI Governance & Operational Policy"
+        ],
+        [
+          "DOCUMENT REFERENCE:",
+          "EDU-AIMS-POL-v1.0 (Master Baseline Release)"
+        ],
+        [
+          "VERSION CONTROL:",
+          "Version 1.0 (Official Baseline Enterprise Release)"
+        ],
+        [
+          "EFFECTIVE DATE & SCOPE:",
+          "October 1, 2026 | Network-Wide (All Units, Campuses & Academies)"
+        ],
+        [
+          "GOVERNING AUTHORITY:",
+          "Educore Cross-Functional AI Steering Committee & Executive Directorate"
+        ],
+        [
+          "STATUTORY ALIGNMENT:",
+          "Zambian Data Protection Act No. 3 of 2021 | ISO/IEC 42001:2023 | EU AI Act | NIST AI RMF"
+        ]
+      ],
+      [
+        [
+          "CLASSIFICATION TIER",
+          "APPROVED SOFTWARE PLATFORMS",
+          "OPERATIONAL CONDITIONS & BOUNDARIES"
+        ],
+        [
+          "Tier 1: Authorized Enterprise AI",
+          "Microsoft 365 Copilot Enterprise, Azure OpenAI Services, Azure AI Search (SharePoint RAG), M365 Copilot Finance.",
+          "Fully authorized for work purposes. Operating under Enterprise Data Protection agreements with zero model retraining on Educore data. Authenticated via Entra ID SSO with Purview container controls."
+        ],
+        [
+          "Tier 2: Conditionally Permitted SSO",
+          "Grammarly Business Enterprise, Canva AI Enterprise, Zoom AI Companion Enterprise.",
+          "Permitted exclusively using official Educore M365 SSO logins. Strictly prohibited using personal email logins or for processing unencrypted student PII, health notes, or financial ledgers."
+        ],
+        [
+          "Tier 3: Strictly Prohibited Consumer LLMs",
+          "Unsanctioned Public LLMs (ChatGPT Free/Plus personal accounts, Gemini Free personal accounts, Claude Personal, DeepL Free, Midjourney personal accounts).",
+          "STRICTLY BANNED for inputting any Educore work data, financial spreadsheets, payroll records, student PII, HR files, or proprietary code. Inputting company data into Tier 3 tools constitutes a major security breach."
+        ]
+      ],
+      [
+        [
+          "PURVIEW SENSITIVITY LABEL",
+          "DATA SCOPE & CONTENT DESCRIPTION",
+          "PERMITTED AI PROCESSING BOUNDARY"
+        ],
+        [
+          "Confidential - Admin / Finance",
+          "Financial ledgers, payroll, bursaries, executive board papers, legal contracts, HR personnel records.",
+          "Restricted exclusively to M365 Copilot Enterprise and Azure AI Search within secure admin tenants."
+        ],
+        [
+          "Restricted - IT / Systems",
+          "Network topologies, API keys, database schemas, security script repositories, server configurations.",
+          "Restricted to authenticated IT personnel using GitHub Copilot Enterprise with pre-commit secret scanning."
+        ],
+        [
+          "Internal - Educational",
+          "Curriculum plans, assessment rubrics, teaching guides, internal staff announcements, academy modules.",
+          "Accessible to teaching faculty for lesson design and resource formatting via M365 Copilot."
+        ],
+        [
+          "Public / Educational",
+          "Published syllabi, textbook indices, public school announcements, general educational resources.",
+          "Approved for read-only access by student-facing Azure Socratic RAG tutors and public web portals."
+        ]
+      ]
+    ]
+  },
+  "02_SPOKES_AUDIT\\educore-pre-rollout-ai-audit-and-discovery-survey-v1.docx": {
+    "text": [
+      "Educore Pre-Rollout AI Audit Strategy & Discovery Survey",
+      "Phase 1 Discovery Framework & Departmental Audit Instrument",
+      "1. Executive Audit Overview & 3-Vector Methodology",
+      "This document establishes the Phase 1 (Days 1–30) discovery framework required under ISO/IEC 42001:2023 Clause 4.3 and Annex A.4.4. It outlines a 3-vector assessment methodology to audit current AI usage, identify data sensitivity risks, and populate the official AI System Inventory:",
+      "Vector 1: Technical & Network Traffic Discovery — Firewall, DNS, and CASB log traffic inspection for hits on commercial AI endpoints (api.openai.com, chatgpt.com, gemini.google.com). Financial credit card expense reviews.",
+      "Vector 2: Data Sensitivity & SharePoint Scoping — Automated Microsoft Purview Information Protection scans across SharePoint Online libraries using Zambian NRC regex matching and financial/pastoral risk keywords.",
+      "Vector 3: Departmental Survey & Risk Mapping — Deployment of the 10-Question Discovery Survey instrument across Finance, Procurement, IT, HR, Admin, and Faculty.",
+      "2. Departmental 10-Question Discovery Survey Instrument",
+      "This survey instrument captures operational AI usage across all business and academic units:",
+      "1. Current AI Tools Used: List all AI platforms (ChatGPT, Gemini, Copilot, Claude, Canva, Grammarly) accessed for work.",
+      "2. Account & Licensing Type: Indicate whether tools are accessed via personal email logins or official Educore M365 SSO.",
+      "3. Data Input Sensitivity: Select data types entered into AI tools (financial spreadsheets, payroll, student PII, lesson plans, code).",
+      "4. SharePoint Integration: Do you upload documents directly from SharePoint Online or OneDrive into external AI tools?",
+      "5. Hardware Access Points: Indicate devices used (Educore laptops, personal home PCs, smartphones).",
+      "6. Primary Workflows: Detail specific operational tasks automated using AI (summarization, formatting, quiz design, coding).",
+      "7. Student AI Observations: Have you observed students submitting AI-generated work, and how is it currently verified?",
+      "8. Unsanctioned Scripts & APIs: Are you using custom API keys, browser extensions, or unvetted software with embedded AI?",
+      "9. Purview Label Awareness: Are you familiar with Educore's data classification labels (Confidential - Admin/Finance, Internal - Educational)?",
+      "10. Training & Enterprise Needs: What specific training or approved enterprise M365/Azure tools would most improve your productivity?"
+    ],
+    "tables": [
+      [
+        [
+          "DOCUMENT TITLE:",
+          "Educore Pre-Rollout AI Audit Strategy & Discovery Survey"
+        ],
+        [
+          "DOCUMENT REFERENCE:",
+          "EDU-AIMS-AUD-v1.0"
+        ],
+        [
+          "VERSION CONTROL:",
+          "Version 1.0 (Official Baseline Enterprise Release)"
+        ],
+        [
+          "EFFECTIVE DATE & SCOPE:",
+          "2026-10-01 | Network-Wide (All Units, Campuses & Academies)"
+        ]
+      ]
+    ]
+  },
+  "03_SPOKES_AUDIT_TECH\\educore-cognitive-bypass-audit-checklist-v1.docx": {
+    "text": [
+      "Educore Academic Cognitive Bypass Audit Checklist",
+      "Internal Quality Verification Matrix for Process-Based Learning",
+      "1. Operational Purpose & 4-Vector Audit Structure",
+      "This checklist provides internal auditors, campus principals, and department heads with a quantitative verification matrix to audit whether AI is supporting genuine student learning or causing cognitive bypass. It operates across 4 verification vectors:",
+      "Vector 1: Artifact Sampling — Comparing submitted coursework against raw student prompt logs and draft histories.",
+      "Vector 2: System Guardrails — Auditing Azure Socratic RAG bot logs in Microsoft Purview to verify diagnostic hint enforcement.",
+      "Vector 3: Viva Voce Oral Defenses — Conducting 3-minute unassisted oral spot-checks where students explain their submitted reasoning.",
+      "Vector 4: Gradebook Variance Benchmarking — Comparing take-home AI-assisted assignment marks against unassisted in-class exam baselines."
+    ],
+    "tables": [
+      [
+        [
+          "DOCUMENT TITLE:",
+          "Educore Academic Cognitive Bypass Audit Checklist"
+        ],
+        [
+          "DOCUMENT REFERENCE:",
+          "EDU-AIMS-CHK-v1.0"
+        ],
+        [
+          "VERSION CONTROL:",
+          "Version 1.0 (Official Baseline Enterprise Release)"
+        ],
+        [
+          "EFFECTIVE DATE & SCOPE:",
+          "2026-10-01 | Network-Wide (All Units, Campuses & Academies)"
+        ]
+      ]
+    ]
+  }
+}

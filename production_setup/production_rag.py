@@ -308,10 +308,18 @@ def log_rag_transaction(user_session: dict, query: str, retrieved_docs: list, re
     with open("aims_rag_audit.jsonl", "a", encoding="utf-8") as f:
         f.write(json.dumps(log_entry) + "\n")
 
-# ==============================================================================
-# 6. RAG AGENT EXECUTION & CONVERSATIONAL ROUTER
-# ==============================================================================
-llm = ChatOllama(model="llama3.2", temperature=0.0)
+# Hardware-tuned runtime parameters for Intel Core i3-10100T (4 Cores / 8 Threads, 35W TDP, 6MB L3 Cache)
+llm = ChatOllama(
+    model="llama3.2:1b",
+    temperature=0.0,
+    num_thread=4,         # Physical core count: eliminates SMT hyperthread cache thrashing
+    num_ctx=2048,         # Keeps KV cache footprint compact inside 6MB L3 cache & DDR4-2666 bus
+    num_predict=512,      # Maximum response token horizon for 35W desktop package
+    top_k=40,
+    top_p=0.9,
+    repeat_penalty=1.15,
+    keep_alive="30m"      # Prevents disk paging & cold starts
+)
 
 INSTITUTIONAL_DATA_KEYWORDS = [
     r"\bbudget\b", r"\bfinancial\b", r"\bexpenditure\b", r"\ballocation\b",
