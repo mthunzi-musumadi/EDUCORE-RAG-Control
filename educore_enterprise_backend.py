@@ -547,9 +547,11 @@ def log_audit(user_session: Dict[str, Any], query: str, docs: List[Any], respons
         "event_id": str(uuid.uuid4()),
         "user_identity": {
             "name": user_session.get("name", "Unknown"),
+            "email": user_session.get("email", ""),
             "campus": user_session.get("campus", "Unknown"),
             "clearance": user_session.get("clearance", "public"),
-            "role": user_session.get("role", "Public")
+            "role": user_session.get("role", "Public"),
+            "groups": user_session.get("groups", [])
         },
         "query": query,
         "rbac_decision": decision,
@@ -678,7 +680,47 @@ OPEN_WEBUI_MODELS = [
     }
 ]
 
-def resolve_user_session_from_request(headers: Dict[str, str], model_name: str) -> Dict[str, Any]:
+def query_webui_db_user(identifier: str) -> Optional[Dict[str, Any]]:
+    """Looks up user and active group memberships directly from Open WebUI database."""
+    if not identifier:
+        return None
+    db_path = os.path.join(BASE_DIR, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db")
+    if not os.path.exists(db_path):
+        return None
+    try:
+        import sqlite3
+        con = sqlite3.connect(db_path, timeout=1.0)
+        try:
+            cur = con.cursor()
+            cur.execute(
+                '''
+                SELECT u.id, u.name, u.email, u.role, GROUP_CONCAT(g.name, ',') as groups
+                FROM user u
+                LEFT JOIN group_member gm ON u.id = gm.user_id
+                LEFT JOIN "group" g ON gm.group_id = g.id
+                WHERE lower(u.email) = ? OR u.id = ?
+                GROUP BY u.id
+                ''',
+                (identifier.strip().lower(), identifier.strip())
+            )
+            row = cur.fetchone()
+            if row:
+                u_id, u_name, u_email, u_role, grp_str = row
+                groups_list = [g.strip() for g in grp_str.split(",")] if grp_str else []
+                return {
+                    "id": u_id,
+                    "name": u_name,
+                    "email": u_email,
+                    "role": u_role,
+                    "groups": groups_list
+                }
+        finally:
+            con.close()
+    except Exception:
+        pass
+    return None
+
+def resolve_user_session_from_request(headers: Dict[str, str], model_name: str, payload_user: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     # 1. Explicit user header
     auth_header = headers.get("Authorization", "")
     user_header = headers.get("X-Educore-User", "").lower()
@@ -692,7 +734,98 @@ def resolve_user_session_from_request(headers: Dict[str, str], model_name: str) 
         if token in EDUCORE_USERS:
             return EDUCORE_USERS[token]
 
-    # 3. Model-based identity resolution
+    # 3. Open WebUI Forwarded Headers & Filter Payload User
+    email = (
+        headers.get("X-OpenWebUI-User-Email", "")
+        or headers.get("X-Educore-User-Email", "")
+        or (payload_user or {}).get("email", "")
+    ).strip().lower()
+
+    user_name = (
+        headers.get("X-OpenWebUI-User-Name", "")
+        or headers.get("X-Educore-User-Name", "")
+        or (payload_user or {}).get("name", "")
+    ).strip()
+
+    webui_role = (
+        headers.get("X-OpenWebUI-User-Role", "")
+        or headers.get("X-Educore-User-Role", "")
+        or (payload_user or {}).get("role", "")
+    ).strip().lower()
+
+    groups_header = (
+        headers.get("X-OpenWebUI-User-Groups", "")
+        or headers.get("X-Educore-User-Groups", "")
+    ).strip()
+
+    groups = []
+    if groups_header:
+        groups = [g.strip() for g in groups_header.split(",") if g.strip()]
+    elif payload_user and isinstance(payload_user.get("groups"), list):
+        groups = payload_user.get("groups", [])
+
+    # 4. Query live webui.db for active group memberships if email is known
+    if email:
+        db_user = query_webui_db_user(email)
+        if db_user:
+            user_name = db_user["name"] or user_name
+            webui_role = db_user["role"] or webui_role
+            if not groups:
+                groups = db_user["groups"]
+
+    if email or groups or (payload_user and "clearance" in payload_user):
+        # Determine clearance and organizational persona
+        if payload_user and "clearance" in payload_user:
+            clearance = payload_user["clearance"]
+            role = payload_user.get("role", "student")
+            scope = "Governed Institutional Scope"
+        elif webui_role == "admin" or "Campus Leadership / Admins" in groups:
+            clearance = "admin"
+            role = "admin"
+            scope = "Global Multi-Campus Governance, Financial Ledgers & ISO 42001 AIMS"
+        elif "IT & Systems DevOps" in groups:
+            clearance = "admin"
+            role = "devops"
+            scope = "Restricted IT Topologies, Git Secret Scanning & SAST"
+        elif "Finance & Bursary" in groups:
+            clearance = "admin"
+            role = "finance"
+            scope = "Financial Variance, Bursary Disbursements & Ledgers"
+        elif "Pastoral Counselors" in groups:
+            clearance = "counselor"
+            role = "counselor"
+            scope = "Student Welfare, Pastoral Safeguarding, Staff Policies"
+        elif "Faculty" in groups:
+            clearance = "staff"
+            role = "faculty"
+            scope = "Curriculum, Staff Policies, Student Submissions"
+        elif "Students" in groups:
+            clearance = "public"
+            role = "student"
+            scope = "Public Syllabus & Socratic Diagnostic Tutors"
+        else:
+            clearance = "public"
+            role = "student"
+            scope = "Unassigned User (Public Syllabus Only)"
+
+        campus = "all"
+        if "sentinel" in email:
+            campus = "sentinel"
+        elif "trident" in email:
+            campus = "trident"
+
+        display_name = user_name if user_name else (email if email else "Educore Operator")
+        return {
+            "name": f"{display_name} ({role.capitalize()})",
+            "email": email,
+            "campus": campus,
+            "clearance": clearance,
+            "role": role,
+            "groups": groups,
+            "scope": scope
+        }
+
+    # 5. Model-based identity resolution
     m = model_name.lower()
     if "socratic" in m or "student" in m:
         return EDUCORE_USERS["student"]
@@ -721,7 +854,7 @@ class EducoreOpenAIHandler(BaseHTTPRequestHandler):
     def send_cors_headers(self):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, X-Educore-User")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, X-Educore-User, X-OpenWebUI-User-Email, X-OpenWebUI-User-Name, X-OpenWebUI-User-Role, X-OpenWebUI-User-Groups, X-Educore-User-Groups")
 
     def do_OPTIONS(self):
         self.send_response(200)
@@ -835,7 +968,8 @@ class EducoreOpenAIHandler(BaseHTTPRequestHandler):
 
             # Resolve user persona
             headers_dict = {k: v for k, v in self.headers.items()}
-            user_session = resolve_user_session_from_request(headers_dict, model_id)
+            payload_user = payload.get("user") or payload.get("metadata", {}).get("user")
+            user_session = resolve_user_session_from_request(headers_dict, model_id, payload_user=payload_user)
 
             if is_open_webui_utility_task(query):
                 try:

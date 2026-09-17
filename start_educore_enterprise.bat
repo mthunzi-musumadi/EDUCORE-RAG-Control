@@ -5,8 +5,8 @@ REM Strict ISO/IEC 42001:2023 & Zambian Data Protection Act No. 3 Governance
 REM ==============================================================================
 echo ==============================================================================
 echo   STARTING EDUCORE SERVICES ENTERPRISE RAG PLATFORM
-echo   Dual-Track Governance: Enterprise Operations & Academic Transformation
-echo   Frontend: Open WebUI | Backend: ISO 42001 Governed OpenAI API
+echo   Dual-Track Governance: Enterprise Operations ^& Academic Transformation
+echo   Frontend: Open WebUI ^| Backend: ISO 42001 Governed OpenAI API
 echo ==============================================================================
 
 set SCRIPT_DIR=%~dp0
@@ -24,7 +24,8 @@ set WEBUI_PORT=3000
 set WEBUI_NAME=Educore Services Enterprise AI
 set DEFAULT_MODELS=educore-enterprise-all
 set ENABLE_SIGNUP=True
-set WEBUI_AUTH=False
+set WEBUI_AUTH=True
+set ENABLE_FORWARD_USER_INFO_HEADERS=True
 set RAG_EMBEDDING_ENGINE=ollama
 set RAG_EMBEDDING_MODEL=nomic-embed-text
 set RAG_OLLAMA_BASE_URL=http://127.0.0.1:11434

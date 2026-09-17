@@ -98,7 +98,107 @@ For real multi-campus institutional deployment (Sentinel, Trident, Frontier) adh
 1. In `start_educore_enterprise.ps1` and `start_educore_enterprise.bat`, set:
    ```env
    WEBUI_AUTH=True
+   ENABLE_FORWARD_USER_INFO_HEADERS=True
    ```
 2. Users log in with institutional credentials.
-3. Access rights map to their respective clearance level (`student`, `faculty`, `pastoral`, `finance`, `it_admin`), ensuring full ISO/IEC 42001:2023 audit traceability per user identity.
+3. Access rights map to their respective clearance level (`student`, `faculty`, `pastoral`, `finance`, `devops`, `admin`), ensuring full ISO/IEC 42001:2023 audit traceability per user identity.
+
+---
+
+## 7. Open WebUI User Accounts, Roles & Clearance Administration Guide
+
+### 7.1 Architecture Overview
+
+```mermaid
+flowchart TD
+    subgraph OWebUIAdmin["Open WebUI Admin Management (Port 3000)"]
+        Users["User Accounts\n(student@..., intern@..., admin@...)"]
+        Groups["Organizational Role Groups\n(Students, Faculty, Pastoral, Finance, IT, Leadership)"]
+        ModelACL["Model Access Control Lists\n(AccessGrants per Group)"]
+        Valves["Governance Filter Valves\n(Role-Clearance Map & Guardrail Toggles)"]
+    end
+
+    subgraph BackendEnforcement["Educore Governance Server (Port 8000)"]
+        ReqFilter["Inlet Governance Filter & Clearance Gate"]
+        SessionRes["Dynamic User Session Resolver\n(Reads DB & Headers)"]
+        PurviewGov["Microsoft Purview Containers\n(Public, Internal, Confidential, Restricted)"]
+        AuditLedger["ISO 42001 Audit Ledger\n(aims_rag_audit.jsonl)"]
+    end
+
+    Users -->|Assigned to| Groups
+    Groups -->|Permitted in| ModelACL
+    Groups -->|Mapped to Clearance via| Valves
+    ModelACL -->|Gates Model Dropdown| ReqFilter
+    Valves -->|Enforces Gating & Guardrails| ReqFilter
+    ReqFilter --> SessionRes
+    SessionRes --> PurviewGov
+    SessionRes --> AuditLedger
+```
+
+### 7.2 Institutional Role & Clearance Matrix
+
+| Open WebUI Group | Target Institutional Persona | Clearance Tier | Permitted Purview Containers | Permitted Models | Enforced Guardrails |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **`Students`** | Students & Learners | `Tier C` (Public) | Public / Educational | `educore-socratic-student` | **Stu-01**: Socratic hints only; homework answer dumping blocked. Adelaide pledge required. |
+| **`Faculty`** | Teaching Faculty & HODs | `Tier B` (Staff) | Public / Educational<br>Internal - Educational | `educore-faculty-academic`<br>`educore-enterprise-all` | **Edu-01**: Summative grading ban.<br>**Edu-02**: Cambridge 0580 syllabus verification.<br>**Edu-03**: Student PII de-id. |
+| **`Pastoral Counselors`** | Campus Pastoral Care | `Tier A` (Pastoral) | Public / Educational<br>Internal - Educational<br>Confidential - Welfare | `educore-pastoral-counselor`<br>`educore-enterprise-all` | Confidential safeguarding case review (e.g. Case #402). Egress phone and Zambian NRC shield. |
+| **`Finance & Bursary`** | Bursars & Accountants | `Tier A` (Finance) | Public / Educational<br>Internal - Educational<br>Confidential - Finance | `educore-finance-audit`<br>`educore-enterprise-all` | **Fin-01**: Dual-Key manual audit notice appended to all financial calculations. FQM subsidies masked. |
+| **`IT & Systems DevOps`** | IT Engineers & SysAdmins | `Tier A` (Restricted IT) | Public / Educational<br>Internal - Educational<br>Confidential / Restricted | `educore-it-devops`<br>`educore-enterprise-all` | **IT-01**: Pre-commit secret scanning (AWS keys, RSA private keys). SAST peer review rules. |
+| **`Campus Leadership / Admins`** | Campus Heads, Execs, Admins | `Tier A` (Executive) | **All Purview Containers**<br>(Cross-campus Sentinel, Trident, Frontier) | **All 7 Educore Models**<br>including `educore-admin-governance` | Multi-campus governance, 6-Step AIIA management, ISO 42001 audit ledger review. |
+
+---
+
+### 7.3 How the Admin Manages Users & Roles on Open WebUI
+
+All user-role-model management is performed directly inside Open WebUI:
+
+#### Step 1: Managing User Accounts
+1. Log in to Open WebUI as the Administrator (`admin@localhost`).
+2. Navigate to **Admin Panel** (click profile icon in bottom-left -> **Admin Panel**).
+3. Under **Users**, you can view all registered accounts, approve pending registrations, or adjust base roles (`admin` or `user`).
+
+#### Step 2: Assigning Users to Organizational Role Groups
+1. In **Admin Panel**, navigate to **Users** -> **Groups** (or `http://localhost:3000/admin/groups`).
+2. You will see the 6 pre-configured Educore Groups:
+   - `Students`
+   - `Faculty`
+   - `Pastoral Counselors`
+   - `Finance & Bursary`
+   - `IT & Systems DevOps`
+   - `Campus Leadership / Admins`
+3. Click on any group (e.g., `Faculty`), select **Members**, and add or remove user accounts.
+4. When a user is added to a group, they immediately inherit:
+   - Access to the AI models permitted for that group.
+   - The organizational clearance level (Tier C, B, or A) mapped to that group.
+
+#### Step 3: Managing What AI Models Each Role Can Use (Model Access Control)
+1. Navigate to **Workspace** -> **Models** (in the left sidebar).
+2. For each Educore model, click **Edit (Pencil Icon)**.
+3. Under **Access Control**:
+   - Change access from *Public* to specific Groups.
+   - Select the authorized groups according to the matrix in Section 7.2.
+4. When a user logs in, Open WebUI's UI **only displays the models their assigned group is permitted to use**. Unpermitted models are completely hidden and inaccessible.
+
+#### Step 4: Configuring Clearance Rules & Guardrails in Open WebUI
+1. Navigate to **Workspace** -> **Functions** (in the left sidebar).
+2. Locate the **Educore AI Framework Governance & Clearance Filter**.
+3. Click the **Valves (Gear Icon)**:
+   - **`role_clearance_map`**: Adjust the JSON mapping linking groups to clearance tiers.
+   - **`default_clearance`**: Set the fallback clearance tier for newly registered users (default: `public` for Zero-Trust).
+   - **`enforce_model_clearance_gating`**: Toggle strict enforcement preventing users from querying models above their clearance level.
+   - **`enforce_socratic_student`**: Toggle cognitive bypass prevention and diagnostic hints.
+   - **`enforce_emotion_ban`**: Toggle EU AI Act Article 5 emotion tracking prohibition.
+   - **`enforce_secret_scanning`**: Toggle IT-01 pre-commit secret detection.
+   - **`enforce_fin_dual_key`**: Toggle Fin-01 dual-key verification notices.
+4. Click **Save** to apply changes instantly with zero server restarts required.
+
+---
+
+### 7.4 Automated RBAC Provisioning Script
+
+To automatically synchronize or reset all groups, model access grants, and governance valves:
+```powershell
+.\framework_control\Scripts\python.exe setup_openwebui_rbac.py
+```
+This utility automatically initializes the 6 groups, links existing user accounts, configures model access control lists, and registers the global governance filter in `webui.db`.
 
