@@ -21,7 +21,8 @@ sdist/
 var/
 wheels/
 share/python-wheels/
-framwork_control/
+framework_control/
+.openwebui_env/
 *.egg-info/
 .installed.cfg
 *.egg
