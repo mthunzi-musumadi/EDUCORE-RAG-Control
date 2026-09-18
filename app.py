@@ -1,9 +1,14 @@
+import os
 import re
 from langchain_core.documents import Document
 from langchain_chroma import Chroma
 from langchain_ollama import OllamaEmbeddings, ChatOllama
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+
+# Ensure Ollama client environment defaults allow co-residence
+os.environ.setdefault("OLLAMA_MAX_LOADED_MODELS", "2")
+os.environ.setdefault("OLLAMA_KEEP_ALIVE", "-1")
 
 # ==========================================
 # 1. INGESTION WITH METADATA TAGGING
@@ -44,11 +49,16 @@ def load_and_sanitize_directory(file_path: str) -> list[Document]:
 clean_documents = load_and_sanitize_directory("data.txt")
 
 # ==========================================
-# 2. VECTORSTORE
+# 2. VECTORSTORE (EMBEDDING PINNED IN MEMORY)
 # ==========================================
+# keep_alive=-1 pins nomic-embed-text indefinitely in RAM to prevent model swapping
+embeddings = OllamaEmbeddings(
+    model="nomic-embed-text",
+    keep_alive=-1
+)
 vectorstore = Chroma.from_documents(
     documents=clean_documents,
-    embedding=OllamaEmbeddings(model="nomic-embed-text")
+    embedding=embeddings
 )
 
 # ==========================================
@@ -78,7 +88,7 @@ def smart_retrieve(query: str) -> str:
     return "\n".join(doc.page_content for doc in fallback_results)
 
 # ==========================================
-# 4. PROMPT & MODEL PIPELINE
+# 4. PROMPT & MODEL PIPELINE (LLM PINNED IN MEMORY)
 # ==========================================
 template = """You are a professional corporate email assistant.
 
@@ -98,7 +108,18 @@ Email:
 """
 
 prompt = ChatPromptTemplate.from_template(template)
-llm = ChatOllama(model="llama3.2", temperature=0.1)
+# keep_alive=-1 pins llama3.2 in RAM concurrently with nomic-embed-text
+llm = ChatOllama(
+    model="llama3.2",
+    temperature=0.1,
+    keep_alive=-1
+)
+
+# Pre-warm LLM so both models are loaded and resident in memory simultaneously before requests
+try:
+    llm.invoke("warmup")
+except Exception:
+    pass
 
 # ==========================================
 # 5. INTERACTIVE LOOP
@@ -122,13 +143,12 @@ def main():
             # 1. Retrieve the exact matched document
             context = smart_retrieve(user_input)
 
-            # 2. Invoke the chain directly
+            # 2. Stream tokens directly to the app
             chain = prompt | llm | StrOutputParser()
-            response = chain.invoke({"context": context, "question": user_input})
-
             print("\n" + "-" * 40)
-            print(response)
-            print("-" * 40)
+            for chunk in chain.stream({"context": context, "question": user_input}):
+                print(chunk, end="", flush=True)
+            print("\n" + "-" * 40)
 
         except (KeyboardInterrupt, EOFError):
             print("\nExiting.")

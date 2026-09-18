@@ -51,7 +51,7 @@ def get_chroma_db() -> Chroma:
     with open(DATA_PATH, "r", encoding="utf-8") as f:
         records = json.load(f)
 
-    embeddings = OllamaEmbeddings(model="nomic-embed-text")
+    embeddings = OllamaEmbeddings(model="nomic-embed-text", keep_alive=-1)
 
     # If persistent store already exists and has records, load directly
     if os.path.exists(CHROMA_DIR) and os.listdir(CHROMA_DIR):
@@ -387,7 +387,7 @@ llm = ChatOllama(
     top_k=40,
     top_p=0.9,
     repeat_penalty=1.15,
-    keep_alive="30m"      # Prevents disk paging & cold starts
+    keep_alive=-1         # Pinned indefinitely in RAM alongside nomic-embed-text
 )
 
 SYSTEM_PROMPT_TEMPLATE = """You are the official Enterprise AI Assistant for Educore Services Limited.
