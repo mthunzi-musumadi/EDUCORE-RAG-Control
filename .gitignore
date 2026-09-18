@@ -183,3 +183,4 @@ cython_debug/
 .cursorindexingignore
 production_setup/aims_rag_audit.jsonl
 production_setup/aims_rag_audit.jsonl
+framework_control/Scripts/python.exe
