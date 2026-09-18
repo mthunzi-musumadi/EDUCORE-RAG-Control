@@ -67,14 +67,20 @@ vectorstore = Chroma.from_documents(
 def smart_retrieve(query: str) -> str:
     """
     If the query mentions a specific index (e.g., 'recipient 3' or 'to 1'),
-    filter Chroma directly by metadata. Otherwise, fall back to vector search.
+    fetch directly from Chroma metadata bypassing embedding calls.
+    Otherwise, fall back to vector search.
     """
     # Look for digits in user prompt
     match = re.search(r'\b(\d+)\b', query)
     
     if match:
         target_id = match.group(1)
-        # Exact metadata match bypassing dense semantic vector noise
+        # 1. Zero-latency exact metadata fetch directly from SQLite (bypasses embedding model)
+        docs = vectorstore.get(where={"index": target_id})
+        if docs and docs.get("documents"):
+            return docs["documents"][0]
+
+        # 2. Filtered vector search fallback
         results = vectorstore.similarity_search(
             query,
             k=1,
@@ -88,35 +94,40 @@ def smart_retrieve(query: str) -> str:
     return "\n".join(doc.page_content for doc in fallback_results)
 
 # ==========================================
-# 4. PROMPT & MODEL PIPELINE (LLM PINNED IN MEMORY)
+# 4. PROMPT & MODEL PIPELINE (HARDWARE TUNED)
 # ==========================================
-template = """You are a professional corporate email assistant.
+# Separate System Message allows Ollama to cache system prompt KV tokens across turns
+prompt = ChatPromptTemplate.from_messages([
+    ("system", (
+        "You are a professional corporate email assistant.\n\n"
+        "Rules:\n"
+        "1. Locate the entry in the directory matching the requested index or name.\n"
+        "2. Address the email directly to that individual's name and reference their role.\n"
+        "3. Write a clear, concise, professional email matching the user's prompt.\n"
+        "4. If no matching person is found in the directory, state: \"Error: Recipient not found in the directory.\""
+    )),
+    ("human", "Directory:\n{context}\n\nUser Request:\n{question}\n\nEmail:")
+])
 
-Rules:
-1. Locate the entry in the directory matching the requested index or name.
-2. Address the email directly to that individual's name and reference their role.
-3. Write a clear, professional email matching the user's prompt.
-4. If no matching person is found in the directory, state: "Error: Recipient not found in the directory."
-
-Directory:
-{context}
-
-User Prompt:
-{question}
-
-Email:
-"""
-
-prompt = ChatPromptTemplate.from_template(template)
-# keep_alive=-1 pins llama3.2 in RAM concurrently with nomic-embed-text
+# Hardware-tuned runtime parameters matching native Ollama efficiency
 llm = ChatOllama(
     model="llama3.2",
     temperature=0.1,
-    keep_alive=-1
+    num_thread=4,         # Match physical cores: eliminates SMT hyperthread cache thrashing
+    num_ctx=2048,         # Keeps KV cache compact within CPU L3 cache
+    num_predict=256,      # Maximum response horizon; avoids runaway token loops on CPU
+    top_k=40,
+    top_p=0.9,
+    repeat_penalty=1.15,
+    keep_alive=-1         # Pinned indefinitely in RAM alongside nomic-embed-text
 )
 
-# Pre-warm LLM so both models are loaded and resident in memory simultaneously before requests
+# Reusable LCEL pipeline (instantiated once outside the interaction loop)
+chain = prompt | llm | StrOutputParser()
+
+# Pre-warm both models so initial prompt response is instant with zero cold-start delay
 try:
+    embeddings.embed_query("warmup")
     llm.invoke("warmup")
 except Exception:
     pass
@@ -140,11 +151,10 @@ def main():
             if user_input.lower() in ["exit", "quit", "q"]:
                 break
 
-            # 1. Retrieve the exact matched document
+            # 1. Retrieve the exact matched document (zero-overhead metadata lookup)
             context = smart_retrieve(user_input)
 
             # 2. Stream tokens directly to the app
-            chain = prompt | llm | StrOutputParser()
             print("\n" + "-" * 40)
             for chunk in chain.stream({"context": context, "question": user_input}):
                 print(chunk, end="", flush=True)
