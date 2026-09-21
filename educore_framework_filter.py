@@ -17,8 +17,8 @@ class Filter:
     class Valves(BaseModel):
         # 1. Admin-Manageable Group & Clearance Mapping
         role_clearance_map: str = Field(
-            default='{"Students": "public", "Faculty": "staff", "Pastoral Counselors": "counselor", "Finance & Bursary": "admin", "IT & Systems DevOps": "admin", "Campus Leadership / Admins": "admin"}',
-            description="JSON mapping of Open WebUI Group names to Educore Clearance Tiers (public, staff, counselor, admin)."
+            default='{"Students": "public", "Faculty": "staff", "Pastoral Counselors": "counselor", "Finance & Bursary": "finance", "IT & Systems DevOps": "devops", "Campus Leadership / Admins": "admin"}',
+            description="JSON mapping of Open WebUI Group names to Educore Clearance Tiers (public, staff, counselor, finance, devops, admin)."
         )
         default_clearance: str = Field(
             default="public",
@@ -40,9 +40,16 @@ class Filter:
 
     CLEARANCE_LEVELS = {
         "public": 1,
+        "student": 1,
         "staff": 2,
+        "faculty": 2,
         "counselor": 3,
-        "admin": 4
+        "pastoral": 3,
+        "finance": 4,
+        "devops": 4,
+        "it": 4,
+        "admin": 5,
+        "executive": 5
     }
 
     MODEL_REQUIRED_CLEARANCE = {
@@ -50,9 +57,19 @@ class Filter:
         "educore-faculty-academic": "staff",
         "educore-enterprise-all": "staff",
         "educore-pastoral-counselor": "counselor",
-        "educore-finance-audit": "admin",
-        "educore-it-devops": "admin",
+        "educore-finance-audit": "finance",
+        "educore-it-devops": "devops",
         "educore-admin-governance": "admin"
+    }
+
+    MODEL_ALLOWED_CLEARANCES = {
+        "educore-socratic-student": {"public", "student", "staff", "faculty", "counselor", "pastoral", "finance", "devops", "it", "admin", "executive"},
+        "educore-faculty-academic": {"staff", "faculty", "counselor", "pastoral", "finance", "devops", "it", "admin", "executive"},
+        "educore-enterprise-all": {"staff", "faculty", "counselor", "pastoral", "finance", "devops", "it", "admin", "executive"},
+        "educore-pastoral-counselor": {"counselor", "pastoral", "admin", "executive"},
+        "educore-finance-audit": {"finance", "admin", "executive"},
+        "educore-it-devops": {"devops", "it", "admin", "executive"},
+        "educore-admin-governance": {"admin", "executive"}
     }
 
     def __init__(self):
@@ -64,6 +81,47 @@ class Filter:
         self.nrc_regex = re.compile(r'\b\d{6}/\d{2}/\d{1}\b')
         self.aws_regex = re.compile(r'\b(?:AKIA[0-9A-Z]{16}|aws_secret_access_key\s*=\s*[A-Za-z0-9/+=]{40})\b')
         self.private_key_regex = re.compile(r'-----BEGIN\s+(?:RSA\s+)?PRIVATE\s+KEY-----', re.IGNORECASE)
+
+    @staticmethod
+    def _find_webui_db_path() -> Optional[str]:
+        """
+        Locates the live Open WebUI SQLite database across direct, installed, or temp environments.
+        """
+        candidate_paths = [
+            os.environ.get("WEBUI_DB_PATH"),
+            os.path.join(os.environ.get("DATA_DIR", ""), "webui.db") if os.environ.get("DATA_DIR") else None,
+        ]
+
+        # 1. Check open_webui package location if loaded
+        try:
+            import open_webui
+            ow_dir = os.path.dirname(open_webui.__file__)
+            candidate_paths.append(os.path.join(ow_dir, "data", "webui.db"))
+        except Exception:
+            pass
+
+        # 2. Check current working directory and common repository paths
+        cwd = os.getcwd()
+        candidate_paths.extend([
+            os.path.join(cwd, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
+            os.path.join(cwd, "data", "webui.db"),
+            os.path.join(r"c:\Projects\EDUCORE-RAG-Control", ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
+        ])
+
+        # 3. Check relative to this file
+        try:
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            candidate_paths.extend([
+                os.path.join(base_dir, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
+                os.path.join(base_dir, "data", "webui.db"),
+            ])
+        except Exception:
+            pass
+
+        for p in candidate_paths:
+            if p and os.path.exists(p):
+                return os.path.abspath(p)
+        return None
 
     def _resolve_user_groups_and_clearance(self, user: Optional[Dict[str, Any]]) -> Dict[str, Any]:
         """
@@ -96,9 +154,8 @@ class Filter:
         # 2. If not found, attempt fast SQLite query against live webui.db
         if not groups and (user_id or email):
             try:
-                base_dir = os.path.dirname(os.path.abspath(__file__))
-                db_path = os.path.join(base_dir, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db")
-                if os.path.exists(db_path):
+                db_path = self._find_webui_db_path()
+                if db_path and os.path.exists(db_path):
                     con = sqlite3.connect(db_path, timeout=1.0)
                     try:
                         cur = con.cursor()
@@ -123,8 +180,8 @@ class Filter:
                 "Students": "public",
                 "Faculty": "staff",
                 "Pastoral Counselors": "counselor",
-                "Finance & Bursary": "admin",
-                "IT & Systems DevOps": "admin",
+                "Finance & Bursary": "finance",
+                "IT & Systems DevOps": "devops",
                 "Campus Leadership / Admins": "admin"
             }
 
@@ -133,10 +190,10 @@ class Filter:
             clearance = "admin"
             effective_role = "admin"
         elif "IT & Systems DevOps" in groups:
-            clearance = mapping.get("IT & Systems DevOps", "admin")
+            clearance = mapping.get("IT & Systems DevOps", "devops")
             effective_role = "devops"
         elif "Finance & Bursary" in groups:
-            clearance = mapping.get("Finance & Bursary", "admin")
+            clearance = mapping.get("Finance & Bursary", "finance")
             effective_role = "finance"
         elif "Pastoral Counselors" in groups:
             clearance = mapping.get("Pastoral Counselors", "counselor")
@@ -179,15 +236,22 @@ class Filter:
         if self.valves.enforce_model_clearance_gating and model_id:
             m_key = model_id.lower()
             required_tier = "public"
+            allowed_tiers = None
             for mid, tier in self.MODEL_REQUIRED_CLEARANCE.items():
                 if mid in m_key:
                     required_tier = tier
+                    allowed_tiers = self.MODEL_ALLOWED_CLEARANCES.get(mid)
                     break
 
-            user_rank = self.CLEARANCE_LEVELS.get(user_clearance, 1)
-            req_rank = self.CLEARANCE_LEVELS.get(required_tier, 1)
+            is_permitted = False
+            if allowed_tiers is not None:
+                is_permitted = user_clearance in allowed_tiers
+            else:
+                user_rank = self.CLEARANCE_LEVELS.get(user_clearance, 1)
+                req_rank = self.CLEARANCE_LEVELS.get(required_tier, 1)
+                is_permitted = user_rank >= req_rank
 
-            if user_rank < req_rank:
+            if not is_permitted:
                 raise Exception(
                     f"🛑 [Clearance Access Denied] Your account ({user_info['email']}) has clearance '{user_clearance.upper()}', "
                     f"which is insufficient for model '{model_id}' (Requires '{required_tier.upper()}'). "

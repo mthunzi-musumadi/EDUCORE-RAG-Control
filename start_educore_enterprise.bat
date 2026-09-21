@@ -15,10 +15,13 @@ cd /d "%SCRIPT_DIR%"
 REM 1. Set Open WebUI & Ollama Configurations (Optimized for Intel Core i3-10100T 4C/8T 35W)
 set OPENAI_API_BASE_URL=http://127.0.0.1:8000/v1
 set OPENAI_API_KEY=educore-enterprise-key
+set ENABLE_OLLAMA_API=False
 set OLLAMA_BASE_URL=http://127.0.0.1:11434
 set OLLAMA_NUM_PARALLEL=1
 set OLLAMA_MAX_LOADED_MODELS=2
 set OLLAMA_KEEP_ALIVE=-1
+set OLLAMA_FLASH_ATTENTION=1
+set OLLAMA_KV_CACHE_TYPE=q8_0
 set PORT=3000
 set WEBUI_PORT=3000
 set WEBUI_NAME=Educore Services Enterprise AI

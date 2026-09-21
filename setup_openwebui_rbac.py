@@ -113,7 +113,8 @@ MODELS_DEF = [
 USER_MAPPINGS = {
     "admin@localhost": "group-execadmin-006",
     "intern@educoreservices.com": "group-faculty-002",
-    "student@trident-college.com": "group-students-001"
+    "student@trident-college.com": "group-students-001",
+    "financialcoordinator@educoreservices.com": "group-finance-004"
 }
 
 def provision_openwebui_rbac():
@@ -184,7 +185,7 @@ def provision_openwebui_rbac():
         existing_m = cur.fetchone()
         meta_dict = {
             "description": m["description"],
-            "profile_image_url": "/static/favicon.png",
+            "profile_image_url": "/static/educore-rag-e.png",
             "capabilities": {"vision": False, "citations": True}
         }
         params_dict = {}
@@ -215,6 +216,36 @@ def provision_openwebui_rbac():
 
         print(f"  ✓ Model: {m['id']} -> Restricted to {len(m['allowed_groups'])} Group(s)")
 
+    # 3b. Hide Raw Backend / Ollama Models (llama3.2, nomic-embed-text)
+    raw_models_to_hide = [
+        "llama3.2:1b",
+        "llama3.2:latest",
+        "llama3.2",
+        "nomic-embed-text:latest",
+        "nomic-embed-text"
+    ]
+    for raw_id in raw_models_to_hide:
+        cur.execute("SELECT id FROM model WHERE id = ?", (raw_id,))
+        existing_raw = cur.fetchone()
+        hidden_meta = json.dumps({
+            "hidden": True,
+            "description": "Internal Educore inference / embedding model (gated behind Educore RAG personas)."
+        })
+        if existing_raw:
+            cur.execute(
+                "UPDATE model SET is_active = 0, meta = ?, updated_at = ? WHERE id = ?",
+                (hidden_meta, now, raw_id)
+            )
+        else:
+            cur.execute(
+                "INSERT INTO model (id, user_id, base_model_id, name, params, meta, is_active, created_at, updated_at) "
+                "VALUES (?, ?, NULL, ?, '{}', ?, 0, ?, ?)",
+                (raw_id, admin_id, raw_id, hidden_meta, now, now)
+            )
+        # Ensure no access grants exist for raw models
+        cur.execute("DELETE FROM access_grant WHERE resource_type = 'model' AND resource_id = ?", (raw_id,))
+    print(f"  ✓ Raw Ollama models hidden ({', '.join(raw_models_to_hide)})")
+
     # 4. Register Governance Filter in Open WebUI Functions
     print("[5/5] Registering Educore AI Framework Governance Filter & Admin Valves...")
     filter_content = ""
@@ -233,8 +264,8 @@ def provision_openwebui_rbac():
             "Students": "public",
             "Faculty": "staff",
             "Pastoral Counselors": "counselor",
-            "Finance & Bursary": "admin",
-            "IT & Systems DevOps": "admin",
+            "Finance & Bursary": "finance",
+            "IT & Systems DevOps": "devops",
             "Campus Leadership / Admins": "admin"
         }),
         "default_clearance": "public",
@@ -263,12 +294,21 @@ def provision_openwebui_rbac():
         )
     print(f"  ✓ Function '{func_name}' registered as Global Active Filter.")
 
+    # 5. Disable Direct Ollama Provider in Open WebUI Configuration
+    cur.execute("SELECT key FROM config WHERE key = 'ollama.enable'")
+    if cur.fetchone():
+        cur.execute("UPDATE config SET value = 'false', updated_at = ? WHERE key = 'ollama.enable'", (now,))
+    else:
+        cur.execute("INSERT INTO config (key, value, updated_at) VALUES ('ollama.enable', 'false', ?)", (now,))
+    print("  ✓ Open WebUI direct Ollama provider disabled (exposing only governed Educore models).")
+
     con.commit()
     con.close()
     print("\n==============================================================================")
     print("  OPEN WEBUI RBAC & CLEARANCE PROVISIONING COMPLETE!")
     print("  - 6 Organizational Role Groups Active")
     print("  - 7 Governed Educore Models Configured with Access Control Lists")
+    print("  - Raw Ollama Models (llama3.2, nomic-embed-text) Hidden from Dropdown")
     print("  - Users Linked to Respective Role Groups")
     print("  - Governance Filter Active with UI-Manageable Valves for Admin")
     print("==============================================================================")

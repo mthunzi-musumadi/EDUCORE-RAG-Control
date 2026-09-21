@@ -13,10 +13,13 @@ Write-Host "====================================================================
 # 1. Open WebUI & Ollama Environment Configurations (Optimized for Intel Core i3-10100T 4C/8T 35W)
 $env:OPENAI_API_BASE_URL = "http://127.0.0.1:8000/v1"
 $env:OPENAI_API_KEY = "educore-enterprise-key"
+$env:ENABLE_OLLAMA_API = "False"              # Expose only Educore governed models; hide raw llama3.2 & nomic-embed-text
 $env:OLLAMA_BASE_URL = "http://127.0.0.1:11434"
-$env:OLLAMA_NUM_PARALLEL = "1"              # Dedicate all 4 cores to single-stream inference without context thrashing
+$env:OLLAMA_NUM_PARALLEL = "1"              # Dedicate all cores to single-stream inference without context thrashing
 $env:OLLAMA_MAX_LOADED_MODELS = "2"         # Keep llama3.2:1b and nomic-embed-text warm in memory
 $env:OLLAMA_KEEP_ALIVE = "-1"               # Prevent model swapping and unload (pinned indefinitely)
+$env:OLLAMA_FLASH_ATTENTION = "1"           # Accelerates attention computation and cuts KV-cache bandwidth
+$env:OLLAMA_KV_CACHE_TYPE = "q8_0"          # Quantizes KV cache to 8-bit to fit closer to L3 cache
 $env:PORT = "3000"
 $env:WEBUI_PORT = "3000"
 $env:WEBUI_NAME = "Educore Services Enterprise AI"

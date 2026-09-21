@@ -189,6 +189,8 @@ class EducoreFrameworkEngine:
         "public": ["Public / Educational"],
         "staff": ["Public / Educational", "Internal - Educational"],
         "counselor": ["Public / Educational", "Internal - Educational", "Confidential - Admin / Finance"],
+        "finance": ["Public / Educational", "Internal - Educational", "Confidential - Admin / Finance"],
+        "devops": ["Public / Educational", "Internal - Educational", "Confidential - Admin / Finance", "Restricted - IT / Systems"],
         "admin": ["Public / Educational", "Internal - Educational", "Confidential - Admin / Finance", "Restricted - IT / Systems"]
     }
 
@@ -196,13 +198,17 @@ class EducoreFrameworkEngine:
         "public": ["public"],
         "staff": ["public", "staff"],
         "counselor": ["public", "staff", "counselor"],
-        "admin": ["public", "staff", "counselor", "admin"]
+        "finance": ["public", "staff", "finance", "admin"],
+        "devops": ["public", "staff", "devops", "admin"],
+        "admin": ["public", "staff", "counselor", "finance", "devops", "admin"]
     }
 
     CATEGORY_PERMISSIONS = {
         "public": ["curriculum", "general", "public", "governance"],
         "staff": ["curriculum", "policy", "submission", "academic", "general", "public", "facilities", "audit", "governance"],
         "counselor": ["curriculum", "policy", "pastoral", "general", "public", "governance"],
+        "finance": ["curriculum", "policy", "finance", "general", "public", "facilities", "audit", "procurement", "governance"],
+        "devops": ["curriculum", "policy", "it_systems", "general", "public", "facilities", "audit", "governance"],
         "admin": ["curriculum", "policy", "finance", "pastoral", "submission", "academic", "general", "public", "facilities", "audit", "procurement", "it_systems", "hr", "legal", "governance"]
     }
 
@@ -377,16 +383,17 @@ class EducoreFrameworkEngine:
 
         return output
 
-# Hardware-tuned runtime parameters for Intel Core i3-10100T (4 Cores / 8 Threads, 35W TDP, 6MB L3 Cache)
+# Hardware-tuned runtime parameters for Intel Core i7-10610U (4 Cores / 8 Threads, 8MB L3 Cache)
 llm = ChatOllama(
     model="llama3.2:1b",
     temperature=0.1,
-    num_thread=4,         # Physical core count: eliminates SMT hyperthread cache thrashing
-    num_ctx=2048,         # Keeps KV cache footprint compact inside 6MB L3 cache & DDR4-2666 bus
-    num_predict=512,      # Maximum response token horizon for 35W desktop package
+    num_thread=6,         # Physical + SMT balance tuned for i7-10610U (empirically highest eval rate)
+    num_ctx=2048,         # Keeps KV cache footprint compact
+    num_batch=512,        # 512 batch size speeds up prompt prefill on AVX2 CPU
+    num_predict=512,      # Maximum response token horizon
     top_k=40,
     top_p=0.9,
-    repeat_penalty=1.15,
+    repeat_penalty=1.1,   # Reduced from 1.15 to decrease per-token CPU overhead
     keep_alive=-1         # Pinned indefinitely in RAM alongside nomic-embed-text
 )
 
@@ -432,7 +439,7 @@ def execute_rag(
     query: str,
     user_session: Dict[str, Any],
     chat_history: Optional[List[Dict[str, str]]] = None,
-    k: int = 4
+    k: int = 2
 ) -> Dict[str, Any]:
     t0 = time.time()
 
@@ -471,7 +478,7 @@ def execute_rag(
     history_str = "No prior conversation turns."
     if chat_history:
         turns = []
-        for t in chat_history[-6:]:
+        for t in chat_history[-4:]:
             role = "User" if t.get("role") == "user" else "Assistant"
             c_text = extract_clean_user_prompt(t.get("content", "")) if t.get("role") == "user" else t.get("content", "")
             turns.append(f"{role}: {c_text}")
@@ -542,7 +549,7 @@ def execute_rag_stream(
     query: str,
     user_session: Dict[str, Any],
     chat_history: Optional[List[Dict[str, str]]] = None,
-    k: int = 4
+    k: int = 2
 ) -> Generator[str, None, None]:
     t0 = time.time()
 
@@ -577,7 +584,7 @@ def execute_rag_stream(
     history_str = "No prior conversation turns."
     if chat_history:
         turns = []
-        for t in chat_history[-6:]:
+        for t in chat_history[-4:]:
             role = "User" if t.get("role") == "user" else "Assistant"
             c_text = extract_clean_user_prompt(t.get("content", "")) if t.get("role") == "user" else t.get("content", "")
             turns.append(f"{role}: {c_text}")
@@ -807,12 +814,37 @@ OPEN_WEBUI_MODELS = [
     }
 ]
 
+def find_webui_db_path() -> Optional[str]:
+    """Locates the live Open WebUI SQLite database across direct, installed, or temp environments."""
+    candidate_paths = [
+        os.environ.get("WEBUI_DB_PATH"),
+        os.path.join(os.environ.get("DATA_DIR", ""), "webui.db") if os.environ.get("DATA_DIR") else None,
+    ]
+    try:
+        import open_webui
+        ow_dir = os.path.dirname(open_webui.__file__)
+        candidate_paths.append(os.path.join(ow_dir, "data", "webui.db"))
+    except Exception:
+        pass
+    cwd = os.getcwd()
+    candidate_paths.extend([
+        os.path.join(BASE_DIR, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
+        os.path.join(BASE_DIR, "data", "webui.db"),
+        os.path.join(cwd, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
+        os.path.join(cwd, "data", "webui.db"),
+        os.path.join(r"c:\Projects\EDUCORE-RAG-Control", ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
+    ])
+    for p in candidate_paths:
+        if p and os.path.exists(p):
+            return os.path.abspath(p)
+    return None
+
 def query_webui_db_user(identifier: str) -> Optional[Dict[str, Any]]:
     """Looks up user and active group memberships directly from Open WebUI database."""
     if not identifier:
         return None
-    db_path = os.path.join(BASE_DIR, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db")
-    if not os.path.exists(db_path):
+    db_path = find_webui_db_path()
+    if not db_path or not os.path.exists(db_path):
         return None
     try:
         import sqlite3
@@ -911,11 +943,11 @@ def resolve_user_session_from_request(headers: Dict[str, str], model_name: str, 
             role = "admin"
             scope = "Global Multi-Campus Governance, Financial Ledgers & ISO 42001 AIMS"
         elif "IT & Systems DevOps" in groups:
-            clearance = "admin"
+            clearance = "devops"
             role = "devops"
             scope = "Restricted IT Topologies, Git Secret Scanning & SAST"
         elif "Finance & Bursary" in groups:
-            clearance = "admin"
+            clearance = "finance"
             role = "finance"
             scope = "Financial Variance, Bursary Disbursements & Ledgers"
         elif "Pastoral Counselors" in groups:

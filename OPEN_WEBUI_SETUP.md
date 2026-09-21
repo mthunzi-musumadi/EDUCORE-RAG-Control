@@ -202,3 +202,31 @@ To automatically synchronize or reset all groups, model access grants, and gover
 ```
 This utility automatically initializes the 6 groups, links existing user accounts, configures model access control lists, and registers the global governance filter in `webui.db`.
 
+---
+
+## 8. Educore Services Enterprise Branding & Logo Management
+
+The Open WebUI interface has been customized to feature Educore's official branding suite, replacing the default Open WebUI assets:
+
+### 8.1 Logo Roles & Allocation
+
+| Surface | Asset File | Source Logo | Purpose |
+| :--- | :--- | :--- | :--- |
+| **Hero Splash Screen** | `splash.png`<br>`splash-dark.png` | `educore-rag-e.png` | Stylised neural/circuit "E" displayed during platform load. |
+| **Primary Platform Logo** | `logo.png` | `educore-rag-e.png` | Main 500x500 platform logo used in PWA and manifest references. |
+| **AI Model Avatars** | `meta.profile_image_url` | `educore-rag-e.png` (`/static/educore-rag-e.png`) | Assistant avatar for the 7 Educore enterprise models in chat and model pickers. |
+| **PWA Manifest Icons** | `web-app-manifest-192x192.png`<br>`web-app-manifest-512x512.png` | `educore-rag-e.png` | High-resolution PWA installation and mobile bookmark icons. |
+| **Browser Favicons** | `favicon.png` (512x512)<br>`favicon-96x96.png`<br>`favicon.ico` (16/32/48)<br>`favicon.svg` | `educore.png` | Default institutional geometric "E"; provides crisp legibility at small icon sizes. |
+| **Apple Touch Icon** | `apple-touch-icon.png` (180x180) | `educore.png` | Crisp institutional mark on solid background for iOS home screen bookmarks. |
+| **Dark Mode Styling** | `custom.css` | CSS override | Prevents Tailwind `dark:invert` from inverting Educore orange (`#F1592A`) in dark mode. |
+| **Model Selector Anti-Truncation** | `custom.css` | CSS override | Expands active model pill (`max-w-56` -> `45rem`), widens dropdown menu (`34rem`), and unclamps text so clearance tiers (`Tier A`, `Tier B`, `Tier C`) and personas are fully visible without truncation. |
+
+### 8.2 Applying or Regenerating Branding & Custom CSS
+
+To regenerate and re-apply all branding assets and CSS overrides to Open WebUI at any time:
+```powershell
+.\.openwebui_env\Scripts\python.exe apply_educore_logos.py
+```
+This generates all resolutions, updates both static directories (`open_webui/static` and `open_webui/frontend/static`), injects the dark-mode color preservation and model selector anti-truncation rules into `custom.css`, and refreshes model avatars in `webui.db`.
+
+

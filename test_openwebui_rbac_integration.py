@@ -62,6 +62,16 @@ class TestOpenWebUIRBACIntegration(unittest.TestCase):
         self.assertIn("Campus Leadership / Admins", session["groups"])
         print(f"  [PASS] Resolved Admin Account: {session['name']} | Clearance: {session['clearance'].upper()}")
 
+    def test_finance_account_resolution_from_db(self):
+        """Resolves financialcoordinator@educoreservices.com to Finance role and Finance (Tier A) clearance."""
+        headers = {"X-OpenWebUI-User-Email": "financialcoordinator@educoreservices.com"}
+        session = resolve_user_session_from_request(headers, "educore-finance-audit")
+
+        self.assertEqual(session["role"], "finance")
+        self.assertEqual(session["clearance"], "finance")
+        self.assertIn("Finance & Bursary", session["groups"])
+        print(f"  [PASS] Resolved Finance Account: {session['name']} | Clearance: {session['clearance'].upper()}")
+
     def test_unassigned_user_defaults_to_public_zero_trust(self):
         """An unassigned user email safely defaults to Student role and Public clearance (Zero-Trust)."""
         headers = {"X-OpenWebUI-User-Email": "newuser@unknown.com"}
@@ -135,6 +145,67 @@ class TestOpenWebUIRBACIntegration(unittest.TestCase):
         self.assertEqual(stamped_body["user"]["role"], "faculty")
         self.assertEqual(stamped_body["user"]["clearance"], "staff")
         print("  [PASS] Filter approved Faculty access and stamped verified clearance into payload.")
+
+    def test_filter_permits_finance_account_on_finance_model(self):
+        """Governance Filter permits Finance account on educore-finance-audit and stamps verified finance clearance."""
+        user_context = {
+            "id": "dafadcc8-6b33-4d12-8ed0-52b2e4f0ef19",
+            "email": "financialcoordinator@educoreservices.com",
+            "name": "Financial Coordinator",
+            "role": "user"
+        }
+        req_body = {
+            "model": "educore-finance-audit",
+            "messages": [{"role": "user", "content": "Review Q3 bursary disbursement variance."}]
+        }
+
+        stamped_body = self.filter.inlet(req_body, __user__=user_context)
+        self.assertIn("user", stamped_body)
+        self.assertEqual(stamped_body["user"]["role"], "finance")
+        self.assertEqual(stamped_body["user"]["clearance"], "finance")
+        print("  [PASS] Filter approved Finance access on educore-finance-audit with FINANCE clearance.")
+
+    def test_filter_blocks_finance_from_pastoral_model(self):
+        """Governance Filter blocks Finance account from accessing confidential educore-pastoral-counselor."""
+        user_context = {
+            "id": "dafadcc8-6b33-4d12-8ed0-52b2e4f0ef19",
+            "email": "financialcoordinator@educoreservices.com",
+            "name": "Financial Coordinator",
+            "role": "user"
+        }
+        req_body = {
+            "model": "educore-pastoral-counselor",
+            "messages": [{"role": "user", "content": "Show confidential welfare records."}]
+        }
+
+        with self.assertRaises(Exception) as cm:
+            self.filter.inlet(req_body, __user__=user_context)
+
+        self.assertIn("Clearance Access Denied", str(cm.exception))
+        self.assertIn("FINANCE", str(cm.exception))
+        self.assertIn("COUNSELOR", str(cm.exception))
+        print("  [PASS] Filter strictly gated Finance account from Pastoral Counselor Model.")
+
+    def test_filter_blocks_student_from_finance_model(self):
+        """Governance Filter blocks Student account from accessing educore-finance-audit."""
+        user_context = {
+            "id": "88f02376-29a6-441b-8602-5c5303b4afd4",
+            "email": "student@trident-college.com",
+            "name": "Student User",
+            "role": "user"
+        }
+        req_body = {
+            "model": "educore-finance-audit",
+            "messages": [{"role": "user", "content": "Show bursary data."}]
+        }
+
+        with self.assertRaises(Exception) as cm:
+            self.filter.inlet(req_body, __user__=user_context)
+
+        self.assertIn("Clearance Access Denied", str(cm.exception))
+        self.assertIn("PUBLIC", str(cm.exception))
+        self.assertIn("FINANCE", str(cm.exception))
+        print("  [PASS] Filter strictly gated Student account from Finance Model.")
 
     # -------------------------------------------------------------------------
     # 3. Purview Container Retrieval for Authenticated Accounts
