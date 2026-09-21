@@ -100,6 +100,7 @@ MODELS_DEF = [
         "name": "Educore Enterprise RAG (Universal / Staff Adaptive)",
         "description": "Adaptive enterprise model governed by ISO 42001 and Purview container controls for institutional staff.",
         "allowed_groups": [
+            "group-students-001",
             "group-faculty-002",
             "group-pastoral-003",
             "group-finance-004",
@@ -154,19 +155,27 @@ def provision_openwebui_rbac():
     for email, target_group_id in USER_MAPPINGS.items():
         cur.execute("SELECT id, name FROM user WHERE lower(email) = ?", (email.lower(),))
         user_row = cur.fetchone()
-        if user_row:
-            u_id, u_name = user_row
-            # Check if membership exists
-            cur.execute("SELECT id FROM group_member WHERE group_id = ? AND user_id = ?", (target_group_id, u_id))
-            if not cur.fetchone():
-                member_id = str(uuid.uuid4())
-                cur.execute(
-                    "INSERT INTO group_member (id, group_id, user_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
-                    (member_id, target_group_id, u_id, now, now)
-                )
-            print(f"  ✓ User {u_name} ({email}) -> Linked to {target_group_id}")
-        else:
-            print(f"  ℹ User {email} not currently registered in DB.")
+        if not user_row:
+            u_id = str(uuid.uuid4())
+            name = "Student User" if "student" in email else ("Faculty Intern" if "intern" in email else email.split("@")[0].capitalize())
+            role = "user"
+            cur.execute(
+                "INSERT INTO user (id, name, email, role, profile_image_url, last_active_at, updated_at, created_at) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                (u_id, name, email.lower(), role, "/user.png", now, now, now)
+            )
+            user_row = (u_id, name)
+        
+        u_id, u_name = user_row
+        # Check if membership exists
+        cur.execute("SELECT id FROM group_member WHERE group_id = ? AND user_id = ?", (target_group_id, u_id))
+        if not cur.fetchone():
+            member_id = str(uuid.uuid4())
+            cur.execute(
+                "INSERT INTO group_member (id, group_id, user_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+                (member_id, target_group_id, u_id, now, now)
+            )
+        print(f"  ✓ User {u_name} ({email}) -> Linked to {target_group_id}")
 
     # 3. Synchronize Models & Access Grants
     print("[4/5] Synchronizing AI Models and Group Access Controls...")

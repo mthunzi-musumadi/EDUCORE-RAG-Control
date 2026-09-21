@@ -10,7 +10,7 @@ import re
 import json
 import time
 import uuid
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Generator
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 import urllib.parse
 
@@ -538,6 +538,133 @@ def execute_rag(
         "guardrail_triggered": False
     }
 
+def execute_rag_stream(
+    query: str,
+    user_session: Dict[str, Any],
+    chat_history: Optional[List[Dict[str, str]]] = None,
+    k: int = 4
+) -> Generator[str, None, None]:
+    t0 = time.time()
+
+    raw_prompt = query
+    clean_query = extract_clean_user_prompt(raw_prompt)
+    uploaded_context = extract_uploaded_context(raw_prompt)
+    effective_query = clean_query if clean_query else raw_prompt
+
+    # 1. Inspect Input Guardrails (IT-01, Fac-01, Fac-02, HR-01, Edu-01, Stu-01)
+    immediate_resp = EducoreFrameworkEngine.inspect_input(raw_prompt, user_session)
+    if immediate_resp:
+        latency_ms = (time.time() - t0) * 1000
+        log_audit(user_session, effective_query, [], immediate_resp, latency_ms, "GUARDRAIL_INTERCEPT")
+        yield immediate_resp
+        return
+
+    # 2. Retrieve Documents from Governed Chroma Store using effective query
+    chroma = get_chroma_db()
+    docs_with_scores = chroma.similarity_search_with_score(effective_query, k=10)
+
+    # If no results, try contextual reformulation using previous conversation turn
+    if not docs_with_scores and chat_history:
+        prev_user_queries = [extract_clean_user_prompt(t.get("content", "")) for t in chat_history if t.get("role") == "user"]
+        if prev_user_queries:
+            combined_q = f"{prev_user_queries[-1]} {effective_query}"
+            docs_with_scores = chroma.similarity_search_with_score(combined_q, k=10)
+
+    # 3. Apply Multi-Tenant Zero-Trust RBAC & Purview Filtering
+    authorized_docs = EducoreFrameworkEngine.filter_authorized_documents(docs_with_scores, user_session)[:k]
+
+    # Format Chat History
+    history_str = "No prior conversation turns."
+    if chat_history:
+        turns = []
+        for t in chat_history[-6:]:
+            role = "User" if t.get("role") == "user" else "Assistant"
+            c_text = extract_clean_user_prompt(t.get("content", "")) if t.get("role") == "user" else t.get("content", "")
+            turns.append(f"{role}: {c_text}")
+        history_str = "\n".join(turns)
+
+    # 4. Prompt Synthesis & LLM Invocation
+    context_str = format_context_xml(authorized_docs)
+    if uploaded_context:
+        context_str = (
+            f"<user_uploaded_reference_document>\n{uploaded_context}\n</user_uploaded_reference_document>\n\n"
+            + context_str
+        )
+
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", SYSTEM_PROMPT_TEMPLATE),
+        ("human", "{query}")
+    ])
+    prompt_args = {
+        "user_name": user_session.get("name", "Educore Operator"),
+        "user_campus": str(user_session.get("campus", "All Campuses")).capitalize(),
+        "user_clearance": str(user_session.get("clearance", "public")).upper(),
+        "user_scope": user_session.get("scope", "General Operational Guidance"),
+        "chat_history": history_str,
+        "context": context_str,
+        "query": effective_query
+    }
+
+    accumulated_chunks: List[str] = []
+    try:
+        chain = prompt | llm | StrOutputParser()
+        for chunk in chain.stream(prompt_args):
+            chunk_str = chunk if isinstance(chunk, str) else getattr(chunk, "content", str(chunk))
+            if chunk_str:
+                accumulated_chunks.append(chunk_str)
+                yield chunk_str
+    except Exception as e:
+        # Graceful fallback when local Ollama is busy or initializing
+        if uploaded_context:
+            fallback = f"**Summary of Uploaded Reference Document:**\n\n{uploaded_context[:800]}..."
+        elif authorized_docs:
+            summaries = [f"• **{d.metadata.get('title')}** ({d.metadata.get('purview_label')}): {d.page_content}" for d in authorized_docs]
+            fallback = (
+                f"**Authorized Institutional Context Retrieved ({user_session.get('clearance', 'public').upper()} Mode):**\n\n"
+                + "\n\n".join(summaries)
+            )
+        else:
+            fallback = "I do not have access to that information based on your current authorization and available records."
+        accumulated_chunks.append(fallback)
+        yield fallback
+
+    # 5. Egress Compliance Notices (Fin-01 & Edu-02)
+    full_text = "".join(accumulated_chunks)
+    extra_notices = []
+
+    has_finance_content = any(doc.metadata.get("category") == "finance" for doc in authorized_docs)
+    mentions_currency = bool(re.search(r'\b(zmw|kwacha|budget|expenditure|bursary|k\d+)\b', full_text, re.IGNORECASE))
+    if has_finance_content or mentions_currency:
+        fin_notice = (
+            "\n\n> ⚖️ **Guardrail Fin-01 Dual-Key Notice**: *Independent human manual verification is required "
+            "for all AI-assisted financial figures, currency amounts, and balance sheet calculations before ledger posting.*"
+        )
+        extra_notices.append(fin_notice)
+
+    has_curriculum = any(doc.metadata.get("category") == "curriculum" for doc in authorized_docs)
+    if has_curriculum and user_session.get("clearance") in ["staff", "admin"]:
+        edu_notice = (
+            "\n\n> 📚 **Guardrail Edu-02 Notice**: *Teaching faculty must verify all generated learning resources "
+            "against the official Cambridge IGCSE / Zambian curriculum syllabus before classroom distribution.*"
+        )
+        extra_notices.append(edu_notice)
+
+    for notice in extra_notices:
+        accumulated_chunks.append(notice)
+        yield notice
+
+    # 6. Egress Sanitization & Audit Logging
+    final_output = EducoreFrameworkEngine.inspect_output("".join(accumulated_chunks), user_session, authorized_docs)
+    latency_ms = (time.time() - t0) * 1000
+    log_audit(
+        user_session,
+        effective_query,
+        authorized_docs,
+        final_output,
+        latency_ms,
+        "PERMITTED_RAG" if authorized_docs else "CONVERSATIONAL_RESTRICTED"
+    )
+
 # ==============================================================================
 # 4. ISO 42001 AUDIT LEDGER (CLAUSE 7.5 & ANNEX A.6.2.8)
 # ==============================================================================
@@ -971,24 +1098,6 @@ class EducoreOpenAIHandler(BaseHTTPRequestHandler):
             payload_user = payload.get("user") or payload.get("metadata", {}).get("user")
             user_session = resolve_user_session_from_request(headers_dict, model_id, payload_user=payload_user)
 
-            if is_open_webui_utility_task(query):
-                try:
-                    task_out = llm.invoke(query)
-                    resp_text = getattr(task_out, "content", str(task_out))
-                except Exception:
-                    resp_text = '{ "title": "Educore AI Chat" }'
-                rag_result = {"retrieved_docs": [], "latency_ms": 10.0}
-            else:
-                try:
-                    rag_result = execute_rag(query, user_session, history_turns)
-                    resp_text = rag_result["response"]
-                except EducoreGuardrailViolation as g_err:
-                    clean_audit_q = extract_clean_user_prompt(query)
-                    resp_text = f"🛑 **Educore Framework Stop-Condition Triggered**:\n\n**[{g_err.code}] {g_err.title}**\n\n{g_err.message}"
-                    log_audit(user_session, clean_audit_q or query, [], resp_text, 5.0, f"GUARDRAIL_BLOCKED_{g_err.code}")
-                    rag_result = {"retrieved_docs": [], "latency_ms": 5.0}
-
-            # Response formatting
             if stream:
                 self.send_response(200)
                 self.send_header("Content-Type", "text/event-stream; charset=utf-8")
@@ -997,11 +1106,11 @@ class EducoreOpenAIHandler(BaseHTTPRequestHandler):
                 self.send_cors_headers()
                 self.end_headers()
 
-                # Stream chunks
                 chunk_id = f"chatcmpl-{uuid.uuid4()}"
-                words = resp_text.split(" ")
-                for i, word in enumerate(words):
-                    piece = word + (" " if i < len(words) - 1 else "")
+
+                def send_chunk(text: str):
+                    if not text:
+                        return
                     chunk_payload = {
                         "id": chunk_id,
                         "object": "chat.completion.chunk",
@@ -1009,13 +1118,36 @@ class EducoreOpenAIHandler(BaseHTTPRequestHandler):
                         "model": model_id,
                         "choices": [{
                             "index": 0,
-                            "delta": {"content": piece},
+                            "delta": {"content": text},
                             "finish_reason": None
                         }]
                     }
-                    self.wfile.write(f"data: {json.dumps(chunk_payload)}\n\n".encode("utf-8"))
-                    self.wfile.flush()
-                    time.sleep(0.01)
+                    try:
+                        self.wfile.write(f"data: {json.dumps(chunk_payload)}\n\n".encode("utf-8"))
+                        self.wfile.flush()
+                    except (BrokenPipeError, ConnectionResetError):
+                        pass
+
+                if is_open_webui_utility_task(query):
+                    try:
+                        for chunk in llm.stream(query):
+                            txt = getattr(chunk, "content", str(chunk))
+                            send_chunk(txt)
+                    except Exception:
+                        send_chunk('{ "title": "Educore AI Chat" }')
+                else:
+                    try:
+                        for chunk_text in execute_rag_stream(query, user_session, history_turns):
+                            send_chunk(chunk_text)
+                    except EducoreGuardrailViolation as g_err:
+                        clean_audit_q = extract_clean_user_prompt(query)
+                        resp_text = f"🛑 **Educore Framework Stop-Condition Triggered**:\n\n**[{g_err.code}] {g_err.title}**\n\n{g_err.message}"
+                        log_audit(user_session, clean_audit_q or query, [], resp_text, 5.0, f"GUARDRAIL_BLOCKED_{g_err.code}")
+                        send_chunk(resp_text)
+                    except Exception as err:
+                        import traceback
+                        traceback.print_exc()
+                        send_chunk(f"⚠️ **Backend Processing Error**: {str(err)}")
 
                 # Send terminal chunk
                 done_payload = {
@@ -1029,13 +1161,36 @@ class EducoreOpenAIHandler(BaseHTTPRequestHandler):
                         "finish_reason": "stop"
                     }]
                 }
-                self.wfile.write(f"data: {json.dumps(done_payload)}\n\n".encode("utf-8"))
-                self.wfile.write(b"data: [DONE]\n\n")
-                self.wfile.flush()
-                # Signal EOF so aiohttp and Open WebUI immediately finish the stream
+                try:
+                    self.wfile.write(f"data: {json.dumps(done_payload)}\n\n".encode("utf-8"))
+                    self.wfile.write(b"data: [DONE]\n\n")
+                    self.wfile.flush()
+                except (BrokenPipeError, ConnectionResetError):
+                    pass
                 self.close_connection = True
 
             else:
+                if is_open_webui_utility_task(query):
+                    try:
+                        task_out = llm.invoke(query)
+                        resp_text = getattr(task_out, "content", str(task_out))
+                    except Exception:
+                        resp_text = '{ "title": "Educore AI Chat" }'
+                    rag_result = {"retrieved_docs": [], "latency_ms": 10.0}
+                else:
+                    try:
+                        rag_result = execute_rag(query, user_session, history_turns)
+                        resp_text = rag_result["response"]
+                    except EducoreGuardrailViolation as g_err:
+                        clean_audit_q = extract_clean_user_prompt(query)
+                        resp_text = f"🛑 **Educore Framework Stop-Condition Triggered**:\n\n**[{g_err.code}] {g_err.title}**\n\n{g_err.message}"
+                        log_audit(user_session, clean_audit_q or query, [], resp_text, 5.0, f"GUARDRAIL_BLOCKED_{g_err.code}")
+                        rag_result = {"retrieved_docs": [], "latency_ms": 5.0}
+                    except Exception as err:
+                        import traceback
+                        traceback.print_exc()
+                        resp_text = f"⚠️ **Backend Processing Error**: {str(err)}"
+                        rag_result = {"retrieved_docs": [], "latency_ms": 5.0}
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json; charset=utf-8")
                 self.send_cors_headers()
