@@ -184,3 +184,7 @@ cython_debug/
 production_setup/aims_rag_audit.jsonl
 production_setup/aims_rag_audit.jsonl
 framework_control/Scripts/python.exe
+chroma_enterprise_store/4d389388-73af-4603-8e1f-f2a404082be4/data_level0.bin
+chroma_enterprise_store/4d389388-73af-4603-8e1f-f2a404082be4/length.bin
+chroma_enterprise_store/chroma.sqlite3
+aims_rag_audit.jsonl
