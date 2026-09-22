@@ -71,54 +71,74 @@ div.max-w-56 .truncate,
     white-space: nowrap !important;
 }
 
-/* 3. Model Selector Trigger in Top Navbar & Chat Header */
-button[id*="model-selector"],
-button[id="model-selector-model-button"],
-button[aria-haspopup="listbox"],
-.model-selector-button {
+/* 3. Model Selector Trigger in Top Navbar (Outside Chat Input Box) */
+body :not(#message-input-container) button[id*="model-selector"],
+body :not(#message-input-container) button[aria-haspopup="listbox"],
+body :not(#message-input-container) .model-selector-button {
     max-width: none !important;
     width: auto !important;
     overflow: visible !important;
 }
 
 /* Unclip parent containers in the top navbar / header */
-.min-w-0.max-w-full.overflow-hidden,
-div:has(> .min-w-0.max-w-full.overflow-hidden),
-div:has(> div > .relative > button[id*="model-selector"]) {
+header .min-w-0.max-w-full.overflow-hidden,
+nav .min-w-0.max-w-full.overflow-hidden,
+div:has(> .min-w-0.max-w-full.overflow-hidden):not(#message-input-container *) {
     overflow: visible !important;
     max-width: none !important;
 }
 
 /* Ensure model name in top navbar remains on one line and expands horizontally */
-button[id*="model-selector"] span,
-button[id*="model-selector"] span.truncate,
-button[id*="model-selector"] span.min-w-0,
-button[aria-haspopup="listbox"] span,
-button[aria-haspopup="listbox"] span.truncate,
-button[aria-haspopup="listbox"] span.min-w-0,
-.min-w-0.flex-1.truncate {
+body :not(#message-input-container) button[id*="model-selector"] span,
+body :not(#message-input-container) button[aria-haspopup="listbox"] span {
     overflow: visible !important;
     text-overflow: clip !important;
     white-space: nowrap !important;
     max-width: none !important;
 }
 
-/* 4. Selected Model on New Chat Landing View (Center / Top Hero) */
+/* 4. Chat Input Box (Bottom) - Prevent Collision with Mic & Voice Mode Buttons */
+#message-input-container button[id*="model-selector"],
+#message-input-container button[aria-haspopup="listbox"],
+#message-input-container .model-selector-button {
+    max-width: 100% !important;
+    overflow: hidden !important;
+}
+
+#message-input-container button[id*="model-selector"] span,
+#message-input-container button[id*="model-selector"] div,
+#message-input-container button[aria-haspopup="listbox"] span,
+#message-input-container button[aria-haspopup="listbox"] div,
+#message-input-container .truncate {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    max-width: 100% !important;
+}
+
+#message-input-container .max-w-\\[10rem\\],
+#message-input-container [class*="max-w-\\[10rem\\]"],
+#message-input-container [class*="sm:max-w-\\[13rem\\]"] {
+    max-width: 14rem !important;
+    overflow: hidden !important;
+}
+
+/* 5. Selected Model on New Chat Landing View (Center / Top Hero) */
 /* Overrides max-w-xl (36rem) and line-clamp-1 so full model title and clearance tier are visible */
 .flex.flex-row.justify-center.w-fit.max-w-xl,
 .flex.flex-row.justify-center.max-w-xl,
 div:has(> .text-2xl.line-clamp-1),
-div:has(> .\@sm\:text-2xl.line-clamp-1) {
+div:has(> .\\@sm\\:text-2xl.line-clamp-1) {
     max-width: 95vw !important;
     width: auto !important;
 }
 
 .text-2xl.line-clamp-1,
 .text-2xl .line-clamp-1,
-.\@sm\:text-2xl.line-clamp-1,
-.\@sm\:text-2xl .line-clamp-1,
+.\\@sm\\:text-2xl.line-clamp-1,
+.\\@sm\\:text-2xl .line-clamp-1,
 div.text-2xl span.line-clamp-1,
-div.\@sm\:text-2xl span.line-clamp-1,
+div.\\@sm\\:text-2xl span.line-clamp-1,
 div[class*="text-2xl"] [class*="line-clamp-1"] {
     overflow: visible !important;
     white-space: normal !important;
@@ -148,7 +168,7 @@ div[class*="line-clamp-2"][class*="max-w-xl"] {
     line-clamp: unset !important;
 }
 
-/* 5. Model Selector Dropdown Menu & Popover */
+/* 6. Model Selector Dropdown Menu & Popover */
 /* Overrides default w-[20rem] (320px) and w-64 (256px) so all models, tiers, and descriptions fit */
 div[style*="z-index: 9999"] .z-40.w-\\[20rem\\],
 div[style*="z-index: 9999"] .w-\\[20rem\\],
@@ -180,20 +200,95 @@ div[style*="z-index: 9999"] .line-clamp-1,
     padding-top: 0.375rem !important;
     padding-bottom: 0.375rem !important;
 }
+
+/* ==========================================================================
+   7. Circular Cutout Removal & Anti-Clipping Rules (Square Corners)
+   Ensure logos and model avatars have square/soft corners so edges are not cut
+   ========================================================================== */
+
+/* Universal square / soft-corner override for all logos and model avatars */
+img[alt="logo"],
+img[alt="favicon"],
+img[alt="model profile"],
+img[alt="modelfile profile"],
+img[alt="profile"],
+img[alt*="profile image"],
+img[src*="/models/model/profile/image"],
+img[src*="educore-rag-e.png"],
+img[src*="educore.png"],
+#logo,
+#logo-her,
+button[aria-label="Home"],
+button[aria-label="Home"] img,
+button[aria-label="Chat"],
+button[aria-label="Chat"] img {
+    border-radius: 0.375rem !important; /* Soft square corners */
+    object-fit: contain !important;      /* Preserve entire logo without clipping edges */
+}
+
+/* ==========================================================================
+   8. Model Selector Dropdown & Menu Logo Enhancement
+   Ensures model icons in dropdown rows are square, unclipped, and neatly proportioned
+   ========================================================================== */
+
+/* Target model icons in the model selector dropdown and command option rows */
+.selected-command-option-button img,
+.model-selector-child-menu img {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    min-width: 1.25rem !important;
+    min-height: 1.25rem !important;
+    max-width: 1.25rem !important;
+    max-height: 1.25rem !important;
+    border-radius: 0.25rem !important;
+    object-fit: contain !important;
+    flex-shrink: 0 !important;
+    background: transparent !important;
+}
+
+/* Ensure dropdown wrapper containers match the icon sizing */
+.selected-command-option-button .size-4,
+.selected-command-option-button .size-4\.5,
+.selected-command-option-button .size-3\.5,
+.selected-command-option-button [class*="size-4"],
+.selected-command-option-button [class*="size-3.5"],
+.model-selector-child-menu .size-4,
+.model-selector-child-menu .size-4\.5,
+.model-selector-child-menu [class*="size-4"] {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    min-width: 1.25rem !important;
+    min-height: 1.25rem !important;
+    border-radius: 0.25rem !important;
+    overflow: visible !important;
+}
 """
 
 
-def fit_image(image: Image.Image, canvas_size: tuple, padding_ratio: float = 0.9, bg_color=(0, 0, 0, 0)) -> Image.Image:
-    """Fit an image into a canvas_size square keeping aspect ratio, centered."""
+def fit_image(image: Image.Image, canvas_size: tuple, padding_ratio: float = 0.88, bg_color=(0, 0, 0, 0), ensure_circle_safe: bool = True) -> Image.Image:
+    """Fit an image into a canvas_size square keeping aspect ratio, centered and circle-safe."""
+    # 1. Crop to content bounding box for perfect centering
+    bbox = image.getbbox()
+    cropped = image.crop(bbox) if bbox else image
+
     canvas = Image.new("RGBA", canvas_size, bg_color)
     max_w = int(canvas_size[0] * padding_ratio)
     max_h = int(canvas_size[1] * padding_ratio)
 
-    scale = min(max_w / image.width, max_h / image.height)
-    new_w = max(1, int(image.width * scale))
-    new_h = max(1, int(image.height * scale))
+    scale = min(max_w / cropped.width, max_h / cropped.height)
+    new_w = max(1, int(cropped.width * scale))
+    new_h = max(1, int(cropped.height * scale))
 
-    resized = image.resize((new_w, new_h), Image.Resampling.LANCZOS)
+    if ensure_circle_safe:
+        # Check if the rectangular corners exceed the inscribed circle of radius R
+        radius = min(canvas_size[0], canvas_size[1]) / 2.0
+        corner_dist = ((new_w / 2.0) ** 2 + (new_h / 2.0) ** 2) ** 0.5
+        if corner_dist > radius * 0.96:  # 4% safe margin inside circle
+            circle_scale = (radius * 0.96) / corner_dist
+            new_w = max(1, int(new_w * circle_scale))
+            new_h = max(1, int(new_h * circle_scale))
+
+    resized = cropped.resize((new_w, new_h), Image.Resampling.LANCZOS)
     pos_x = (canvas_size[0] - new_w) // 2
     pos_y = (canvas_size[1] - new_h) // 2
 
@@ -235,21 +330,21 @@ def apply_branding():
     print("\n[2/5] Generating branded asset suite...")
     
     # A. Stylised RAG Platform Assets (Hero, Splash, PWA, Model Avatars)
-    splash_500 = fit_image(rag_logo, (500, 500), padding_ratio=0.92)
-    logo_500 = fit_image(rag_logo, (500, 500), padding_ratio=0.92)
-    manifest_512 = fit_image(rag_logo, (512, 512), padding_ratio=0.92)
-    manifest_192 = fit_image(rag_logo, (192, 192), padding_ratio=0.92)
+    splash_500 = fit_image(rag_logo, (500, 500), padding_ratio=0.88, ensure_circle_safe=True)
+    logo_500 = fit_image(rag_logo, (500, 500), padding_ratio=0.88, ensure_circle_safe=True)
+    manifest_512 = fit_image(rag_logo, (512, 512), padding_ratio=0.88, ensure_circle_safe=True)
+    manifest_192 = fit_image(rag_logo, (192, 192), padding_ratio=0.88, ensure_circle_safe=True)
 
     # B. Default Institutional Assets (Favicons, Touch Icons)
-    favicon_512 = fit_image(default_logo, (512, 512), padding_ratio=0.88)
-    favicon_96 = fit_image(default_logo, (96, 96), padding_ratio=0.88)
-    apple_touch_180 = fit_image(default_logo, (180, 180), padding_ratio=0.82, bg_color=(255, 255, 255, 255))
+    favicon_512 = fit_image(default_logo, (512, 512), padding_ratio=0.88, ensure_circle_safe=True)
+    favicon_96 = fit_image(default_logo, (96, 96), padding_ratio=0.88, ensure_circle_safe=True)
+    apple_touch_180 = fit_image(default_logo, (180, 180), padding_ratio=0.82, bg_color=(255, 255, 255, 255), ensure_circle_safe=True)
     
     # Multi-resolution ICO (16, 32, 48)
     ico_images = [
-        fit_image(default_logo, (16, 16), padding_ratio=0.9),
-        fit_image(default_logo, (32, 32), padding_ratio=0.9),
-        fit_image(default_logo, (48, 48), padding_ratio=0.9),
+        fit_image(default_logo, (16, 16), padding_ratio=0.9, ensure_circle_safe=True),
+        fit_image(default_logo, (32, 32), padding_ratio=0.9, ensure_circle_safe=True),
+        fit_image(default_logo, (48, 48), padding_ratio=0.9, ensure_circle_safe=True),
     ]
 
     svg_content = generate_svg(favicon_512)

@@ -30,75 +30,201 @@ AUDIT_LOG_PATH = os.path.join(BASE_DIR, "aims_rag_audit.jsonl")
 # ==============================================================================
 # 1. ENTERPRISE DATA LOADER & CHROMA RETRIEVAL
 # ==============================================================================
+import threading
 from langchain_core.documents import Document
 from langchain_chroma import Chroma
 from langchain_ollama import OllamaEmbeddings, ChatOllama
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+from framework_sync_service import FrameworkSyncService, FRAMEWORK_DIR
 
 _CHROMA_DB = None
+_CHROMA_LOCK = threading.RLock()
+_SYNC_SERVICE = FrameworkSyncService()
 
 CHROMA_DIR = os.path.join(BASE_DIR, "chroma_enterprise_store")
 
 def get_chroma_db() -> Chroma:
     global _CHROMA_DB
-    if _CHROMA_DB is not None:
+    with _CHROMA_LOCK:
+        if _CHROMA_DB is not None:
+            return _CHROMA_DB
+
+        if not os.path.exists(DATA_PATH):
+            raise FileNotFoundError(f"Corpus file not found: {DATA_PATH}")
+
+        with open(DATA_PATH, "r", encoding="utf-8") as f:
+            records = json.load(f)
+
+        embeddings = OllamaEmbeddings(model="nomic-embed-text", keep_alive=-1)
+
+        # If persistent store already exists and has records, load directly
+        if os.path.exists(CHROMA_DIR) and os.listdir(CHROMA_DIR):
+            try:
+                _CHROMA_DB = Chroma(
+                    persist_directory=CHROMA_DIR,
+                    embedding_function=embeddings,
+                    collection_name="educore_enterprise_governed_corpus"
+                )
+                if _CHROMA_DB._collection.count() >= len(records):
+                    return _CHROMA_DB
+            except Exception:
+                pass
+
+        documents = []
+        doc_ids = []
+        for r in records:
+            allowed = r.get("allowed_roles", [])
+            if isinstance(allowed, list):
+                allowed_str = ",".join(allowed)
+            else:
+                allowed_str = str(allowed)
+
+            doc = Document(
+                page_content=r["content"],
+                metadata={
+                    "id": r["id"],
+                    "title": r.get("title", "Untitled"),
+                    "campus": str(r.get("campus", "all")).lower(),
+                    "clearance": str(r.get("clearance", "public")).lower(),
+                    "category": str(r.get("category", "general")).lower(),
+                    "classification": r.get("classification", "INTERNAL"),
+                    "purview_label": r.get("purview_label", "Internal - Educational"),
+                    "allowed_roles": allowed_str,
+                    "source_file": r.get("source_file", "")
+                }
+            )
+            documents.append(doc)
+            doc_ids.append(r["id"])
+
+        _CHROMA_DB = Chroma.from_documents(
+            documents=documents,
+            embedding=embeddings,
+            ids=doc_ids,
+            persist_directory=CHROMA_DIR,
+            collection_name="educore_enterprise_governed_corpus"
+        )
         return _CHROMA_DB
 
-    if not os.path.exists(DATA_PATH):
-        raise FileNotFoundError(f"Corpus file not found: {DATA_PATH}")
+def sync_chroma_corpus(force: bool = False) -> Dict[str, Any]:
+    """
+    Incrementally translates updated or new .docx framework files into embeddings
+    and applies atomic upserts/deletions to the Chroma vector store.
+    """
+    global _CHROMA_DB
+    with _CHROMA_LOCK:
+        chroma = get_chroma_db()
+        delta = _SYNC_SERVICE.generate_incremental_update(force=force)
+        if not delta["changed"]:
+            return {
+                "status": "up_to_date",
+                "changed": False,
+                "updated_files": [],
+                "records_upserted": 0,
+                "ids_deleted": 0,
+                "total_collection_count": chroma._collection.count(),
+                "duration_ms": delta["duration_ms"]
+            }
 
-    with open(DATA_PATH, "r", encoding="utf-8") as f:
-        records = json.load(f)
+        # 1. Purge deleted or replaced chunks to prevent stale vectors
+        ids_to_purge = set(delta["ids_to_delete"]) | {r["id"] for r in delta["records_to_upsert"]}
+        if ids_to_purge:
+            try:
+                chroma.delete(ids=list(ids_to_purge))
+            except Exception as e:
+                print(f"[CorpusSync] Eviction notice: {e}")
 
-    embeddings = OllamaEmbeddings(model="nomic-embed-text", keep_alive=-1)
+        # 2. Add new/updated chunks into Chroma
+        if delta["records_to_upsert"]:
+            docs_to_add = []
+            doc_ids_to_add = []
+            for r in delta["records_to_upsert"]:
+                allowed = r.get("allowed_roles", [])
+                allowed_str = ",".join(allowed) if isinstance(allowed, list) else str(allowed)
+                doc = Document(
+                    page_content=r["content"],
+                    metadata={
+                        "id": r["id"],
+                        "title": r.get("title", "Untitled"),
+                        "campus": str(r.get("campus", "all")).lower(),
+                        "clearance": str(r.get("clearance", "public")).lower(),
+                        "category": str(r.get("category", "general")).lower(),
+                        "classification": r.get("classification", "INTERNAL"),
+                        "purview_label": r.get("purview_label", "Internal - Educational"),
+                        "allowed_roles": allowed_str,
+                        "source_file": r.get("source_file", "")
+                    }
+                )
+                docs_to_add.append(doc)
+                doc_ids_to_add.append(r["id"])
 
-    # If persistent store already exists and has records, load directly
-    if os.path.exists(CHROMA_DIR) and os.listdir(CHROMA_DIR):
+            chroma.add_documents(documents=docs_to_add, ids=doc_ids_to_add)
+
+        # 3. Log event into ISO 42001 AIMS Audit Ledger
+        log_entry = {
+            "event": "FRAMEWORK_DOCS_INCREMENTAL_SYNC",
+            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "updated_files": delta["updated_files"],
+            "deleted_files": delta.get("deleted_files", []),
+            "records_upserted": len(delta["records_to_upsert"]),
+            "ids_deleted": len(delta["ids_to_delete"]),
+            "total_collection_count": chroma._collection.count(),
+            "duration_ms": delta["duration_ms"],
+            "compliance": "ISO/IEC 42001:2023 Clause 8.2 & Annex A.8"
+        }
         try:
-            _CHROMA_DB = Chroma(
-                persist_directory=CHROMA_DIR,
-                embedding_function=embeddings,
-                collection_name="educore_enterprise_governed_corpus"
-            )
-            if _CHROMA_DB._collection.count() >= len(records):
-                return _CHROMA_DB
+            with open(AUDIT_LOG_PATH, "a", encoding="utf-8") as f:
+                f.write(json.dumps(log_entry, ensure_ascii=False) + "\n")
         except Exception:
             pass
 
-    documents = []
-    doc_ids = []
-    for r in records:
-        allowed = r.get("allowed_roles", [])
-        if isinstance(allowed, list):
-            allowed_str = ",".join(allowed)
-        else:
-            allowed_str = str(allowed)
+        return {
+            "status": "synced",
+            "changed": True,
+            "updated_files": delta["updated_files"],
+            "deleted_files": delta.get("deleted_files", []),
+            "records_upserted": len(delta["records_to_upsert"]),
+            "ids_deleted": len(delta["ids_to_delete"]),
+            "total_collection_count": chroma._collection.count(),
+            "duration_ms": delta["duration_ms"]
+        }
 
-        doc = Document(
-            page_content=r["content"],
-            metadata={
-                "id": r["id"],
-                "title": r.get("title", "Untitled"),
-                "campus": str(r.get("campus", "all")).lower(),
-                "clearance": str(r.get("clearance", "public")).lower(),
-                "category": str(r.get("category", "general")).lower(),
-                "classification": r.get("classification", "INTERNAL"),
-                "purview_label": r.get("purview_label", "Internal - Educational"),
-                "allowed_roles": allowed_str
-            }
+_WATCHER_THREAD = None
+_WATCHER_STOP_EVENT = threading.Event()
+
+def _framework_watcher_worker(interval_seconds: int = 10):
+    print(f"[Watcher] Background framework document watcher active (polling every {interval_seconds}s)")
+    while not _WATCHER_STOP_EVENT.is_set():
+        _WATCHER_STOP_EVENT.wait(interval_seconds)
+        if _WATCHER_STOP_EVENT.is_set():
+            break
+        try:
+            diff = _SYNC_SERVICE.detect_changes()
+            if diff["changed"]:
+                changed_list = diff["added_files"] + diff["modified_files"] + diff["deleted_files"]
+                print(f"[Watcher] Change detected in framework documents: {changed_list}. Syncing...")
+                res = sync_chroma_corpus()
+                print(f"[Watcher] Incremental sync complete: {res['records_upserted']} upserted in {res['duration_ms']}ms (Total vectors: {res['total_collection_count']})")
+        except Exception as err:
+            print(f"[Watcher] Error during change check: {err}")
+
+def start_framework_watcher(interval_seconds: int = 10):
+    global _WATCHER_THREAD
+    if _WATCHER_THREAD is None or not _WATCHER_THREAD.is_alive():
+        _WATCHER_STOP_EVENT.clear()
+        _WATCHER_THREAD = threading.Thread(
+            target=_framework_watcher_worker,
+            args=(interval_seconds,),
+            daemon=True,
+            name="EducoreFrameworkWatcher"
         )
-        documents.append(doc)
-        doc_ids.append(r["id"])
+        _WATCHER_THREAD.start()
 
-    _CHROMA_DB = Chroma.from_documents(
-        documents=documents,
-        embedding=embeddings,
-        ids=doc_ids,
-        persist_directory=CHROMA_DIR,
-        collection_name="educore_enterprise_governed_corpus"
-    )
-    return _CHROMA_DB
+def stop_framework_watcher():
+    global _WATCHER_THREAD
+    if _WATCHER_THREAD and _WATCHER_THREAD.is_alive():
+        _WATCHER_STOP_EVENT.set()
+        _WATCHER_THREAD.join(timeout=2)
 
 # ==============================================================================
 # 2. EDUCORE FRAMEWORK GUARDRAILS ENGINE (POLICY v1.0 & HANDBOOK v1.0)
@@ -461,15 +587,16 @@ def execute_rag(
         }
 
     # 2. Retrieve Documents from Governed Chroma Store using effective query
-    chroma = get_chroma_db()
-    docs_with_scores = chroma.similarity_search_with_score(effective_query, k=10)
+    with _CHROMA_LOCK:
+        chroma = get_chroma_db()
+        docs_with_scores = chroma.similarity_search_with_score(effective_query, k=10)
 
-    # If no results, try contextual reformulation using previous conversation turn
-    if not docs_with_scores and chat_history:
-        prev_user_queries = [extract_clean_user_prompt(t.get("content", "")) for t in chat_history if t.get("role") == "user"]
-        if prev_user_queries:
-            combined_q = f"{prev_user_queries[-1]} {effective_query}"
-            docs_with_scores = chroma.similarity_search_with_score(combined_q, k=10)
+        # If no results, try contextual reformulation using previous conversation turn
+        if not docs_with_scores and chat_history:
+            prev_user_queries = [extract_clean_user_prompt(t.get("content", "")) for t in chat_history if t.get("role") == "user"]
+            if prev_user_queries:
+                combined_q = f"{prev_user_queries[-1]} {effective_query}"
+                docs_with_scores = chroma.similarity_search_with_score(combined_q, k=10)
 
     # 3. Apply Multi-Tenant Zero-Trust RBAC & Purview Filtering
     authorized_docs = EducoreFrameworkEngine.filter_authorized_documents(docs_with_scores, user_session)[:k]
@@ -567,15 +694,16 @@ def execute_rag_stream(
         return
 
     # 2. Retrieve Documents from Governed Chroma Store using effective query
-    chroma = get_chroma_db()
-    docs_with_scores = chroma.similarity_search_with_score(effective_query, k=10)
+    with _CHROMA_LOCK:
+        chroma = get_chroma_db()
+        docs_with_scores = chroma.similarity_search_with_score(effective_query, k=10)
 
-    # If no results, try contextual reformulation using previous conversation turn
-    if not docs_with_scores and chat_history:
-        prev_user_queries = [extract_clean_user_prompt(t.get("content", "")) for t in chat_history if t.get("role") == "user"]
-        if prev_user_queries:
-            combined_q = f"{prev_user_queries[-1]} {effective_query}"
-            docs_with_scores = chroma.similarity_search_with_score(combined_q, k=10)
+        # If no results, try contextual reformulation using previous conversation turn
+        if not docs_with_scores and chat_history:
+            prev_user_queries = [extract_clean_user_prompt(t.get("content", "")) for t in chat_history if t.get("role") == "user"]
+            if prev_user_queries:
+                combined_q = f"{prev_user_queries[-1]} {effective_query}"
+                docs_with_scores = chroma.similarity_search_with_score(combined_q, k=10)
 
     # 3. Apply Multi-Tenant Zero-Trust RBAC & Purview Filtering
     authorized_docs = EducoreFrameworkEngine.filter_authorized_documents(docs_with_scores, user_session)[:k]
@@ -1072,6 +1200,23 @@ class EducoreOpenAIHandler(BaseHTTPRequestHandler):
             }
             self.wfile.write(json.dumps(health_info, indent=2).encode("utf-8"))
 
+        elif path == "/api/framework/status":
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_cors_headers()
+            self.end_headers()
+            state = _SYNC_SERVICE.load_state()
+            chroma = get_chroma_db()
+            resp = {
+                "status": "online",
+                "framework_dir": FRAMEWORK_DIR,
+                "last_sync_time": state.get("last_sync_time", 0),
+                "total_state_chunks": state.get("total_chunks", 0),
+                "total_vector_count": chroma._collection.count(),
+                "tracked_files": state.get("files", {})
+            }
+            self.wfile.write(json.dumps(resp, indent=2, ensure_ascii=False).encode("utf-8"))
+
         elif path == "/api/audit":
             # Return last 20 audit transactions
             self.send_response(200)
@@ -1106,6 +1251,16 @@ class EducoreOpenAIHandler(BaseHTTPRequestHandler):
             payload = json.loads(post_body)
         except Exception:
             payload = {}
+
+        if path in ["/api/framework/sync", "/framework/sync"]:
+            force_flag = payload.get("force", False)
+            sync_result = sync_chroma_corpus(force=force_flag)
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_cors_headers()
+            self.end_headers()
+            self.wfile.write(json.dumps(sync_result, indent=2, ensure_ascii=False).encode("utf-8"))
+            return
 
         if path in ["/v1/chat/completions", "/chat/completions", "/api/chat"]:
             model_id = payload.get("model", "educore-enterprise-all")
@@ -1262,9 +1417,11 @@ class EducoreOpenAIHandler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps({"error": "Endpoint not found"}).encode("utf-8"))
 
 def run_server(port: int = 8000):
-    print("[1/2] Initializing ChromaDB Governed Vector Store...")
+    print("[1/3] Initializing ChromaDB Governed Vector Store...")
     get_chroma_db()
-    print("[2/2] Binding HTTP listener...")
+    print("[2/3] Starting Framework Document Watcher...")
+    start_framework_watcher(interval_seconds=10)
+    print("[3/3] Binding HTTP listener...")
     server_address = ("0.0.0.0", port)
     httpd = ThreadingHTTPServer(server_address, EducoreOpenAIHandler)
     print("=" * 70)
@@ -1273,11 +1430,14 @@ def run_server(port: int = 8000):
     print(f"Serving OpenAI & Open WebUI API at: http://localhost:{port}/v1")
     print(f"Health Check: http://localhost:{port}/health")
     print(f"Audit Ledger: http://localhost:{port}/api/audit")
+    print(f"Framework Sync API: http://localhost:{port}/api/framework/sync")
+    print(f"Framework Status: http://localhost:{port}/api/framework/status")
     print("=" * 70)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        print("\nStopping Educore Governance Server.")
+        print("\nStopping Educore Governance Server...")
+        stop_framework_watcher()
         httpd.server_close()
 
 if __name__ == "__main__":
