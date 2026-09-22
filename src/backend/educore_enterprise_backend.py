@@ -1329,6 +1329,65 @@ def _build_user_record(u_id: str, u_name: str, u_email: str, u_role: str, groups
         "scope": scope
     }
 
+OPEN_WEBUI_MODELS = [
+    {
+        "id": "educore-enterprise-all",
+        "object": "model",
+        "created": int(time.time()),
+        "owned_by": "educore-services",
+        "name": "Educore Enterprise RAG (Universal / Adaptive)",
+        "description": "Adaptive enterprise model governed by ISO 42001 and Purview container controls."
+    },
+    {
+        "id": "educore-socratic-student",
+        "object": "model",
+        "created": int(time.time()),
+        "owned_by": "educore-services",
+        "name": "Educore Socratic Tutor (Tier C - Student)",
+        "description": "Student Socratic tutor enforcing diagnostic hints, cognitive bypass prevention, and Adelaide declarations."
+    },
+    {
+        "id": "educore-faculty-academic",
+        "object": "model",
+        "created": int(time.time()),
+        "owned_by": "educore-services",
+        "name": "Educore Faculty Academic Copilot (Tier B - Educator)",
+        "description": "Lesson design, rubric creation, and Cambridge syllabi alignment with Edu-03 PII de-id."
+    },
+    {
+        "id": "educore-pastoral-counselor",
+        "object": "model",
+        "created": int(time.time()),
+        "owned_by": "educore-services",
+        "name": "Educore Pastoral Safeguarding Copilot (Tier A - Counselor)",
+        "description": "Confidential student welfare and pastoral care review with egress NRC/phone shield."
+    },
+    {
+        "id": "educore-finance-audit",
+        "object": "model",
+        "created": int(time.time()),
+        "owned_by": "educore-services",
+        "name": "Educore Finance & Bursar Copilot (Tier A - Finance)",
+        "description": "M365 Copilot Finance with Fin-01 Dual-Key manual calculation audits and FQM subsidy masking."
+    },
+    {
+        "id": "educore-it-devops",
+        "object": "model",
+        "created": int(time.time()),
+        "owned_by": "educore-services",
+        "name": "Educore IT & DevOps Copilot (Tier A - Restricted IT)",
+        "description": "GitHub Copilot Enterprise with IT-01 pre-commit secret scanning and SAST validation."
+    },
+    {
+        "id": "educore-admin-governance",
+        "object": "model",
+        "created": int(time.time()),
+        "owned_by": "educore-services",
+        "name": "Educore Executive Governance & ISO 42001 Copilot (Tier A - Admin)",
+        "description": "Executive administration, cross-campus multi-tenant oversight, and 6-Step AIIA management."
+    }
+]
+
 def find_webui_db_path() -> Optional[str]:
     """Locates the live Open WebUI SQLite database across direct, installed, or temp environments."""
     candidate_paths = [
