@@ -1,0 +1,88 @@
+{
+  "files": {
+    "00_HUB_MASTER/educore-ai-framework-implementation-handbook-v2-0.docx": {
+      "hash": "a6ae2ad650af72dade129bce290eada4aa462e4b18dcd4ceb9f33a1dba45b5ad",
+      "mtime": 1789970283.0,
+      "chunk_ids": [
+        "EDU-FW-EDUCORE-AI-FRAMEWORK-S01-001",
+        "EDU-FW-EDUCORE-AI-FRAMEWORK-S01-002",
+        "EDU-FW-EDUCORE-AI-FRAMEWORK-S01-003"
+      ],
+      "chunk_count": 3,
+      "last_synced": 1790065208.713115
+    },
+    "01_SPOKES_POLICIES/educore-doc-01-organizational-governance-policy-v3-0.docx": {
+      "hash": "c35e7d816a57e4babd51e76dd11b3b1564b6c5bf8dfb6e4d82f903518ea55158",
+      "mtime": 1789996052.0,
+      "chunk_ids": [
+        "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-001",
+        "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-002",
+        "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-003",
+        "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-004",
+        "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-005",
+        "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-006",
+        "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-007",
+        "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-008",
+        "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-009",
+        "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-010",
+        "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-011",
+        "EDU-FW-EDUCORE-DOC-01-ORGAN-S02-001",
+        "EDU-FW-EDUCORE-DOC-01-ORGAN-S03-001"
+      ],
+      "chunk_count": 13,
+      "last_synced": 1790065208.8810575
+    },
+    "01_SPOKES_POLICIES/educore-doc-02-implementation-action-plan-v3-0.docx": {
+      "hash": "fed9659a2b993245979ad34aa282d76935b42444e68f148578a9bf4c7024bcc9",
+      "mtime": 1789996055.0,
+      "chunk_ids": [
+        "EDU-FW-EDUCORE-DOC-02-IMPLE-S01-001",
+        "EDU-FW-EDUCORE-DOC-02-IMPLE-S01-002",
+        "EDU-FW-EDUCORE-DOC-02-IMPLE-S01-003",
+        "EDU-FW-EDUCORE-DOC-02-IMPLE-S02-001",
+        "EDU-FW-EDUCORE-DOC-02-IMPLE-S03-001"
+      ],
+      "chunk_count": 5,
+      "last_synced": 1790065208.927267
+    },
+    "02_SPOKES_AUDIT/educore-doc-03-pre-rollout-discovery-survey-v3-0.docx": {
+      "hash": "8d2ed1a1fdc565c7975e73c96fe617cd0f9b6a7984ee79c945eb28e772d43369",
+      "mtime": 1789996058.0,
+      "chunk_ids": [
+        "EDU-FW-EDUCORE-DOC-03-PRE-R-S01-001",
+        "EDU-FW-EDUCORE-DOC-03-PRE-R-S01-002",
+        "EDU-FW-EDUCORE-DOC-03-PRE-R-S01-003",
+        "EDU-FW-EDUCORE-DOC-03-PRE-R-S02-001",
+        "EDU-FW-EDUCORE-DOC-03-PRE-R-S03-001"
+      ],
+      "chunk_count": 5,
+      "last_synced": 1790065209.068285
+    },
+    "03_SPOKES_AUDIT_TECH/educore-cognitive-bypass-audit-checklist-v2-0.docx": {
+      "hash": "8a22f80b224b84e5d68169ff80349ed069cb86ed77155e9e441bc95eca1e3634",
+      "mtime": 1789970279.0,
+      "chunk_ids": [
+        "EDU-FW-EDUCORE-COGNITIVE-BY-S01-001",
+        "EDU-FW-EDUCORE-COGNITIVE-BY-S01-002"
+      ],
+      "chunk_count": 2,
+      "last_synced": 1790065209.1248312
+    },
+    "educore-doc-00-master-launch-directory-v3-0.docx": {
+      "hash": "5eaf3e863812b22ce82f5bb5b42d444d9cbf947636983af31d0f88addd9352a5",
+      "mtime": 1789996043.0,
+      "chunk_ids": [
+        "EDU-FW-EDUCORE-DOC-00-MASTE-S01-001",
+        "EDU-FW-EDUCORE-DOC-00-MASTE-S01-002",
+        "EDU-FW-EDUCORE-DOC-00-MASTE-S02-001",
+        "EDU-FW-EDUCORE-DOC-00-MASTE-S03-001",
+        "EDU-FW-EDUCORE-DOC-00-MASTE-S04-001",
+        "EDU-FW-EDUCORE-DOC-00-MASTE-S04-002"
+      ],
+      "chunk_count": 6,
+      "last_synced": 1790065256.6091743
+    }
+  },
+  "last_sync_time": 1790069211.2695131,
+  "total_chunks": 34
+}

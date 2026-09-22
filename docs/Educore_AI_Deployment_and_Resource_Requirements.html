@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Educore Enterprise AI Framework - Deployment Architectures & Resource Sizing</title>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 18mm 16mm 20mm 16mm;
+    @bottom-right {
+      content: "Page " counter(page) " of " counter(pages);
+      font-size: 8pt;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #718096;
+    }
+    @bottom-left {
+      content: "Educore Services Limited | ISO/IEC 42001:2023 AIMS & Zambian DPA No. 3";
+      font-size: 8pt;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #718096;
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #2D3748;
+    background-color: #FFFFFF;
+    line-height: 1.5;
+    font-size: 10pt;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Header & Cover Banner */
+  .header-banner {
+    border-bottom: 3px solid #F1592A;
+    padding-bottom: 14px;
+    margin-bottom: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .title-area h1 {
+    font-size: 18pt;
+    font-weight: 800;
+    color: #1A202C;
+    margin: 0 0 6px 0;
+    line-height: 1.2;
+  }
+
+  .title-area h2 {
+    font-size: 11pt;
+    font-weight: 600;
+    color: #F1592A;
+    margin: 0 0 8px 0;
+  }
+
+  .metadata-badge-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  .meta-badge {
+    background-color: #EDF2F7;
+    border: 1px solid #CBD5E0;
+    color: #4A5568;
+    font-size: 7.5pt;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .meta-badge.primary {
+    background-color: #FFF5F2;
+    border-color: #F1592A;
+    color: #C0390E;
+  }
+
+  /* Headings */
+  h2.section-title {
+    font-size: 13pt;
+    font-weight: 700;
+    color: #1A202C;
+    border-bottom: 1.5px solid #E2E8F0;
+    padding-bottom: 5px;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    page-break-after: avoid;
+  }
+
+  h3.subsection-title {
+    font-size: 11pt;
+    font-weight: 700;
+    color: #2D3748;
+    margin-top: 16px;
+    margin-bottom: 8px;
+    page-break-after: avoid;
+  }
+
+  h4.topic-title {
+    font-size: 9.5pt;
+    font-weight: 700;
+    color: #4A5568;
+    margin-top: 12px;
+    margin-bottom: 6px;
+    page-break-after: avoid;
+  }
+
+  p {
+    margin: 0 0 8px 0;
+    text-align: justify;
+  }
+
+  ul, ol {
+    margin: 0 0 10px 0;
+    padding-left: 20px;
+  }
+
+  li {
+    margin-bottom: 4px;
+  }
+
+  /* Callout Boxes */
+  .callout {
+    border-left: 4px solid #CBD5E0;
+    background-color: #F7FAFC;
+    padding: 10px 14px;
+    margin: 12px 0;
+    border-radius: 0 5px 5px 0;
+    page-break-inside: avoid;
+  }
+
+  .callout.important {
+    border-left-color: #E53E3E;
+    background-color: #FFF5F5;
+  }
+
+  .callout.tip {
+    border-left-color: #38A169;
+    background-color: #F0FFF4;
+  }
+
+  .callout.info {
+    border-left-color: #3182CE;
+    background-color: #EBF8FF;
+  }
+
+  .callout.educore {
+    border-left-color: #F1592A;
+    background-color: #FFF5F2;
+  }
+
+  .callout-title {
+    font-weight: 700;
+    font-size: 8.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .callout.important .callout-title { color: #C53030; }
+  .callout.tip .callout-title { color: #276749; }
+  .callout.info .callout-title { color: #2B6CB0; }
+  .callout.educore .callout-title { color: #C0390E; }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 16px 0;
+    font-size: 8.5pt;
+    page-break-inside: avoid;
+  }
+
+  th, td {
+    padding: 7px 10px;
+    text-align: left;
+    border-bottom: 1px solid #E2E8F0;
+    vertical-align: top;
+  }
+
+  th {
+    background-color: #F7FAFC;
+    color: #4A5568;
+    font-weight: 700;
+    border-top: 1px solid #CBD5E0;
+    border-bottom: 2px solid #CBD5E0;
+    text-transform: uppercase;
+    font-size: 7.5pt;
+    letter-spacing: 0.5px;
+  }
+
+  tr:nth-child(even) td {
+    background-color: #FAFAFA;
+  }
+
+  td strong {
+    color: #1A202C;
+  }
+
+  /* Mathematical / Stat Cards */
+  .metric-grid {
+    display: flex;
+    gap: 12px;
+    margin: 12px 0 16px 0;
+    page-break-inside: avoid;
+  }
+
+  .metric-card {
+    flex: 1;
+    background: #F7FAFC;
+    border: 1px solid #E2E8F0;
+    border-top: 3px solid #F1592A;
+    border-radius: 4px;
+    padding: 10px 12px;
+    text-align: center;
+  }
+
+  .metric-number {
+    font-size: 16pt;
+    font-weight: 800;
+    color: #1A202C;
+    margin-bottom: 2px;
+  }
+
+  .metric-label {
+    font-size: 7.5pt;
+    font-weight: 600;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Visual Architecture Flowboxes */
+  .arch-diagram {
+    background: #F8FAFC;
+    border: 1px solid #CBD5E0;
+    border-radius: 6px;
+    padding: 14px;
+    margin: 14px 0;
+    page-break-inside: avoid;
+  }
+
+  .flow-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .flow-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .flow-box {
+    flex: 1;
+    background: #FFFFFF;
+    border: 1.5px solid #CBD5E0;
+    border-radius: 4px;
+    padding: 8px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+
+  .flow-box.highlight {
+    border-color: #F1592A;
+    background: #FFF5F2;
+  }
+
+  .flow-box.accent {
+    border-color: #3182CE;
+    background: #EBF8FF;
+  }
+
+  .flow-box-title {
+    font-size: 8pt;
+    font-weight: 700;
+    color: #1A202C;
+    margin-bottom: 2px;
+  }
+
+  .flow-box-desc {
+    font-size: 7pt;
+    color: #718096;
+  }
+
+  .flow-arrow {
+    font-size: 11pt;
+    color: #A0AEC0;
+    font-weight: bold;
+  }
+
+  .page-break {
+    page-break-before: always;
+  }
+
+  code {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 8pt;
+    background-color: #EDF2F7;
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: #802A0D;
+  }
+</style>
+</head>
+<body>
+
+<!-- Header Banner -->
+<div class="header-banner">
+  <div class="title-area">
+    <h1>Educore Enterprise AI Framework</h1>
+    <h2>System Deployment Architectures & Resource Sizing Analysis</h2>
+    <p style="margin: 0; color: #4A5568; font-size: 8.5pt;">
+      Strategic Engineering & Sizing Guide for 5,000 Registered Users & up to 2,500 Concurrent Sessions
+    </p>
+    <div class="metadata-badge-bar">
+      <span class="meta-badge primary">ISO/IEC 42001:2023 AIMS</span>
+      <span class="meta-badge">Zambian DPA No. 3 of 2021</span>
+      <span class="meta-badge">EU AI Act (Art. 5)</span>
+      <span class="meta-badge">EDU-AIMS-HBK-v1.0 & POL-v1.0</span>
+      <span class="meta-badge">Multi-Campus RBAC</span>
+    </div>
+  </div>
+</div>
+
+<!-- Key Performance Metrics Grid -->
+<div class="metric-grid">
+  <div class="metric-card">
+    <div class="metric-number">5,000</div>
+    <div class="metric-label">Total User Directory</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-number">2,500</div>
+    <div class="metric-label">Peak Concurrent Sessions</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-number">100 QPS</div>
+    <div class="metric-label">Sustained Query Load</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-number">400–800</div>
+    <div class="metric-label">Simultaneous LLM Streams</div>
+  </div>
+</div>
+
+<!-- Section 1 -->
+<h2 class="section-title">1. Grounding in the Actual Framework (EDUCORE_AI_FRAMEWORK)</h2>
+<p>
+  This technical analysis directly references the official governance corpus maintained in <code>EDUCORE_AI_FRAMEWORK</code>, consisting of the Master Governing Handbook (<code>EDU-AIMS-HBK-v1.0/v2.0</code>), the Central Organizational Policy (<code>EDU-AIMS-POL-v1.0/v3.0</code>), the 180-Day Implementation Action Plan (<code>EDU-AIMS-PLN</code>), and the Academic Cognitive Bypass Audit Checklist (<code>EDU-AIMS-CHK</code>).
+</p>
+
+<h3 class="subsection-title">1.1 Dual-Track Organizational Charter</h3>
+<p>
+  The Educore AI Management System (AIMS) governs two strictly differentiated institutional tracks:
+</p>
+<ul>
+  <li><strong>Track 1: Enterprise Business Operations</strong> &mdash; Governs Finance, Procurement, IT/DevOps, Human Resources, Legal, Facilities, and Central Administration. Focuses on data loss prevention, financial verification, secret scanning, and Zambian statutory data residency.</li>
+  <li><strong>Track 2: Academic & Pedagogical Transformation</strong> &mdash; Governs Teaching Faculty, Curriculum Heads, Teacher Academies, and Students across Sentinel Kabitaka (SKAB S, SKAB P), Sentinel Kalumbila (SKAL), Trident College (TCL), Trident Preps (TPS, TPK, TPL), and Frontier Nkisu. Focuses on Cambridge 0580 syllabus alignment, human-in-the-loop review, Adelaide-model intellectual ownership declarations, and Viva Voce oral defenses.</li>
+</ul>
+
+<h3 class="subsection-title">1.2 Microsoft Purview Data Containers & Clearances</h3>
+<p>
+  The framework enforces strict Zero-Trust boundaries mapped across four sensitivity containers:
+</p>
+<table>
+  <thead>
+    <tr>
+      <th>Purview Sensitivity Label</th>
+      <th>Clearance Tier</th>
+      <th>Permitted Roles & Personas</th>
+      <th>Data Scope & Content Boundaries</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Public / Educational</strong></td>
+      <td><code>Tier C</code> (Public)</td>
+      <td>Students, External Parents, Public</td>
+      <td>Published syllabi, textbook indices, public announcements, and Socratic diagnostic tutors.</td>
+    </tr>
+    <tr>
+      <td><strong>Internal - Educational</strong></td>
+      <td><code>Tier B</code> (Staff)</td>
+      <td>Teaching Faculty, Curriculum Leads</td>
+      <td>Curriculum maps, lesson designs, assessment rubrics, and internal staff notices.</td>
+    </tr>
+    <tr>
+      <td><strong>Confidential - Admin / Finance</strong></td>
+      <td><code>Tier A</code> (Confidential)</td>
+      <td>Bursars, HR, Pastoral, Legal, Execs</td>
+      <td>Financial variance ledgers, student fee arrears, payroll, bursaries, and safeguarding records.</td>
+    </tr>
+    <tr>
+      <td><strong>Restricted - IT / Systems</strong></td>
+      <td><code>Tier A</code> (Restricted IT)</td>
+      <td>IT Engineers, Systems Administrators</td>
+      <td>Network topologies, server configs, API keys, database connection strings, and security repos.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 class="subsection-title">1.3 8 Departmental Non-Software Guardrails</h3>
+<p>
+  The backend enforces procedural stop-conditions that software firewalls cannot intercept:
+</p>
+<ul>
+  <li><code>Fin-01 (Dual-Key Manual Audit)</code>: Independent human calculation audit notice appended to all AI-generated financial amounts.</li>
+  <li><code>Fin-02 (Zambian DPIA Compliance)</code>: Regex redaction of Zambian National Registration Card (NRC) numbers (<code>\b\d{6}/\d{2}/\d{1}\b</code>) and FQM mining partner subsidies.</li>
+  <li><code>IT-01 (Pre-Commit Secret Scanning)</code>: Automated detection and blocking of AWS credentials, RSA private keys, and database connection URIs in user prompts.</li>
+  <li><code>HR-01 (Algorithmic Autonomy)</code>: Absolute prohibition on automated candidate shortlisting, rejection, or appraisal scoring.</li>
+  <li><code>Edu-01 & Edu-02 (Curriculum Verification)</code>: Prohibition of automated summative exam grading; mandatory alignment against Cambridge 0580 syllabi.</li>
+  <li><code>Stu-01 (Cognitive Bypass Prevention)</code>: Diagnostic hints only for students; homework answer dumping is strictly blocked.</li>
+  <li><code>Fac-01 & Fac-02 (Physical Safety)</code>: Ban on campus gate facial recognition/emotion tracking; instant human emergency dispatch for hazards.</li>
+  <li><code>Leg-01 & Leg-02 (Legal Accountability)</code>: Statutory verification against Zambian law books; non-delegable executive accountability.</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- Section 2 -->
+<h2 class="section-title">2. Prototype Limitations vs. Production Concurrency</h2>
+<p>
+  The current repository implementation in <code>src/backend/educore_enterprise_backend.py</code> serves as an operational proof-of-concept. To support <strong>2,500 concurrent active users</strong> and <strong>5,000 registered accounts</strong>, several core bottlenecks must be transitioned:
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Subsystem</th>
+      <th>Current Prototype State</th>
+      <th>Failure Mode under 2,500 Concurrent Users</th>
+      <th>Target Production Replacement</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Web Listener</strong></td>
+      <td>Python <code>ThreadingHTTPServer</code></td>
+      <td>Thread-per-connection model exhausts OS threads and file descriptors beyond ~300 concurrent SSE streams.</td>
+      <td>Asynchronous ASGI (FastAPI + Uvicorn workers) behind Traefik/Nginx with HTTP/2 multiplexing.</td>
+    </tr>
+    <tr>
+      <td><strong>Vector Retrieval</strong></td>
+      <td>ChromaDB with global <code>threading.RLock()</code></td>
+      <td>All similarity searches are serialized; 100 QPS creates massive thread contention and latency spikes.</td>
+      <td>Distributed vector cluster (Qdrant or PostgreSQL <code>pgvector</code>) with in-memory HNSW index.</td>
+    </tr>
+    <tr>
+      <td><strong>LLM Inference</strong></td>
+      <td>Local CPU Ollama (<code>llama3.2:1b</code>, 6 threads)</td>
+      <td>CPU processes 1 generation stream sequentially (~20 tok/s). 2,500 users experience multi-hour queues.</td>
+      <td>Continuous-batching GPU cluster (vLLM / TensorRT-LLM) or Azure OpenAI Provisioned Throughput.</td>
+    </tr>
+    <tr>
+      <td><strong>State Database</strong></td>
+      <td>Single SQLite file (<code>webui.db</code>)</td>
+      <td>SQLite locks on concurrent user writes, causing <code>database is locked</code> crashes.</td>
+      <td>High-availability PostgreSQL cluster with PgBouncer connection pooling.</td>
+    </tr>
+    <tr>
+      <td><strong>Audit Ledger</strong></td>
+      <td>Append-only flat file (<code>aims_rag_audit.jsonl</code>)</td>
+      <td>File lock contention and disk I/O bottlenecks at 100+ audit writes per second.</td>
+      <td>Clustered PostgreSQL or ClickHouse with immutable write-ahead logging (ISO 42001 Clause 7.5).</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Section 3 -->
+<h2 class="section-title">3. Three Production Deployment Paths</h2>
+
+<div class="arch-diagram">
+  <div class="flow-row">
+    <div class="flow-box highlight">
+      <div class="flow-box-title">Path A: Enterprise Hybrid Cloud</div>
+      <div class="flow-box-desc">Azure OpenAI + Azure AI Search + Entra ID</div>
+    </div>
+    <div class="flow-box accent">
+      <div class="flow-box-title">Path B: Sovereign Private Cluster</div>
+      <div class="flow-box-desc">On-Premises K8s + vLLM GPU Nodes</div>
+    </div>
+    <div class="flow-box">
+      <div class="flow-box-title">Path C: Campus Hub-and-Spoke</div>
+      <div class="flow-box-desc">Central Admin Hub + Edge Campus Appliances</div>
+    </div>
+  </div>
+</div>
+
+<h3 class="subsection-title">Path A: Enterprise Hybrid Cloud (Framework Reference Architecture)</h3>
+<p>
+  Implements the Microsoft Cloud topology codified in the Master Implementation Handbook (Section 2):
+</p>
+<ul>
+  <li><strong>Identity & Access</strong>: Microsoft Entra ID (Azure AD) SSO integration. User groups (Students, Faculty, Bursary, IT, Admin) map directly to Educore clearance tiers.</li>
+  <li><strong>Frontend</strong>: Open WebUI deployed on <strong>Azure Container Apps</strong> with autoscaling (4 to 10 replicas) behind Azure Front Door.</li>
+  <li><strong>Governance Layer</strong>: Stateless FastAPI middleware executing the 8 guardrails, Zambian NRC masking, and Purview container gating.</li>
+  <li><strong>Retrieval & Purview</strong>: <strong>Azure AI Search</strong> (Standard S2 tier) indexing SharePoint Online libraries, natively enforcing Purview sensitivity labels.</li>
+  <li><strong>Inference</strong>: <strong>Azure OpenAI Service</strong> deploying <code>gpt-4o-mini</code> (for universal RAG & Socratic tutoring) and <code>gpt-4o</code> (for executive/finance tasks) under Microsoft Enterprise Data Protection (zero customer data retention).</li>
+</ul>
+
+<h3 class="subsection-title">Path B: Sovereign On-Premises Private Cloud Cluster</h3>
+<p>
+  Industrializes the current Python/Chroma/Open WebUI codebase into a sovereign Kubernetes cluster hosted in an Educore data center or Zambian tier-3 colocation facility:
+</p>
+<ul>
+  <li><strong>Orchestration & Ingress</strong>: Kubernetes (k3s / RKE2) with Traefik Ingress, SSL termination, and rate limiting.</li>
+  <li><strong>Frontend & Gateway</strong>: 6x Open WebUI replicas + 8x Educore Governance Gateway worker pods with Redis session caching.</li>
+  <li><strong>Vector Database</strong>: 3-node <strong>Qdrant Distributed</strong> or <strong>PostgreSQL with pgvector</strong> cluster with HNSW in-memory indexing.</li>
+  <li><strong>Inference Serving</strong>: 2x 8-GPU inference nodes running <strong>vLLM</strong> with PagedAttention and continuous batching over Llama 3.1 8B Instruct (FP8).</li>
+  <li><strong>Audit Store</strong>: Clustered PostgreSQL or ClickHouse with immutable write-ahead logging.</li>
+</ul>
+
+<h3 class="subsection-title">Path C: Distributed Multi-Campus Hub-and-Spoke Architecture</h3>
+<p>
+  Reflects Educore's geographical spread across Zambia (Sentinel Kabitaka, Sentinel Kalumbila, Trident College, Trident Preps, Frontier Nkisu):
+</p>
+<ul>
+  <li><strong>Central Hub (Central Administration)</strong>: Houses master corpus synchronization (<code>FrameworkSyncService</code>), global ISO 42001 audit ledger, Entra ID master directory, and high-tier executive models.</li>
+  <li><strong>Campus Spokes (Local Edge Servers)</strong>: Edge appliances (e.g. 2U servers with dual GPUs) deployed at each campus site. Serves local Open WebUI, local Socratic student tutoring, and local cached vectors with zero WAN latency.</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- Section 4 -->
+<h2 class="section-title">4. Resource Requirements: 5,000 Users / 2,500 Concurrent</h2>
+
+<h3 class="subsection-title">4.1 Concurrency & Workload Mathematical Modeling</h3>
+<p>
+  In an educational and enterprise environment, 2,500 concurrent active users with open browser sessions exhibit the following load dynamics:
+</p>
+<ul>
+  <li><strong>Human Query Cadence</strong>: Users type, read, and reflect, querying every <strong>25 seconds</strong> on average.</li>
+  <li><strong>Sustained Request Rate</strong>: <code>2,500 users / 25 seconds = 100 Queries per Second (QPS)</code>.</li>
+  <li><strong>Peak Burst Factor (2.0x)</strong>: <code>200 QPS</code> during class start times or synchronized exam prep.</li>
+  <li><strong>Simultaneous Active LLM Streams (Little's Law, L = &lambda;W)</strong>:
+    With an average generation duration of 4 seconds (~150–200 tokens):
+    <br><code>L(sustained) = 100 QPS * 4s = 400 simultaneous generating streams</code>
+    <br><code>L(peak) = 200 QPS * 4s = 800 simultaneous generating streams</code>
+  </li>
+</ul>
+
+<h3 class="subsection-title">4.2 Hardware & Infrastructure Specifications</h3>
+
+<h4 class="topic-title">On-Premises Private Cloud Cluster (Path B)</h4>
+<table>
+  <thead>
+    <tr>
+      <th>Architecture Layer</th>
+      <th>Node / Instance Count</th>
+      <th>Compute & Hardware Specifications</th>
+      <th>Operational Role & Capacity</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Ingress & Load Balancer</strong></td>
+      <td>2 Nodes (Active/Passive HA)</td>
+      <td>8 vCPU, 16 GB RAM, 10 GbE NIC</td>
+      <td>SSL termination, rate limiting, sticky SSE streaming connections.</td>
+    </tr>
+    <tr>
+      <td><strong>Open WebUI Frontend</strong></td>
+      <td>6 Container Replicas</td>
+      <td>4 vCPU, 8 GB RAM per replica</td>
+      <td>Handles web sessions, model dropdowns, and chat history rendering.</td>
+    </tr>
+    <tr>
+      <td><strong>Educore Governance Gateway</strong></td>
+      <td>8 Worker Pods (FastAPI)</td>
+      <td>4 vCPU, 8 GB RAM per pod</td>
+      <td>Stateless enforcement of 8 Guardrails, NRC masking, Purview RBAC gating.</td>
+    </tr>
+    <tr>
+      <td><strong>Vector Search (Qdrant)</strong></td>
+      <td>3 Nodes (Clustered)</td>
+      <td>8 vCPU, 32 GB RAM, NVMe SSD</td>
+      <td>HNSW in-memory dense vector search; sub-10ms retrieval at 100 QPS.</td>
+    </tr>
+    <tr>
+      <td><strong>Embedding Inference</strong></td>
+      <td>2 Dedicated GPUs (or 32 vCPU)</td>
+      <td>2x NVIDIA L4 (24 GB)</td>
+      <td>Real-time query embedding generation via nomic-embed-text at 100 QPS.</td>
+    </tr>
+    <tr>
+      <td><strong>LLM Inference (vLLM Cluster)</strong></td>
+      <td>2x 8-GPU Servers (16 GPUs Total)</td>
+      <td>16x NVIDIA L40S (48 GB) or 8x A100 (80 GB)<br>2x Dual Xeon/EPYC, 512 GB RAM</td>
+      <td>Continuous batching for 400–800 concurrent streams; Llama 3.1 8B FP8; 768 GB total VRAM for model weights and 2,048-token KV cache.</td>
+    </tr>
+    <tr>
+      <td><strong>Session & State (PostgreSQL/Redis)</strong></td>
+      <td>2 Nodes (Primary + Replica)</td>
+      <td>PostgreSQL: 8 vCPU, 32 GB RAM, NVMe<br>Redis: 16 GB RAM Cluster</td>
+      <td>Redis handles user session tokens and SSE streaming state; PostgreSQL stores user groups, ACLs, and chat histories.</td>
+    </tr>
+    <tr>
+      <td><strong>ISO 42001 Audit Ledger</strong></td>
+      <td>2 Nodes (ClickHouse)</td>
+      <td>8 vCPU, 32 GB RAM, 1 TB NVMe</td>
+      <td>100–200 audit writes/sec with real-time compliance querying.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 class="topic-title">Enterprise Hybrid Cloud (Path A - Azure)</h4>
+<table>
+  <thead>
+    <tr>
+      <th>Azure Service</th>
+      <th>Target SKU / Provisioning</th>
+      <th>Role in Architecture</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Azure Front Door</strong></td>
+      <td>Standard Tier</td>
+      <td>Global WAF, SSL offloading, DDoS protection, edge caching.</td>
+    </tr>
+    <tr>
+      <td><strong>Azure Container Apps (WebUI)</strong></td>
+      <td>4 to 10 Replicas (2 vCPU, 4 GB RAM)</td>
+      <td>Autoscaling Open WebUI instances with Entra ID SSO integration.</td>
+    </tr>
+    <tr>
+      <td><strong>Azure Container Apps (Gateway)</strong></td>
+      <td>4 to 12 Replicas (2 vCPU, 4 GB RAM)</td>
+      <td>Stateless Educore Governance Middleware with async connection pooling.</td>
+    </tr>
+    <tr>
+      <td><strong>Azure AI Search</strong></td>
+      <td>Standard S2 (3 Replicas / 2 Partitions)</td>
+      <td>Purview-labeled RAG retrieval handling 100+ QPS with semantic ranker.</td>
+    </tr>
+    <tr>
+      <td><strong>Azure OpenAI Service</strong></td>
+      <td>200–300 Provisioned Throughput Units (PTUs)</td>
+      <td>Guaranteed throughput for gpt-4o-mini; ~35,000 tokens/second at peak.</td>
+    </tr>
+    <tr>
+      <td><strong>Azure Database for PostgreSQL</strong></td>
+      <td>Flexible Server (8 vCPU, 32 GB RAM)</td>
+      <td>Shared database for Open WebUI user directory and ISO 42001 audit logs.</td>
+    </tr>
+    <tr>
+      <td><strong>Azure Cache for Redis</strong></td>
+      <td>Premium P1 (6 GB)</td>
+      <td>Session state caching, rate limiting, and prompt caching.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 class="subsection-title">4.3 Network & Bandwidth Sizing</h3>
+<ul>
+  <li><strong>Streaming Egress Bandwidth</strong>: 400 active generation streams &times; 20 tokens/sec &times; 4 bytes/token &approx; 32 KB/sec raw payload. Including HTTP/2 SSE headers, TCP overhead, and WebUI polling: <strong>~15 to 30 Mbps sustained egress</strong>.</li>
+  <li><strong>Campus LAN</strong>: 1 Gbps switched backbone between access points and local gateways.</li>
+  <li><strong>Campus WAN Uplink (Path A)</strong>: Minimum <strong>100 Mbps symmetrical dedicated fiber</strong> per campus with QoS prioritizing AI API endpoints.</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- Section 5 -->
+<h2 class="section-title">5. Implementation Roadmap (180-Day Action Plan)</h2>
+<p>
+  Aligned with the 5-phase sequence established in <code>EDU-AIMS-PLN</code>:
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Phase & Timeline</th>
+      <th>Milestones & Deliverables</th>
+      <th>ISO 42001 & Statutory Governance Alignment</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Phase 1 (Days 1–30)<br>Governance Scaffolding</strong></td>
+      <td>Refactor <code>educore_enterprise_backend.py</code> to async ASGI (FastAPI). Integrate Entra ID SSO. Deploy CASB/DNS discovery and run the 10-Question Discovery Survey across departments.</td>
+      <td>ISO 42001 Clause 4.3; Asset Inventory; Zambian NRC regex masking verification.</td>
+    </tr>
+    <tr>
+      <td><strong>Phase 2 (Days 31–60)<br>Storage & Scale-Out</strong></td>
+      <td>Decouple local ChromaDB; migrate to distributed Qdrant or Azure AI Search. Ingest Microsoft Purview labels across SharePoint. Migrate SQLite to PostgreSQL.</td>
+      <td>ISO 42001 Clause 6.1 (Risk Treatment); Statutory Zambian DPIA under Act No. 3 of 2021.</td>
+    </tr>
+    <tr>
+      <td><strong>Phase 3 (Days 61–90)<br>Inference Deployment & Pilots</strong></td>
+      <td>Commission vLLM GPU cluster or Azure OpenAI PTUs. Launch Tier A (Admin/Finance) and Tier B (Faculty) pilots. Run Michigan-style AI literacy workshops.</td>
+      <td>ISO 42001 Clause 7.2 (Competence); Fin-01 dual-key validation; Edu-02 syllabus check.</td>
+    </tr>
+    <tr>
+      <td><strong>Phase 4 (Days 91–120)<br>Student Socratic Rollout</strong></td>
+      <td>Enable <code>educore-socratic-student</code> for Tier C learners across Sentinel, Trident, and Frontier. Enforce Adelaide-model ownership pledges and Viva Voce oral spot-checks.</td>
+      <td>Guardrail Stu-01; 4-Vector Cognitive Bypass Audits (EDU-AIMS-CHK); Scale to 2,500 concurrency.</td>
+    </tr>
+    <tr>
+      <td><strong>Phase 5 (Days 121–180)<br>AIMS Audit & Certification</strong></td>
+      <td>Execute comprehensive ISO 42001 internal audit across Clauses 4–10. Convene CEO Top-Management Review. Undergo Stage 1/2 certification audits with accredited body.</td>
+      <td>ISO/IEC 42001:2023 Official Enterprise Certification; Ongoing Purview Event Logging.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout educore">
+  <div class="callout-title">Immediate Technical Next Steps</div>
+  <p style="margin: 0; font-size: 8pt;">
+    1. <strong>Asynchronous ASGI Migration</strong>: Replace <code>http.server.ThreadingHTTPServer</code> in <code>src/backend/educore_enterprise_backend.py</code> with FastAPI/Uvicorn to unlock non-blocking I/O for 2,500 SSE connections.<br>
+    2. <strong>Vector Store Externalization</strong>: Eliminate <code>_CHROMA_LOCK</code> by pointing retrieval calls to an external Qdrant or Azure AI Search cluster.<br>
+    3. <strong>Database Migration</strong>: Direct Open WebUI and backend user/session data from local SQLite to PostgreSQL with connection pooling.
+  </p>
+</div>
+
+</body>
+</html>

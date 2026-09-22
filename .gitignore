@@ -181,10 +181,12 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
-production_setup/aims_rag_audit.jsonl
-production_setup/aims_rag_audit.jsonl
-framework_control/Scripts/python.exe
-chroma_enterprise_store/4d389388-73af-4603-8e1f-f2a404082be4/data_level0.bin
-chroma_enterprise_store/4d389388-73af-4603-8e1f-f2a404082be4/length.bin
-chroma_enterprise_store/chroma.sqlite3
+# Open WebUI & Runtime secrets
+.webui_secret_key
+data/logs/*.jsonl
 aims_rag_audit.jsonl
+data_provenance_audit.jsonl
+
+# Chroma persistent vectorstore
+chroma_enterprise_store/
+

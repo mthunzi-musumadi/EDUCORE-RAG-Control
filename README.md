@@ -30,37 +30,92 @@ The project is designed to support AI-assisted operations in an educational and 
 ## Repository structure
 
 ```text
-.
-├── app.py                              # Core retrieval + LLM demo pipeline
-├── educore_enterprise_backend.py       # Enterprise backend logic
-├── student_socratic_rag.py             # Student-focused RAG flow
-├── build_framework_corpus.py           # Corpus-building utility
-├── data.txt                            # Source dataset for demo retrieval
-├── requirements.txt                    # Python dependencies
-├── requirements_openwebui.txt          # Open WebUI-related dependencies
-├── OPEN_WEBUI_SETUP.md                 # Setup and operations guide
-├── Modelfile.i3-10100t                # Local model run config
-├── aims_rag_audit.jsonl               # Audit ledger example
-├── framework_summary.json              # Framework summary metadata
-├── guardrail_stress_test.txt           # Guardrail testing notes
-├── setup_openwebui_rbac.py            # RBAC provisioning setup script
-├── start_educore_enterprise.ps1        # Windows launch script
-├── start_educore_enterprise.bat        # Windows batch launcher
-├── EDUCORE_AI_FRAMEWORK/               # Governance/documentation corpus
-├── production_setup/                   # Production-related design, eval, and server files
+EDUCORE-RAG-Control/
+├── src/                                # Modular Application Code
+│   ├── backend/                        # Enterprise API & sync engine
+│   │   ├── educore_enterprise_backend.py  # Governed OpenAI API backend (Port 8000)
+│   │   ├── framework_sync_service.py   # Real-time SHA-256 document watcher & Chroma upsert
+│   │   └── tps_counter.py              # Performance telemetry & TPS tracker
+│   ├── governance/                     # Open WebUI security & RBAC integration
+│   │   ├── educore_framework_filter.py # Open WebUI governance filter & clearance valves
+│   │   ├── setup_openwebui_rbac.py     # Open WebUI DB user/group/model ACL provisioning
+│   │   └── apply_educore_logos.py      # Institutional branding & logo provisioning
+│   ├── ingestion/                      # Document ingestion & de-identification
+│   │   └── pdf_deid_pipeline.py        # Presidio + Docling multimodal PII redaction
+│   └── evaluation/                     # ISO 42001 & NIST AI RMF evaluation engine
+│       └── rag_evaluator.py            # Faithfulness, relevance, context precision/recall
+│
+├── data/                               # Data Stores & Working Corpora
+│   ├── corpus/                         # Active structured JSON corpora & sync state
+│   │   ├── enterprise_data.json
+│   │   └── corpus_sync_state.json
+│   ├── eval/                           # NIST AI RMF benchmark datasets & results
+│   │   ├── evaluation_dataset.json
+│   │   └── rag_eval_results.json
+│   └── logs/                           # ISO 42001 compliance audit trails
+│       ├── aims_rag_audit.jsonl
+│       └── data_provenance_audit.jsonl
+│
+├── assets/                             # Institutional visual assets
+│   ├── educore.png                     # Primary logo
+│   └── educore-rag-e.png               # RAG platform emblem
+│
+├── docs/                               # Documentation & hardware configs
+│   ├── OPEN_WEBUI_SETUP.md             # Complete Open WebUI deployment guide
+│   └── Modelfile.i3-10100t             # Hardware-optimized Ollama Modelfile
+│
+├── studio/                             # Standalone RAG Studio Prototype
+│   ├── web_server.py                   # Standalone HTTP server & API
+│   ├── production_rag.py               # Prototype access-controlled retriever
+│   ├── dashboard.html                  # Standalone single-page web UI
+│   └── PRODUCT.md                      # Product context & persona boundaries
+│
+├── EDUCORE_AI_FRAMEWORK/               # Governed Institutional Policy Documents (.docx)
+│   ├── educore-doc-00-master-launch-directory-v3-0.docx
+│   ├── 00_HUB_MASTER/
+│   │   └── educore-ai-framework-implementation-handbook-v2-0.docx
+│   ├── 01_SPOKES_POLICIES/
+│   │   ├── educore-doc-01-organizational-governance-policy-v3-0.docx
+│   │   └── educore-doc-02-implementation-action-plan-v3-0.docx
+│   ├── 02_SPOKES_AUDIT/
+│   │   └── educore-doc-03-pre-rollout-discovery-survey-v3-0.docx
+│   └── 03_SPOKES_AUDIT_TECH/
+│       └── educore-cognitive-bypass-audit-checklist-v2-0.docx
+│
+├── tests/                              # Unified Automated Test Suite
+│   ├── conftest.py                     # Environment & sys.path configuration
+│   ├── unit/                           # Telemetry & multi-turn memory unit tests
+│   │   ├── test_tps_telemetry.py
+│   │   └── test_multiturn_conciseness.py
+│   ├── integration/                    # Backend API, sync, and RBAC tests
+│   │   ├── test_educore_enterprise_backend.py
+│   │   ├── test_http_endpoints.py
+│   │   ├── test_framework_live_sync.py
+│   │   └── test_openwebui_rbac_integration.py
+│   ├── evaluation/                     # RAG pipeline & studio server tests
+│   │   ├── test_rag_pipeline.py
+│   │   ├── test_rag_evaluation.py
+│   │   └── test_web_server.py
+│   └── fixtures/                       # Test documents
+│       └── sample_document.pdf
+│
+├── scripts/                            # Operational & Launch Scripts
+│   ├── start_educore_enterprise.ps1    # 1-Click PowerShell launcher
+│   └── start_educore_enterprise.bat    # 1-Click Windows batch launcher
+│
 ├── chroma_enterprise_store/            # Chroma persistence directory
-├── test_*.py                           # Various safeguard and integration tests
-└── README.md                          # Project overview and usage guide
+├── requirements.txt                    # Python dependencies
+└── README.md                           # Project overview and usage guide
 ```
 
 ## Tech stack
 
-- Python
+- Python 3.10+
 - LangChain
 - ChromaDB
 - Ollama
-- FastAPI / web server components
-- Open WebUI integration
+- Open WebUI
+- Microsoft Presidio & Docling
 - pytest-based evaluation
 
 ## Quick start
@@ -83,57 +138,48 @@ pip install -r requirements.txt
 
 This project uses local model inference through Ollama. Before running the app, ensure Ollama is installed and running locally.
 
-Typical model examples:
-
 ```bash
-ollama pull llama3.2
+ollama pull llama3.2:1b
 ollama pull nomic-embed-text
 ```
 
-### 4. Run the core demo pipeline
+### 4. Running the enterprise setup
 
-```bash
-python app.py
-```
-
-This starts the local RAG/email-generation workflow using the included dataset and embedded model stack.
-
-## Running the enterprise setup
-
-For the full institutional deployment workflow, follow the setup and operational guidance in `OPEN_WEBUI_SETUP.md`.
+For the full institutional deployment workflow, follow the setup and operational guidance in `docs/OPEN_WEBUI_SETUP.md`.
 
 On Windows, you can launch the packaged enterprise flow with:
 
 ```powershell
-./start_educore_enterprise.ps1
+.\scripts\start_educore_enterprise.ps1
 ```
 
 or
 
 ```cmd
-start_educore_enterprise.bat
+scripts\start_educore_enterprise.bat
+```
+
+### 5. Running the backend directly
+
+```bash
+python src/backend/educore_enterprise_backend.py 8000
 ```
 
 ## Real-Time Document Synchronization & Vector Upsert
 
-The enterprise backend automatically detects changes to `.docx` framework documents, generates embeddings incrementally, and applies zero-downtime atomic upserts to ChromaDB.
+The enterprise backend automatically detects changes to `.docx` framework documents in `EDUCORE_AI_FRAMEWORK/`, generates embeddings incrementally, and applies zero-downtime atomic upserts to ChromaDB.
 
 ### Watch Directories Configuration
 By default, the backend monitors `EDUCORE_AI_FRAMEWORK/` recursively. You can configure custom or external watch directories (e.g. OneDrive / SharePoint sync folders, network drives) using:
 
 1. **CLI Flag (`--watch-dir` or `-w`)**:
    ```bash
-   python educore_enterprise_backend.py --watch-dir "C:\Users\admin\SharePoint\Framework Docs"
+   python src/backend/educore_enterprise_backend.py --watch-dir "C:\Users\admin\SharePoint\Framework Docs"
    ```
-   You can specify `--watch-dir` multiple times to watch multiple directories simultaneously.
 
 2. **Environment Variable (`EDUCORE_FRAMEWORK_DIR`)**:
    ```bash
-   # Single directory
    export EDUCORE_FRAMEWORK_DIR="/path/to/framework/docs"
-
-   # Multiple directories (semicolon or comma separated)
-   export EDUCORE_FRAMEWORK_DIR="C:\Docs1;D:\Docs2"
    ```
 
 3. **On-Demand HTTP Sync Trigger**:
@@ -146,31 +192,18 @@ By default, the backend monitors `EDUCORE_AI_FRAMEWORK/` recursively. You can co
    curl http://localhost:8000/api/framework/status
    ```
 
-## Production and governance assets
-
-The repository also includes a production-focused subfolder under `production_setup/` with:
-- `DESIGN.md` for UI and experience design
-- `PRODUCT.md` for product context and persona model
-- evaluation and testing scripts
-- web server and RAG pipeline examples
-- sample audit and evaluation datasets
-
-These files provide a more complete picture of how the RAG system is meant to be used in a governed enterprise environment.
-
 ## Testing
 
-The repository includes automated test coverage for backend, security, and integration scenarios. Common commands include:
+The repository includes automated test coverage organized into unit, integration, and evaluation suites:
 
 ```bash
+# Run all tests
 pytest
-```
 
-You can also run targeted checks such as:
-
-```bash
-pytest test_educore_enterprise_backend.py
-pytest test_rag_security.py
-pytest test_http_endpoints.py
+# Run targeted test suites
+pytest tests/unit
+pytest tests/integration
+pytest tests/evaluation
 ```
 
 ## Notes
