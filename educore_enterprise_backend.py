@@ -23,7 +23,7 @@ if sys.platform == "win32":
         pass
 
 # Paths
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.environ.get("BASE_DIR") or os.environ.get("EDUCORE_BASE_DIR") or os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(BASE_DIR, "production_setup", "enterprise_data.json")
 AUDIT_LOG_PATH = os.path.join(BASE_DIR, "aims_rag_audit.jsonl")
 
@@ -41,6 +41,11 @@ from framework_sync_service import FrameworkSyncService, FRAMEWORK_DIR
 _CHROMA_DB = None
 _CHROMA_LOCK = threading.RLock()
 _SYNC_SERVICE = FrameworkSyncService()
+
+def configure_framework_watch_dirs(custom_dirs: Optional[Any] = None):
+    """Configures the watch directories for the framework sync service."""
+    global _SYNC_SERVICE
+    _SYNC_SERVICE = FrameworkSyncService(framework_dir=custom_dirs)
 
 CHROMA_DIR = os.path.join(BASE_DIR, "chroma_enterprise_store")
 
@@ -66,10 +71,16 @@ def get_chroma_db() -> Chroma:
                     embedding_function=embeddings,
                     collection_name="educore_enterprise_governed_corpus"
                 )
-                if _CHROMA_DB._collection.count() >= len(records):
+                count = _CHROMA_DB._collection.count()
+                if count >= len(records):
+                    print(f"[Embedding] Loaded existing Chroma store with {count} dense vectors from {CHROMA_DIR}")
                     return _CHROMA_DB
             except Exception:
                 pass
+
+        print(f"[Embedding] Initializing Chroma vector store with {len(records)} records...")
+        print(f"[Embedding] Generating embeddings using model '{embeddings.model}'...")
+        t_embed_start = time.time()
 
         documents = []
         doc_ids = []
@@ -104,6 +115,7 @@ def get_chroma_db() -> Chroma:
             persist_directory=CHROMA_DIR,
             collection_name="educore_enterprise_governed_corpus"
         )
+        print(f"[Embedding] Initial corpus embedding complete: {_CHROMA_DB._collection.count()} vectors stored in {round((time.time() - t_embed_start) * 1000, 1)}ms.")
         return _CHROMA_DB
 
 def sync_chroma_corpus(force: bool = False) -> Dict[str, Any]:
@@ -130,12 +142,25 @@ def sync_chroma_corpus(force: bool = False) -> Dict[str, Any]:
         ids_to_purge = set(delta["ids_to_delete"]) | {r["id"] for r in delta["records_to_upsert"]}
         if ids_to_purge:
             try:
+                print(f"[Embedding] Evicting {len(ids_to_purge)} stale/superseded chunk vectors from Chroma...")
                 chroma.delete(ids=list(ids_to_purge))
             except Exception as e:
-                print(f"[CorpusSync] Eviction notice: {e}")
+                print(f"[Embedding] Eviction notice: {e}")
 
         # 2. Add new/updated chunks into Chroma
         if delta["records_to_upsert"]:
+            by_file = {}
+            for r in delta["records_to_upsert"]:
+                src = r.get("source_file", "unknown")
+                by_file.setdefault(src, []).append(r)
+
+            embeddings = OllamaEmbeddings(model="nomic-embed-text", keep_alive=-1)
+            print(f"[Embedding] Translating {len(delta['records_to_upsert'])} chunks across {len(by_file)} file(s) into dense vectors via '{embeddings.model}'...")
+            for src, file_records in by_file.items():
+                purview_tags = sorted({str(r.get("purview_label")) for r in file_records if r.get("purview_label")})
+                print(f"  -> [{src}] {len(file_records)} chunk(s) | Purview: {', '.join(purview_tags)}")
+
+            t_upsert_start = time.time()
             docs_to_add = []
             doc_ids_to_add = []
             for r in delta["records_to_upsert"]:
@@ -159,6 +184,8 @@ def sync_chroma_corpus(force: bool = False) -> Dict[str, Any]:
                 doc_ids_to_add.append(r["id"])
 
             chroma.add_documents(documents=docs_to_add, ids=doc_ids_to_add)
+            upsert_ms = round((time.time() - t_upsert_start) * 1000, 1)
+            print(f"[Embedding] Upserted {len(docs_to_add)} vectors into Chroma collection 'educore_enterprise_governed_corpus' in {upsert_ms}ms.")
 
         # 3. Log event into ISO 42001 AIMS Audit Ledger
         log_entry = {
@@ -960,7 +987,10 @@ def find_webui_db_path() -> Optional[str]:
         os.path.join(BASE_DIR, "data", "webui.db"),
         os.path.join(cwd, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
         os.path.join(cwd, "data", "webui.db"),
-        os.path.join(r"c:\Projects\EDUCORE-RAG-Control", ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
+        os.path.join(sys.prefix, "Lib", "site-packages", "open_webui", "data", "webui.db"),
+        os.path.join(sys.prefix, "data", "webui.db"),
+        os.path.expanduser("~/.open-webui/data/webui.db"),
+        os.path.expanduser("~/.open-webui/webui.db"),
     ])
     for p in candidate_paths:
         if p and os.path.exists(p):
@@ -1209,7 +1239,8 @@ class EducoreOpenAIHandler(BaseHTTPRequestHandler):
             chroma = get_chroma_db()
             resp = {
                 "status": "online",
-                "framework_dir": FRAMEWORK_DIR,
+                "framework_dirs": _SYNC_SERVICE.watch_dirs,
+                "framework_dir": _SYNC_SERVICE.framework_dir,
                 "last_sync_time": state.get("last_sync_time", 0),
                 "total_state_chunks": state.get("total_chunks", 0),
                 "total_vector_count": chroma._collection.count(),
@@ -1416,11 +1447,13 @@ class EducoreOpenAIHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(json.dumps({"error": "Endpoint not found"}).encode("utf-8"))
 
-def run_server(port: int = 8000):
+def run_server(port: int = 8000, watch_dirs: Optional[List[str]] = None, sync_interval: int = 10):
+    if watch_dirs:
+        configure_framework_watch_dirs(watch_dirs)
     print("[1/3] Initializing ChromaDB Governed Vector Store...")
     get_chroma_db()
     print("[2/3] Starting Framework Document Watcher...")
-    start_framework_watcher(interval_seconds=10)
+    start_framework_watcher(interval_seconds=sync_interval)
     print("[3/3] Binding HTTP listener...")
     server_address = ("0.0.0.0", port)
     httpd = ThreadingHTTPServer(server_address, EducoreOpenAIHandler)
@@ -1432,6 +1465,9 @@ def run_server(port: int = 8000):
     print(f"Audit Ledger: http://localhost:{port}/api/audit")
     print(f"Framework Sync API: http://localhost:{port}/api/framework/sync")
     print(f"Framework Status: http://localhost:{port}/api/framework/status")
+    print(f"Watched Directory/Directories:")
+    for d in _SYNC_SERVICE.watch_dirs:
+        print(f"  - {d}")
     print("=" * 70)
     try:
         httpd.serve_forever()
@@ -1441,10 +1477,13 @@ def run_server(port: int = 8000):
         httpd.server_close()
 
 if __name__ == "__main__":
-    port_arg = 8000
-    if len(sys.argv) > 1:
-        try:
-            port_arg = int(sys.argv[1])
-        except ValueError:
-            pass
-    run_server(port_arg)
+    import argparse
+    parser = argparse.ArgumentParser(description="Educore Enterprise RAG Governance Server")
+    parser.add_argument("port", nargs="?", type=int, default=8000, help="Port to bind the server to (default: 8000)")
+    parser.add_argument("--port", "-p", dest="port_opt", type=int, default=None, help="Port to bind the server to")
+    parser.add_argument("--watch-dir", "-w", action="append", help="Directory to watch for .docx files (can specify multiple times)")
+    parser.add_argument("--sync-interval", type=int, default=10, help="Background watcher polling interval in seconds (default: 10)")
+    args = parser.parse_args()
+
+    port_final = args.port_opt if args.port_opt is not None else args.port
+    run_server(port=port_final, watch_dirs=args.watch_dir, sync_interval=args.sync_interval)

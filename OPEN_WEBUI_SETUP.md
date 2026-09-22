@@ -227,6 +227,17 @@ To regenerate and re-apply all branding assets and CSS overrides to Open WebUI a
 ```powershell
 .\.openwebui_env\Scripts\python.exe apply_educore_logos.py
 ```
-This generates all resolutions, updates both static directories (`open_webui/static` and `open_webui/frontend/static`), injects the dark-mode color preservation and model selector anti-truncation rules into `custom.css`, and refreshes model avatars in `webui.db`.
+This generates all resolutions, updates all detected static directories (`open_webui/static` and `open_webui/frontend/static`), injects the dark-mode color preservation and model selector anti-truncation rules into `custom.css`, and refreshes model avatars in `webui.db`.
+
+#### Multi-Machine Dynamic `BASE_DIR` Resolution
+`apply_educore_logos.py` dynamically discovers the project root and logo paths across different machines without requiring hardcoded paths. The resolution priority is:
+1. **CLI Flag**: `--base-dir <path>` or `-b <path>` (e.g. `python apply_educore_logos.py --base-dir D:\EDUCORE-RAG-Control`)
+2. **Environment Variables**: `$env:BASE_DIR` or `$env:EDUCORE_BASE_DIR`
+3. **Script Directory**: Automatically detected relative to `apply_educore_logos.py`
+4. **Current Working Directory**: Automatically detected from shell execution path
+5. **Upward Traversal**: Automatically scans parent directories for `educore.png` and `educore-rag-e.png`
+
+Target Open WebUI static directories and `webui.db` are also dynamically discovered via `open_webui` package imports, `sys.prefix`, and candidate virtual environments.
+
 
 

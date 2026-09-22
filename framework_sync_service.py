@@ -8,13 +8,41 @@ import re
 import json
 import hashlib
 import time
-from typing import Dict, Any, List, Tuple, Optional
+from typing import Dict, Any, List, Tuple, Optional, Union
 import docx
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-FRAMEWORK_DIR = os.path.join(BASE_DIR, "EDUCORE_AI_FRAMEWORK")
+FRAMEWORK_DIR = os.environ.get(
+    "EDUCORE_FRAMEWORK_DIR",
+    os.path.join(BASE_DIR, "EDUCORE_AI_FRAMEWORK")
+)
 DATA_PATH = os.path.join(BASE_DIR, "production_setup", "enterprise_data.json")
 STATE_PATH = os.path.join(BASE_DIR, "production_setup", "corpus_sync_state.json")
+
+def resolve_watch_dirs(custom_dirs: Optional[Union[str, List[str]]] = None) -> List[str]:
+    """
+    Resolves watch directories from parameter, EDUCORE_FRAMEWORK_DIR env var,
+    or the default project EDUCORE_AI_FRAMEWORK directory.
+    Supports semicolon (;) or comma (,) separated paths in env vars or strings.
+    """
+    if custom_dirs:
+        if isinstance(custom_dirs, str):
+            raw_list = [p.strip() for p in re.split(r'[;,]', custom_dirs) if p.strip()]
+        else:
+            raw_list = [str(p).strip() for p in custom_dirs if str(p).strip()]
+    else:
+        env_val = os.environ.get("EDUCORE_FRAMEWORK_DIR", "").strip()
+        if env_val:
+            raw_list = [p.strip() for p in re.split(r'[;,]', env_val) if p.strip()]
+        else:
+            raw_list = [os.path.join(BASE_DIR, "EDUCORE_AI_FRAMEWORK")]
+
+    resolved = []
+    for p in raw_list:
+        abs_p = os.path.abspath(os.path.expanduser(p))
+        if abs_p not in resolved:
+            resolved.append(abs_p)
+    return resolved
 
 # Default metadata mappings based on framework folder structure
 FOLDER_METADATA_MAP = {
@@ -194,17 +222,18 @@ def chunk_section(
 
 class FrameworkSyncService:
     """
-    Monitors EDUCORE_AI_FRAMEWORK for .docx modifications, computes SHA-256 diffs,
+    Monitors configured directory/directories for .docx modifications, computes SHA-256 diffs,
     and produces incremental records for the vector store.
     """
 
     def __init__(
         self,
-        framework_dir: str = FRAMEWORK_DIR,
+        framework_dir: Optional[Union[str, List[str]]] = None,
         state_file: str = STATE_PATH,
         data_file: str = DATA_PATH
     ):
-        self.framework_dir = framework_dir
+        self.watch_dirs = resolve_watch_dirs(framework_dir)
+        self.framework_dir = self.watch_dirs[0] if self.watch_dirs else os.path.join(BASE_DIR, "EDUCORE_AI_FRAMEWORK")
         self.state_file = state_file
         self.data_file = data_file
         self._ensure_paths()
@@ -232,41 +261,48 @@ class FrameworkSyncService:
 
     def scan_framework_files(self) -> Dict[str, Dict[str, Any]]:
         """
-        Discovers all .docx files in EDUCORE_AI_FRAMEWORK,
+        Discovers all .docx files across all configured watch directories,
         ignoring Word lock/temp files (starting with ~$ or .).
-        Returns a map of relative_path -> {full_path, hash, mtime, folder}.
+        Returns a map of relative_path -> {full_path, hash, mtime, folder, filename, watch_dir}.
         """
         results = {}
-        if not os.path.exists(self.framework_dir):
-            return results
+        multiple_dirs = len(self.watch_dirs) > 1
 
-        for root, _, files in os.walk(self.framework_dir):
-            for fname in sorted(files):
-                if not fname.lower().endswith(".docx"):
-                    continue
-                if fname.startswith("~$") or fname.startswith("."):
-                    continue  # Ignore MS Word temporary locks
+        for w_dir in self.watch_dirs:
+            if not os.path.exists(w_dir):
+                continue
 
-                full_path = os.path.join(root, fname)
-                rel_path = os.path.relpath(full_path, self.framework_dir).replace("\\", "/")
-                
-                # Determine containing folder
-                parts = rel_path.split("/")
-                folder = parts[0] if len(parts) > 1 else "ROOT"
+            dir_prefix = os.path.basename(w_dir.rstrip("\\/")) if multiple_dirs else ""
 
-                try:
-                    file_hash = compute_file_sha256(full_path)
-                    mtime = os.path.getmtime(full_path)
-                    results[rel_path] = {
-                        "full_path": full_path,
-                        "rel_path": rel_path,
-                        "hash": file_hash,
-                        "mtime": mtime,
-                        "folder": folder,
-                        "filename": fname
-                    }
-                except Exception as err:
-                    print(f"[SyncService] Warning reading {rel_path}: {err}")
+            for root, _, files in os.walk(w_dir):
+                for fname in sorted(files):
+                    if not fname.lower().endswith(".docx"):
+                        continue
+                    if fname.startswith("~$") or fname.startswith("."):
+                        continue  # Ignore MS Word temporary locks
+
+                    full_path = os.path.join(root, fname)
+                    sub_rel = os.path.relpath(full_path, w_dir).replace("\\", "/")
+                    rel_path = f"{dir_prefix}/{sub_rel}".lstrip("/") if dir_prefix else sub_rel
+                    
+                    # Determine containing folder
+                    parts = sub_rel.split("/")
+                    folder = parts[0] if len(parts) > 1 else "ROOT"
+
+                    try:
+                        file_hash = compute_file_sha256(full_path)
+                        mtime = os.path.getmtime(full_path)
+                        results[rel_path] = {
+                            "full_path": full_path,
+                            "rel_path": rel_path,
+                            "hash": file_hash,
+                            "mtime": mtime,
+                            "folder": folder,
+                            "filename": fname,
+                            "watch_dir": w_dir
+                        }
+                    except Exception as err:
+                        print(f"[SyncService] Warning reading {rel_path}: {err}")
 
         return results
 
@@ -408,6 +444,7 @@ class FrameworkSyncService:
         for rel_path in updated_files:
             c_info = current_files[rel_path]
             file_records = self.parse_file_to_records(c_info)
+            print(f"[Parser] Extracted {len(file_records)} chunk(s) from '{rel_path}' (SHA-256: {c_info['hash'][:10]}...)")
             records_to_upsert.extend(file_records)
 
             # Record new chunk IDs in state

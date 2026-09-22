@@ -105,10 +105,16 @@ class Filter:
         candidate_paths.extend([
             os.path.join(cwd, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
             os.path.join(cwd, "data", "webui.db"),
-            os.path.join(r"c:\Projects\EDUCORE-RAG-Control", ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
         ])
 
-        # 3. Check relative to this file
+        # 3. Check relative to environment variable or this file
+        base_dir_env = os.environ.get("BASE_DIR") or os.environ.get("EDUCORE_BASE_DIR")
+        if base_dir_env:
+            candidate_paths.extend([
+                os.path.join(base_dir_env, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
+                os.path.join(base_dir_env, "data", "webui.db"),
+            ])
+
         try:
             base_dir = os.path.dirname(os.path.abspath(__file__))
             candidate_paths.extend([

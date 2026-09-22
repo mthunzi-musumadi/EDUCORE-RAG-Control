@@ -114,6 +114,38 @@ or
 start_educore_enterprise.bat
 ```
 
+## Real-Time Document Synchronization & Vector Upsert
+
+The enterprise backend automatically detects changes to `.docx` framework documents, generates embeddings incrementally, and applies zero-downtime atomic upserts to ChromaDB.
+
+### Watch Directories Configuration
+By default, the backend monitors `EDUCORE_AI_FRAMEWORK/` recursively. You can configure custom or external watch directories (e.g. OneDrive / SharePoint sync folders, network drives) using:
+
+1. **CLI Flag (`--watch-dir` or `-w`)**:
+   ```bash
+   python educore_enterprise_backend.py --watch-dir "C:\Users\admin\SharePoint\Framework Docs"
+   ```
+   You can specify `--watch-dir` multiple times to watch multiple directories simultaneously.
+
+2. **Environment Variable (`EDUCORE_FRAMEWORK_DIR`)**:
+   ```bash
+   # Single directory
+   export EDUCORE_FRAMEWORK_DIR="/path/to/framework/docs"
+
+   # Multiple directories (semicolon or comma separated)
+   export EDUCORE_FRAMEWORK_DIR="C:\Docs1;D:\Docs2"
+   ```
+
+3. **On-Demand HTTP Sync Trigger**:
+   ```bash
+   curl -X POST http://localhost:8000/api/framework/sync -H "Content-Type: application/json" -d "{}"
+   ```
+
+4. **Sync Status Inspection**:
+   ```bash
+   curl http://localhost:8000/api/framework/status
+   ```
+
 ## Production and governance assets
 
 The repository also includes a production-focused subfolder under `production_setup/` with:

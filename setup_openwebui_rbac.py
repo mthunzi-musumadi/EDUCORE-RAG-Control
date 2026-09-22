@@ -21,9 +21,85 @@ if sys.platform == "win32":
     except Exception:
         pass
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-WEBUI_DB_PATH = os.path.join(BASE_DIR, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db")
+def resolve_base_dir() -> str:
+    for i, arg in enumerate(sys.argv[1:], start=1):
+        if arg in ("--base-dir", "-b") and i < len(sys.argv) - 1:
+            candidate = sys.argv[i + 1]
+            if os.path.exists(candidate):
+                return os.path.abspath(candidate)
+        elif arg.startswith("--base-dir="):
+            candidate = arg.split("=", 1)[1]
+            if os.path.exists(candidate):
+                return os.path.abspath(candidate)
+
+    for env_key in ("BASE_DIR", "EDUCORE_BASE_DIR", "PROJECT_DIR", "EDUCORE_RAG_DIR"):
+        val = os.environ.get(env_key)
+        if val and os.path.exists(val):
+            return os.path.abspath(val)
+
+    script_dir = os.path.dirname(os.path.abspath(__file__)) if "__file__" in globals() else os.getcwd()
+    cwd = os.getcwd()
+    for start in (script_dir, cwd):
+        curr = os.path.abspath(start)
+        while True:
+            if os.path.exists(os.path.join(curr, "educore_framework_filter.py")):
+                return curr
+            parent = os.path.dirname(curr)
+            if parent == curr:
+                break
+            curr = parent
+
+    return script_dir
+
+
+def resolve_webui_db_path(base_dir: str) -> str:
+    for env_var in ("WEBUI_DB_PATH",):
+        val = os.environ.get(env_var)
+        if val and os.path.exists(val):
+            return os.path.abspath(val)
+
+    for env_var in ("DATA_DIR", "WEBUI_DATA_DIR"):
+        val = os.environ.get(env_var)
+        if val:
+            candidate = os.path.join(val, "webui.db")
+            if os.path.exists(candidate):
+                return os.path.abspath(candidate)
+
+    try:
+        import open_webui
+        ow_pkg_dir = os.path.dirname(os.path.abspath(open_webui.__file__))
+        candidate = os.path.join(ow_pkg_dir, "data", "webui.db")
+        if os.path.exists(candidate):
+            return os.path.abspath(candidate)
+    except Exception:
+        pass
+
+    candidates = [
+        os.path.join(base_dir, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
+        os.path.join(base_dir, "data", "webui.db"),
+        os.path.join(sys.prefix, "Lib", "site-packages", "open_webui", "data", "webui.db"),
+        os.path.join(sys.prefix, "data", "webui.db"),
+        os.path.join(os.getcwd(), ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
+        os.path.join(os.getcwd(), "data", "webui.db"),
+        os.path.expanduser("~/.open-webui/data/webui.db"),
+        os.path.expanduser("~/.open-webui/webui.db"),
+    ]
+    for c in candidates:
+        if c and os.path.exists(c):
+            return os.path.abspath(c)
+
+    return os.path.abspath(os.path.join(base_dir, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"))
+
+
+BASE_DIR = resolve_base_dir()
+WEBUI_DB_PATH = resolve_webui_db_path(BASE_DIR)
 FILTER_SCRIPT_PATH = os.path.join(BASE_DIR, "educore_framework_filter.py")
+if not os.path.exists(FILTER_SCRIPT_PATH):
+    # Fallback search for filter script
+    if os.path.exists(os.path.join(os.getcwd(), "educore_framework_filter.py")):
+        FILTER_SCRIPT_PATH = os.path.abspath(os.path.join(os.getcwd(), "educore_framework_filter.py"))
+    elif os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "educore_framework_filter.py")):
+        FILTER_SCRIPT_PATH = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "educore_framework_filter.py"))
 
 GROUPS_DEF = [
     {

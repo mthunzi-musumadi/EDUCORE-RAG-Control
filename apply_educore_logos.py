@@ -14,6 +14,7 @@ import shutil
 import base64
 import sqlite3
 import json
+import glob
 from io import BytesIO
 from PIL import Image
 
@@ -25,19 +26,278 @@ if sys.platform == "win32":
     except Exception:
         pass
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-EDUCORE_DEFAULT_LOGO = os.path.join(BASE_DIR, "educore.png")
-EDUCORE_RAG_LOGO = os.path.join(BASE_DIR, "educore-rag-e.png")
+def resolve_base_dir() -> str:
+    """
+    Dynamically resolves the BASE_DIR for Educore RAG Control and logos.
+    Priority:
+      1. Command-line flag: --base-dir <path>, -b <path>, or --base-dir=<path>
+      2. Environment variables: BASE_DIR, EDUCORE_BASE_DIR, PROJECT_DIR, EDUCORE_RAG_DIR
+      3. Directory containing this script
+      4. Current working directory
+      5. Upward traversal looking for educore.png / educore-rag-e.png
+    """
+    # 1. Command-line argument
+    for i, arg in enumerate(sys.argv[1:], start=1):
+        if arg in ("--base-dir", "-b") and i < len(sys.argv) - 1:
+            candidate = sys.argv[i + 1]
+            if os.path.exists(candidate):
+                return os.path.abspath(candidate)
+        elif arg.startswith("--base-dir="):
+            candidate = arg.split("=", 1)[1]
+            if os.path.exists(candidate):
+                return os.path.abspath(candidate)
 
-TARGET_DIRS = [
-    os.path.join(BASE_DIR, ".openwebui_env", "Lib", "site-packages", "open_webui", "static"),
-    os.path.join(BASE_DIR, ".openwebui_env", "Lib", "site-packages", "open_webui", "frontend", "static"),
-]
+    # 2. Environment variables
+    for env_key in ("BASE_DIR", "EDUCORE_BASE_DIR", "PROJECT_DIR", "EDUCORE_RAG_DIR"):
+        val = os.environ.get(env_key)
+        if val and os.path.exists(val):
+            return os.path.abspath(val)
 
-WEBUI_DB_PATH = os.path.join(BASE_DIR, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db")
+    # 3. Directory of this script
+    script_dir = os.path.dirname(os.path.abspath(__file__)) if "__file__" in globals() else os.getcwd()
+    if os.path.exists(os.path.join(script_dir, "educore.png")) or os.path.exists(os.path.join(script_dir, "educore-rag-e.png")):
+        return script_dir
 
-CUSTOM_CSS_RULE = """
+    # 4. Current working directory
+    cwd = os.getcwd()
+    if os.path.exists(os.path.join(cwd, "educore.png")) or os.path.exists(os.path.join(cwd, "educore-rag-e.png")):
+        return os.path.abspath(cwd)
+
+    # 5. Upward search from script_dir and cwd
+    for start in (script_dir, cwd):
+        curr = os.path.abspath(start)
+        while True:
+            if os.path.exists(os.path.join(curr, "educore.png")) or os.path.exists(os.path.join(curr, "educore-rag-e.png")):
+                return curr
+            parent = os.path.dirname(curr)
+            if parent == curr:
+                break
+            curr = parent
+
+    return script_dir
+
+
+def find_logo_path(filename: str, base_dir: str) -> str:
+    """Finds a logo file across base_dir, script dir, cwd, logo subdirectories, or environment."""
+    candidates = []
+
+    # Environment variable override
+    env_dir = os.environ.get("EDUCORE_LOGO_DIR")
+    if env_dir:
+        candidates.append(os.path.join(env_dir, filename))
+
+    # Base dir & subfolders
+    candidates.extend([
+        os.path.join(base_dir, filename),
+        os.path.join(base_dir, "static", filename),
+        os.path.join(base_dir, "assets", filename),
+    ])
+
+    # Script dir & cwd
+    script_dir = os.path.dirname(os.path.abspath(__file__)) if "__file__" in globals() else ""
+    if script_dir and script_dir != base_dir:
+        candidates.extend([
+            os.path.join(script_dir, filename),
+            os.path.join(script_dir, "static", filename),
+            os.path.join(script_dir, "assets", filename),
+        ])
+    cwd = os.getcwd()
+    if cwd not in (base_dir, script_dir):
+        candidates.extend([
+            os.path.join(cwd, filename),
+            os.path.join(cwd, "static", filename),
+            os.path.join(cwd, "assets", filename),
+        ])
+
+    for c in candidates:
+        if c and os.path.exists(c):
+            return os.path.abspath(c)
+
+    # Upward search fallback
+    for start in (base_dir, script_dir, cwd):
+        if not start:
+            continue
+        curr = os.path.abspath(start)
+        while True:
+            probe = os.path.join(curr, filename)
+            if os.path.exists(probe):
+                return probe
+            parent = os.path.dirname(curr)
+            if parent == curr:
+                break
+            curr = parent
+
+    return os.path.join(base_dir, filename)
+
+
+def resolve_target_dirs(base_dir: str) -> list[str]:
+    """
+    Dynamically discovers Open WebUI static directories across the environment.
+    Searches:
+      1. Open WebUI package if importable
+      2. Environment variables (OPENWEBUI_STATIC_DIR, WEBUI_STATIC_DIR, WEBUI_BUILD_DIR, OPENWEBUI_DIR)
+      3. Active Python prefix (sys.prefix) site-packages (Windows and Unix/Linux layouts)
+      4. Discovered BASE_DIR virtualenvs (.openwebui_env, openwebui_env, .venv, venv, env)
+      5. Current working directory virtualenvs
+    Returns all detected valid existing static directories (or defaults if none exist).
+    """
+    discovered = []
+
+    # 1. Try importing open_webui package directly
+    try:
+        import open_webui
+        ow_pkg_dir = os.path.dirname(os.path.abspath(open_webui.__file__))
+        for sub in ("static", os.path.join("frontend", "static")):
+            candidate = os.path.join(ow_pkg_dir, sub)
+            discovered.append(candidate)
+    except Exception:
+        pass
+
+    # 2. Environment variables
+    for env_var in ("OPENWEBUI_STATIC_DIR", "WEBUI_STATIC_DIR", "WEBUI_BUILD_DIR"):
+        val = os.environ.get(env_var)
+        if val:
+            discovered.append(val)
+
+    for env_var in ("OPENWEBUI_DIR", "WEBUI_DIR"):
+        val = os.environ.get(env_var)
+        if val:
+            discovered.extend([
+                os.path.join(val, "static"),
+                os.path.join(val, "frontend", "static"),
+                os.path.join(val, "Lib", "site-packages", "open_webui", "static"),
+                os.path.join(val, "Lib", "site-packages", "open_webui", "frontend", "static"),
+            ])
+
+    # 3. sys.prefix (the active python interpreter environment)
+    if sys.prefix:
+        discovered.extend([
+            os.path.join(sys.prefix, "Lib", "site-packages", "open_webui", "static"),
+            os.path.join(sys.prefix, "Lib", "site-packages", "open_webui", "frontend", "static"),
+        ])
+        for p in glob.glob(os.path.join(sys.prefix, "lib", "python*", "site-packages", "open_webui", "static")):
+            discovered.append(p)
+        for p in glob.glob(os.path.join(sys.prefix, "lib", "python*", "site-packages", "open_webui", "frontend", "static")):
+            discovered.append(p)
+
+    # 4. Check virtual environments relative to base_dir and cwd
+    search_roots = [base_dir]
+    cwd = os.getcwd()
+    if cwd != base_dir:
+        search_roots.append(cwd)
+
+    venv_names = [".openwebui_env", "openwebui_env", ".venv", "venv", "env", "framework_control"]
+    for root in search_roots:
+        for venv in venv_names:
+            vdir = os.path.join(root, venv)
+            if os.path.exists(vdir):
+                # Windows layout
+                discovered.extend([
+                    os.path.join(vdir, "Lib", "site-packages", "open_webui", "static"),
+                    os.path.join(vdir, "Lib", "site-packages", "open_webui", "frontend", "static"),
+                ])
+                # Unix/Linux layout
+                for p in glob.glob(os.path.join(vdir, "lib", "python*", "site-packages", "open_webui", "static")):
+                    discovered.append(p)
+                for p in glob.glob(os.path.join(vdir, "lib", "python*", "site-packages", "open_webui", "frontend", "static")):
+                    discovered.append(p)
+
+    # Deduplicate preserving order
+    seen = set()
+    unique_candidates = []
+    for d in discovered:
+        norm = os.path.abspath(d)
+        if norm not in seen:
+            seen.add(norm)
+            unique_candidates.append(norm)
+
+    # Filter to existing directories
+    existing_dirs = [d for d in unique_candidates if os.path.exists(d)]
+    if existing_dirs:
+        return existing_dirs
+
+    # Fallback if no target directories exist yet: return primary defaults
+    primary_defaults = [
+        os.path.join(base_dir, ".openwebui_env", "Lib", "site-packages", "open_webui", "static"),
+        os.path.join(base_dir, ".openwebui_env", "Lib", "site-packages", "open_webui", "frontend", "static"),
+    ]
+    return [os.path.abspath(d) for d in primary_defaults]
+
+
+def resolve_webui_db_path(base_dir: str) -> str:
+    """
+    Dynamically discovers the Open WebUI webui.db database path across environments.
+    """
+    # 1. CLI flag
+    for i, arg in enumerate(sys.argv[1:], start=1):
+        if arg in ("--db-path", "--webui-db") and i < len(sys.argv) - 1:
+            candidate = sys.argv[i + 1]
+            if os.path.exists(candidate):
+                return os.path.abspath(candidate)
+        elif arg.startswith("--db-path="):
+            candidate = arg.split("=", 1)[1]
+            if os.path.exists(candidate):
+                return os.path.abspath(candidate)
+
+    # 2. Environment variables
+    for env_var in ("WEBUI_DB_PATH",):
+        val = os.environ.get(env_var)
+        if val and os.path.exists(val):
+            return os.path.abspath(val)
+
+    for env_var in ("DATA_DIR", "WEBUI_DATA_DIR"):
+        val = os.environ.get(env_var)
+        if val:
+            candidate = os.path.join(val, "webui.db")
+            if os.path.exists(candidate):
+                return os.path.abspath(candidate)
+
+    # 3. Via open_webui package
+    try:
+        import open_webui
+        ow_pkg_dir = os.path.dirname(os.path.abspath(open_webui.__file__))
+        candidate = os.path.join(ow_pkg_dir, "data", "webui.db")
+        if os.path.exists(candidate):
+            return os.path.abspath(candidate)
+    except Exception:
+        pass
+
+    # 4. Candidates in base_dir, sys.prefix, cwd, and ~/.open-webui
+    candidates = [
+        os.path.join(base_dir, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
+        os.path.join(base_dir, "data", "webui.db"),
+        os.path.join(sys.prefix, "Lib", "site-packages", "open_webui", "data", "webui.db"),
+        os.path.join(sys.prefix, "data", "webui.db"),
+        os.path.join(os.getcwd(), ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
+        os.path.join(os.getcwd(), "data", "webui.db"),
+        os.path.expanduser("~/.open-webui/data/webui.db"),
+        os.path.expanduser("~/.open-webui/webui.db"),
+    ]
+    # Add unix patterns
+    for root in (base_dir, sys.prefix, os.getcwd()):
+        for p in glob.glob(os.path.join(root, ".openwebui_env", "lib", "python*", "site-packages", "open_webui", "data", "webui.db")):
+            candidates.append(p)
+        for p in glob.glob(os.path.join(root, "lib", "python*", "site-packages", "open_webui", "data", "webui.db")):
+            candidates.append(p)
+
+    for c in candidates:
+        if c and os.path.exists(c):
+            return os.path.abspath(c)
+
+    return os.path.abspath(os.path.join(base_dir, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"))
+
+
+BASE_DIR = resolve_base_dir()
+
+EDUCORE_DEFAULT_LOGO = find_logo_path("educore.png", BASE_DIR)
+EDUCORE_RAG_LOGO = find_logo_path("educore-rag-e.png", BASE_DIR)
+
+TARGET_DIRS = resolve_target_dirs(BASE_DIR)
+
+WEBUI_DB_PATH = resolve_webui_db_path(BASE_DIR)
+
+CUSTOM_CSS_RULE = r"""
 /* ==========================================================================
    EDUCORE SERVICES ENTERPRISE BRANDING & UI GOVERNANCE STYLING
    1. Dark mode color preservation (prevents Tailwind dark:invert on orange)
@@ -307,22 +567,32 @@ def generate_svg(png_image: Image.Image) -> str:
 </style></svg>"""
 
 
-def apply_branding():
-    if not os.path.exists(EDUCORE_DEFAULT_LOGO):
-        print(f"Error: {EDUCORE_DEFAULT_LOGO} not found.")
+def apply_branding(base_dir: str = None, target_dirs: list = None, db_path: str = None):
+    base_dir = os.path.abspath(base_dir) if base_dir else BASE_DIR
+    default_logo_path = find_logo_path("educore.png", base_dir)
+    rag_logo_path = find_logo_path("educore-rag-e.png", base_dir)
+    target_dirs = target_dirs or (resolve_target_dirs(base_dir) if base_dir != BASE_DIR else TARGET_DIRS)
+    db_path = db_path or (resolve_webui_db_path(base_dir) if base_dir != BASE_DIR else WEBUI_DB_PATH)
+
+    if not os.path.exists(default_logo_path):
+        print(f"Error: {default_logo_path} not found.")
         sys.exit(1)
-    if not os.path.exists(EDUCORE_RAG_LOGO):
-        print(f"Error: {EDUCORE_RAG_LOGO} not found.")
+    if not os.path.exists(rag_logo_path):
+        print(f"Error: {rag_logo_path} not found.")
         sys.exit(1)
 
     print("==============================================================================")
     print("  APPLYING EDUCORE BRANDING TO OPEN WEBUI")
+    print(f"  Base Directory:   {base_dir}")
+    print(f"  Default Logo:     {default_logo_path}")
+    print(f"  RAG Logo:         {rag_logo_path}")
+    print(f"  Database Path:    {db_path}")
     print("==============================================================================")
 
     # 1. Load source logos
     print("[1/5] Loading source logos...")
-    default_logo = Image.open(EDUCORE_DEFAULT_LOGO).convert("RGBA")
-    rag_logo = Image.open(EDUCORE_RAG_LOGO).convert("RGBA")
+    default_logo = Image.open(default_logo_path).convert("RGBA")
+    rag_logo = Image.open(rag_logo_path).convert("RGBA")
     print(f"  ✓ Default Educore logo loaded: {default_logo.size}")
     print(f"  ✓ Stylised Educore RAG logo loaded: {rag_logo.size}")
 
@@ -357,7 +627,7 @@ def apply_branding():
 
     # 3. Deploy to target static directories
     print("\n[3/5] Deploying assets to Open WebUI static directories...")
-    for target_dir in TARGET_DIRS:
+    for target_dir in target_dirs:
         if not os.path.exists(target_dir):
             print(f"  ! Warning: Directory {target_dir} does not exist, creating...")
             os.makedirs(target_dir, exist_ok=True)
@@ -383,8 +653,8 @@ def apply_branding():
             f.write(svg_content)
 
         # Copy original high-res assets for direct referencing
-        shutil.copy2(EDUCORE_DEFAULT_LOGO, os.path.join(target_dir, "educore.png"))
-        shutil.copy2(EDUCORE_RAG_LOGO, os.path.join(target_dir, "educore-rag-e.png"))
+        shutil.copy2(default_logo_path, os.path.join(target_dir, "educore.png"))
+        shutil.copy2(rag_logo_path, os.path.join(target_dir, "educore-rag-e.png"))
 
         # Update custom.css with enterprise branding and model selector anti-truncation rules
         css_path = os.path.join(target_dir, "custom.css")
@@ -395,9 +665,9 @@ def apply_branding():
 
     # 4. Update Database Models with Stylised RAG Logo
     print("\n[4/5] Updating Open WebUI database AI model avatars...")
-    if os.path.exists(WEBUI_DB_PATH):
+    if os.path.exists(db_path):
         try:
-            con = sqlite3.connect(WEBUI_DB_PATH)
+            con = sqlite3.connect(db_path)
             cur = con.cursor()
             cur.execute("SELECT id, meta FROM model")
             rows = cur.fetchall()
@@ -418,11 +688,11 @@ def apply_branding():
 
             con.commit()
             con.close()
-            print(f"  ✓ Updated {updated_count} model(s) in {WEBUI_DB_PATH} with '/static/educore-rag-e.png' avatar.")
+            print(f"  ✓ Updated {updated_count} model(s) in {db_path} with '/static/educore-rag-e.png' avatar.")
         except Exception as e:
             print(f"  ! Error updating database: {e}")
     else:
-        print(f"  ! Database not found at {WEBUI_DB_PATH} (will be applied when RBAC provisioning runs)")
+        print(f"  ! Database not found at {db_path} (will be applied when RBAC provisioning runs)")
 
     print("\n[5/5] Branding configuration verified!")
     print("==============================================================================")
