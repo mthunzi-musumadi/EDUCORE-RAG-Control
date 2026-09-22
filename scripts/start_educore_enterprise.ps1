@@ -30,8 +30,11 @@ $env:ENABLE_FORWARD_USER_INFO_HEADERS = "True"
 $env:RAG_EMBEDDING_ENGINE = "ollama"
 $env:RAG_EMBEDDING_MODEL = "nomic-embed-text"
 $env:RAG_OLLAMA_BASE_URL = "http://127.0.0.1:11434"
+$env:DATABASE_URL = "postgresql://neondb_owner:npg_WiYfyRLU6dl9@ep-nameless-lab-b4kzjv3t.c-6.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+$env:WEBUI_SECRET_KEY = "997412812643d8421c62af6fb82d7710f8ac2ed589acccf7c6d31d544d628de7"
 $env:HF_HUB_OFFLINE = "1"
 $env:TRANSFORMERS_OFFLINE = "1"
+$env:DATA_DIR = "$RootDir\data\openwebui"
 
 # 2. Pre-Flight Provisioning: Ensure Branding, UI Governance & Laws of UX CSS are deployed
 $RootDir = Split-Path -Parent $ScriptDir
