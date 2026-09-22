@@ -167,7 +167,7 @@ python src/backend/educore_enterprise_backend.py 8000
 
 ## Real-Time Document Synchronization & Vector Upsert
 
-The enterprise backend automatically detects changes to `.docx` framework documents in `EDUCORE_AI_FRAMEWORK/`, generates embeddings incrementally, and applies zero-downtime atomic upserts to ChromaDB.
+The enterprise backend automatically detects changes to framework documents (`.docx`, `.pdf`, `.xlsx`, `.xls`) in `EDUCORE_AI_FRAMEWORK/`, generates embeddings incrementally, and applies zero-downtime atomic upserts to ChromaDB.
 
 ### Watch Directories Configuration
 By default, the backend monitors `EDUCORE_AI_FRAMEWORK/` recursively. You can configure custom or external watch directories (e.g. OneDrive / SharePoint sync folders, network drives) using:

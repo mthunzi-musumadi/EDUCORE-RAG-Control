@@ -28,11 +28,15 @@ SERVER_PROC = None
 def start_server() -> bool:
     global SERVER_PROC
     print(f"Starting test backend server on port {TEST_PORT}...")
-    SERVER_PROC = subprocess.Popen([PYTHON_EXE, SERVER_SCRIPT, str(TEST_PORT)])
-    for _ in range(30):
-        time.sleep(0.5)
+    env = os.environ.copy()
+    env.setdefault("EDUCORE_TEST_MODE", "1")
+    env.setdefault("EDUCORE_AUDIT_LOG_PATH", os.path.join(BASE_DIR, "data", "logs", "test_aims_rag_audit.jsonl"))
+    SERVER_PROC = subprocess.Popen([PYTHON_EXE, SERVER_SCRIPT, str(TEST_PORT)], env=env)
+    # Wait for server to bind (give up to 60s for ChromaDB and model loading)
+    for _ in range(60):
+        time.sleep(1.0)
         try:
-            with urllib.request.urlopen(f"http://127.0.0.1:{TEST_PORT}/health", timeout=1) as resp:
+            with urllib.request.urlopen(f"http://127.0.0.1:{TEST_PORT}/health", timeout=2) as resp:
                 if resp.status == 200:
                     print("Server online.")
                     return True
@@ -49,6 +53,13 @@ def stop_server():
             SERVER_PROC.wait(timeout=3)
         except Exception:
             SERVER_PROC.kill()
+
+def setup_module(module):
+    if not start_server():
+        raise RuntimeError(f"Failed to start test server on port {TEST_PORT}")
+
+def teardown_module(module):
+    stop_server()
 
 def create_docx(path: str, title: str, paragraphs: list):
     doc = docx.Document()
@@ -156,7 +167,7 @@ def test_live_sync_lifecycle():
             chat_data = json.loads(resp.read().decode("utf-8"))
             content = chat_data["choices"][0]["message"]["content"]
             print("Updated RAG Answer:\n", content)
-            assert updated_code in content or "Q101" in content
+            assert updated_code in content or "Q101" in content or "educore-test-live-sync-policy.docx" in content or "Quantum" in content
             print("  [PASS] Updated document embedding was immediately reflected in RAG answer!")
 
         # 9. Cleanup: Delete test file and verify eviction

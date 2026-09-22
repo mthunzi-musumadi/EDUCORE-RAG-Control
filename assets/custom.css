@@ -1,0 +1,296 @@
+/* ==========================================================================
+   EDUCORE SERVICES ENTERPRISE BRANDING & UI GOVERNANCE STYLING
+   1. Dark mode color preservation (prevents Tailwind dark:invert on orange)
+   2. Model Selector & Clearance Tier Anti-Truncation Rules
+   ========================================================================== */
+
+/* 1. Prevent Tailwind dark:invert from altering Educore orange (#F1592A) */
+img[alt="logo"],
+img[alt="logo"].dark\\:invert,
+button[aria-label="Home"] img,
+#logo,
+#logo-her {
+    filter: none !important;
+}
+
+/* 2. Model Selector Active Pill (Chat Header & Input Bar) */
+/* Overrides Tailwind max-w-56 (14rem/224px) so full model names and clearance tiers display */
+.flex.max-w-56,
+div.max-w-56,
+[class*="max-w-56"] {
+    max-width: 50rem !important;
+}
+
+/* Allow text inside active model pill to remain legible without premature truncation */
+.flex.max-w-56 .truncate,
+div.max-w-56 .truncate,
+[class*="max-w-56"] .truncate {
+    max-width: none !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+}
+
+/* 3. Model Selector Trigger in Top Navbar (Outside Chat Input Box) */
+body :not(#message-input-container) button[id*="model-selector"],
+body :not(#message-input-container) button[aria-haspopup="listbox"],
+body :not(#message-input-container) .model-selector-button {
+    max-width: none !important;
+    width: auto !important;
+    overflow: visible !important;
+}
+
+/* Unclip parent containers in the top navbar / header */
+header .min-w-0.max-w-full.overflow-hidden,
+nav .min-w-0.max-w-full.overflow-hidden,
+div:has(> .min-w-0.max-w-full.overflow-hidden):not(#message-input-container *) {
+    overflow: visible !important;
+    max-width: none !important;
+}
+
+/* Ensure model name in top navbar remains on one line and expands horizontally */
+body :not(#message-input-container) button[id*="model-selector"] span,
+body :not(#message-input-container) button[aria-haspopup="listbox"] span {
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+    max-width: none !important;
+}
+
+/* 4. Chat Input Box (Bottom) - Prevent Collision with Mic & Voice Mode Buttons */
+#message-input-container button[id*="model-selector"],
+#message-input-container button[aria-haspopup="listbox"],
+#message-input-container .model-selector-button {
+    max-width: 100% !important;
+    overflow: hidden !important;
+}
+
+#message-input-container button[id*="model-selector"] span,
+#message-input-container button[id*="model-selector"] div,
+#message-input-container button[aria-haspopup="listbox"] span,
+#message-input-container button[aria-haspopup="listbox"] div,
+#message-input-container .truncate {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    max-width: 100% !important;
+}
+
+#message-input-container .max-w-\\[10rem\\],
+#message-input-container [class*="max-w-\\[10rem\\]"],
+#message-input-container [class*="sm:max-w-\\[13rem\\]"] {
+    max-width: 14rem !important;
+    overflow: hidden !important;
+}
+
+/* 5. Selected Model on New Chat Landing View (Center / Top Hero) */
+/* Overrides max-w-xl (36rem) and line-clamp-1 so full model title and clearance tier are visible */
+.flex.flex-row.justify-center.w-fit.max-w-xl,
+.flex.flex-row.justify-center.max-w-xl,
+div:has(> .text-2xl.line-clamp-1),
+div:has(> .\\@sm\\:text-2xl.line-clamp-1) {
+    max-width: 95vw !important;
+    width: auto !important;
+}
+
+.text-2xl.line-clamp-1,
+.text-2xl .line-clamp-1,
+.\\@sm\\:text-2xl.line-clamp-1,
+.\\@sm\\:text-2xl .line-clamp-1,
+div.text-2xl span.line-clamp-1,
+div.\\@sm\\:text-2xl span.line-clamp-1,
+div[class*="text-2xl"] [class*="line-clamp-1"] {
+    overflow: visible !important;
+    white-space: normal !important;
+    text-overflow: clip !important;
+    -webkit-line-clamp: unset !important;
+    line-clamp: unset !important;
+    display: inline-block !important;
+    text-align: center !important;
+}
+
+/* Allow model description and markdown on new chat landing view to display cleanly */
+.line-clamp-2.max-w-xl,
+div[class*="line-clamp-2"][class*="max-w-xl"] {
+    max-width: 52rem !important;
+    -webkit-line-clamp: unset !important;
+    line-clamp: unset !important;
+    overflow: visible !important;
+    white-space: normal !important;
+}
+
+/* Pinned models list anti-truncation */
+#pinned-models-list .line-clamp-1,
+#pinned-models-list a div {
+    overflow: visible !important;
+    white-space: normal !important;
+    -webkit-line-clamp: unset !important;
+    line-clamp: unset !important;
+}
+
+/* ==========================================================================
+   6. Model Selector Dropdown Menu & Popover (Laws of UX Optimization)
+   - Hick's Law: Widened container (32rem / 512px) reduces cognitive load and gives text room to breathe
+   - Law of Proximity: Distinct item bounding boxes prevent text collisions
+   - Fitts's Law: Generous min-height (2.75rem / 44px) provides reliable, comfortable touch/click targets
+   - Law of Common Region: Clearly delimited rows with rounded corners and unified hover states
+   - Jakob's Law: Standard multi-line dropdown behavior matching modern AI interfaces
+   ========================================================================== */
+
+/* Dropdown Menu Container: Widen from default 20rem (320px) to 32rem (512px) */
+div[style*="z-index: 9999"] > div,
+div[style*="z-index: 9999"] .z-40,
+div[style*="z-index: 9999"] div:has(> [role="listbox"]),
+.model-selector-child-menu {
+    width: 32rem !important;
+    max-width: calc(100vw - 1.5rem) !important;
+    min-width: 22rem !important;
+}
+
+/* Scrollable Listbox Container: Ample vertical viewport without claustrophobic scrolling */
+div[style*="z-index: 9999"] div[role="listbox"],
+div[role="listbox"] {
+    max-height: 24rem !important;
+    padding: 0.25rem 0.375rem !important;
+    gap: 0.125rem !important;
+}
+
+/* Model Item Rows inside Dropdown Menu (Overrides hardcoded h-8 / 32px) */
+/* Fitts's Law & Law of Proximity: Dynamic height, 44px min-target, comfortable vertical padding */
+div[style*="z-index: 9999"] [role="listbox"] button[role="option"],
+div[style*="z-index: 9999"] button[role="option"],
+div[role="listbox"] button[role="option"],
+div[role="listbox"] > button,
+div[role="listbox"] > div > button,
+.selected-command-option-button {
+    height: auto !important;
+    min-height: 2.75rem !important;
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+    padding-left: 0.625rem !important;
+    padding-right: 0.625rem !important;
+    margin-top: 0.125rem !important;
+    margin-bottom: 0.125rem !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+}
+
+/* Inner flex containers: unclip height and allow vertical expansion */
+div[role="listbox"] button[role="option"] > div.flex-1,
+div[role="listbox"] button[role="option"] > div.flex-1 > div {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 0 !important;
+}
+
+/* Model Persona, Clearance Tier (Tier A/B/C), and Description Typography */
+/* Jakob's Law & Hick's Law: Clean word wrapping with comfortable line-height, zero text collision */
+div[style*="z-index: 9999"] [role="listbox"] button[role="option"] .truncate,
+div[style*="z-index: 9999"] [role="listbox"] .truncate,
+div[role="listbox"] button[role="option"] .truncate,
+div[role="listbox"] .truncate,
+.selected-command-option-button .truncate,
+.selected-command-option-button .line-clamp-1,
+.selected-command-option-button .line-clamp-2 {
+    overflow: visible !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    -webkit-line-clamp: unset !important;
+    line-clamp: unset !important;
+    line-height: 1.35 !important;
+    font-size: 0.8125rem !important;
+}
+
+/* Action Icons (Link, Info, Checkmark): Center vertically relative to multi-line item */
+div[role="listbox"] button[role="option"] > div.ml-auto,
+div[style*="z-index: 9999"] button[role="option"] > div.ml-auto {
+    align-self: center !important;
+    flex-shrink: 0 !important;
+}
+
+/* ==========================================================================
+   6.1 Responsive Mobile & Tablet Viewport Rules (max-width: 640px)
+   Adapts dropdown popover smoothly to narrow viewports without horizontal clipping
+   ========================================================================== */
+@media (max-width: 640px) {
+    div[style*="z-index: 9999"] > div,
+    div[style*="z-index: 9999"] .z-40,
+    div[style*="z-index: 9999"] div:has(> [role="listbox"]),
+    .model-selector-child-menu {
+        width: calc(100vw - 1rem) !important;
+        max-width: calc(100vw - 1rem) !important;
+        min-width: 0 !important;
+    }
+
+    div[style*="z-index: 9999"] [role="listbox"] button[role="option"],
+    div[style*="z-index: 9999"] button[role="option"],
+    div[role="listbox"] button[role="option"] {
+        min-height: 3rem !important;
+        padding-top: 0.625rem !important;
+        padding-bottom: 0.625rem !important;
+    }
+}
+
+/* ==========================================================================
+   7. Circular Cutout Removal & Anti-Clipping Rules (Square Corners)
+   Ensure logos and model avatars have square/soft corners so edges are not cut
+   ========================================================================== */
+
+/* Universal square / soft-corner override for all logos and model avatars */
+img[alt="logo"],
+img[alt="favicon"],
+img[alt="model profile"],
+img[alt="modelfile profile"],
+img[alt="profile"],
+img[alt*="profile image"],
+img[src*="/models/model/profile/image"],
+img[src*="educore-rag-e.png"],
+img[src*="educore.png"],
+#logo,
+#logo-her,
+button[aria-label="Home"],
+button[aria-label="Home"] img,
+button[aria-label="Chat"],
+button[aria-label="Chat"] img {
+    border-radius: 0.375rem !important; /* Soft square corners */
+    object-fit: contain !important;      /* Preserve entire logo without clipping edges */
+}
+
+/* ==========================================================================
+   8. Model Selector Dropdown & Menu Logo Enhancement
+   Ensures model icons in dropdown rows are square, unclipped, and neatly proportioned
+   ========================================================================== */
+
+/* Target model icons in the model selector dropdown and command option rows */
+.selected-command-option-button img,
+.model-selector-child-menu img {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    min-width: 1.25rem !important;
+    min-height: 1.25rem !important;
+    max-width: 1.25rem !important;
+    max-height: 1.25rem !important;
+    border-radius: 0.25rem !important;
+    object-fit: contain !important;
+    flex-shrink: 0 !important;
+    background: transparent !important;
+}
+
+/* Ensure dropdown wrapper containers match the icon sizing */
+.selected-command-option-button .size-4,
+.selected-command-option-button .size-4\.5,
+.selected-command-option-button .size-3\.5,
+.selected-command-option-button [class*="size-4"],
+.selected-command-option-button [class*="size-3.5"],
+.model-selector-child-menu .size-4,
+.model-selector-child-menu .size-4\.5,
+.model-selector-child-menu [class*="size-4"] {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    min-width: 1.25rem !important;
+    min-height: 1.25rem !important;
+    border-radius: 0.25rem !important;
+    overflow: visible !important;
+}

@@ -43,7 +43,8 @@ from production_rag import (
     build_dynamic_prompt,
     llm,
     EDUCORE_CAMPUSES,
-    get_allowed_campuses
+    get_allowed_campuses,
+    get_audit_log_path
 )
 from langchain_core.output_parsers import StrOutputParser
 
@@ -1507,11 +1508,7 @@ class RAGStudioHTTPHandler(BaseHTTPRequestHandler):
             self._send_cors_headers()
             self.end_headers()
             records = []
-            audit_candidates = [
-                os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "logs", "aims_rag_audit.jsonl")),
-                "aims_rag_audit.jsonl"
-            ]
-            audit_file = next((p for p in audit_candidates if os.path.exists(p)), audit_candidates[0])
+            audit_file = get_audit_log_path()
             if os.path.exists(audit_file):
                 with open(audit_file, "r", encoding="utf-8") as f:
                     for line in f:
@@ -1765,6 +1762,7 @@ class RAGStudioHTTPHandler(BaseHTTPRequestHandler):
                 return
 
             query = req_data.get("query", "").strip()
+            tool_id = req_data.get("tool_id", "").strip() or None
             if not query:
                 self.send_response(400)
                 self.send_header("Content-Type", "application/json")
@@ -1787,7 +1785,7 @@ class RAGStudioHTTPHandler(BaseHTTPRequestHandler):
                         ctx_docs = retriever.retrieve(contextual_query, user)
                         if ctx_docs:
                             retrieved_docs = ctx_docs
-                response_text = execute_rag_agent(query, user, retriever, pre_retrieved_docs=retrieved_docs, chat_history=history)
+                response_text = execute_rag_agent(query, user, retriever, pre_retrieved_docs=retrieved_docs, chat_history=history, tool_id=tool_id)
                 latency_ms = round((time.time() - t0) * 1000, 2)
 
                 # Append turns to session history
@@ -1925,7 +1923,11 @@ class RAGStudioHTTPHandler(BaseHTTPRequestHandler):
             try:
                 from rag_evaluator import EnterpriseRAGEvaluator
                 retriever = get_retriever()
-                eval_data_path = os.path.join(os.path.dirname(__file__), "evaluation_dataset.json")
+                candidate_eval_paths = [
+                    os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "eval", "evaluation_dataset.json")),
+                    os.path.join(os.path.dirname(__file__), "evaluation_dataset.json")
+                ]
+                eval_data_path = next((p for p in candidate_eval_paths if os.path.exists(p)), candidate_eval_paths[0])
                 with open(eval_data_path, "r", encoding="utf-8") as f:
                     dataset = json.load(f)
                 evaluator = EnterpriseRAGEvaluator(use_llm_judge=False)

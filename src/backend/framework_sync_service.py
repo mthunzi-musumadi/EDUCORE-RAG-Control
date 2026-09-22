@@ -10,6 +10,7 @@ import hashlib
 import time
 from typing import Dict, Any, List, Tuple, Optional, Union
 import docx
+from document_readers import read_document, SUPPORTED_EXTENSIONS, get_format_prefix
 from tps_counter import TELEMETRY
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -217,6 +218,39 @@ def classify_document_content(
         meta["classification"] = "INTERNAL - ACADEMIC INTEGRITY"
         meta["purview_label"] = "Internal - Educational"
 
+    # 6. Format-specific classification heuristics
+    # Excel spreadsheets with financial keywords auto-escalate to admin clearance
+    if fn_lower.endswith((".xlsx", ".xls")):
+        if has_currency or has_fin_kw or "finance" in fn_lower or "budget" in fn_lower:
+            meta["clearance"] = "admin"
+            meta["purview_label"] = "Confidential - Admin / Finance"
+            meta["category"] = "finance"
+            meta["classification"] = "CONFIDENTIAL - ADMIN / FINANCE"
+            meta["allowed_roles"] = ["admin", "finance"]
+            return meta
+        # Academic records in spreadsheet form
+        _GRADES_REGEX = re.compile(r'\b(?:grades|marks|results|scores|assessment)\b', re.IGNORECASE)
+        if _GRADES_REGEX.search(lower_text) or any(
+            kw in fn_lower for kw in ("grades", "marks", "results", "scores")
+        ):
+            meta["clearance"] = "staff"
+            meta["category"] = "academic"
+            meta["classification"] = "INTERNAL - ACADEMIC RECORDS"
+            meta["purview_label"] = "Internal - Educational"
+            meta["allowed_roles"] = ["staff", "counselor", "admin"]
+
+    # PDF documents with examination content
+    if fn_lower.endswith(".pdf"):
+        _EXAM_REGEX = re.compile(r'\b(?:exam(?:ination)?|test\s+paper|assessment\s+paper|question\s+paper|answer\s+key)\b', re.IGNORECASE)
+        if _EXAM_REGEX.search(lower_text) or any(
+            kw in fn_lower for kw in ("exam", "paper", "assessment", "question")
+        ):
+            meta["clearance"] = "staff"
+            meta["category"] = "examination"
+            meta["classification"] = "CONFIDENTIAL - EXAMINATION"
+            meta["purview_label"] = "Confidential - Examination"
+            meta["allowed_roles"] = ["staff", "admin"]
+
     return meta
 
 
@@ -353,8 +387,8 @@ def chunk_section(
 
 class FrameworkSyncService:
     """
-    Monitors configured directory/directories for .docx modifications, computes SHA-256 diffs,
-    and produces incremental records for the vector store.
+    Monitors configured directory/directories for document modifications (.docx, .pdf, .xlsx/.xls),
+    computes SHA-256 diffs, and produces incremental records for the vector store.
     """
 
     def __init__(
@@ -393,8 +427,8 @@ class FrameworkSyncService:
 
     def scan_framework_files(self) -> Dict[str, Dict[str, Any]]:
         """
-        Discovers all .docx files across all configured watch directories,
-        ignoring Word lock/temp files (starting with ~$ or .).
+        Discovers all supported document files (.docx, .pdf, .xlsx, .xls) across
+        all configured watch directories, ignoring temporary/lock files.
         Returns a map of relative_path -> {full_path, hash, mtime, folder, filename, watch_dir}.
         """
         results = {}
@@ -408,10 +442,12 @@ class FrameworkSyncService:
 
             for root, _, files in os.walk(w_dir):
                 for fname in sorted(files):
-                    if not fname.lower().endswith(".docx"):
+                    # Check against supported extensions registry
+                    ext = os.path.splitext(fname)[1].lower()
+                    if ext not in SUPPORTED_EXTENSIONS:
                         continue
                     if fname.startswith("~$") or fname.startswith("."):
-                        continue  # Ignore MS Word temporary locks
+                        continue  # Ignore MS Office temporary locks
 
                     full_path = os.path.join(root, fname)
                     sub_rel = os.path.relpath(full_path, w_dir).replace("\\", "/")
@@ -440,20 +476,28 @@ class FrameworkSyncService:
 
     def parse_file_to_records(self, file_info: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
-        Parses a single .docx file into structured corpus records with Purview & RBAC metadata.
+        Parses a document file into structured corpus records with Purview & RBAC metadata.
+        Supports all formats registered in the document_readers module.
         """
         full_path = file_info["full_path"]
         folder = file_info["folder"]
         rel_path = file_info["rel_path"]
 
-        clean_title, sections = read_docx_structured(full_path)
+        clean_title, sections = read_document(full_path)
 
         # Content-aware Purview sensitivity and RBAC metadata classification
         meta = classify_document_content(file_info["filename"], clean_title, sections, folder)
 
-        # Unique document prefix for chunk IDs
-        doc_slug = re.sub(r'[^a-zA-Z0-9]+', '-', file_info["filename"].replace(".docx", "")).strip("-").upper()
-        doc_prefix = f"EDU-FW-{doc_slug[:20]}"
+        # Format-aware chunk ID prefix for traceability
+        format_prefix = get_format_prefix(full_path)
+        # Strip any known extension for the slug
+        fname_base = file_info["filename"]
+        for ext in SUPPORTED_EXTENSIONS:
+            if fname_base.lower().endswith(ext):
+                fname_base = fname_base[:len(fname_base) - len(ext)]
+                break
+        doc_slug = re.sub(r'[^a-zA-Z0-9]+', '-', fname_base).strip("-").upper()
+        doc_prefix = f"{format_prefix}-{doc_slug[:20]}"
 
         records = []
 

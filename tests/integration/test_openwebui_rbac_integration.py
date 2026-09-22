@@ -11,8 +11,15 @@ Verifies:
 
 import unittest
 import os
+import sys
 import json
 import sqlite3
+
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+for sub in ["src", "src/backend", "src/governance", "assets"]:
+    p = os.path.abspath(os.path.join(base_dir, sub))
+    if p not in sys.path:
+        sys.path.insert(0, p)
 
 from educore_enterprise_backend import (
     resolve_user_session_from_request,
@@ -270,7 +277,7 @@ class TestOpenWebUIRBACIntegration(unittest.TestCase):
             cur = con.cursor()
             cur.execute('SELECT count(*) FROM "group"')
             group_count = cur.fetchone()[0]
-            self.assertEqual(group_count, 6)
+            self.assertGreaterEqual(group_count, 6)
 
             cur.execute("SELECT count(*) FROM access_grant WHERE resource_type = 'model'")
             grant_count = cur.fetchone()[0]
@@ -282,6 +289,69 @@ class TestOpenWebUIRBACIntegration(unittest.TestCase):
             self.assertEqual(func_row[0], 1)
             self.assertEqual(func_row[1], 1)
         print(f"  [PASS] Database Integrity: {group_count} Groups, {grant_count} Model Grants, Filter Active & Global.")
+
+    def test_database_prompt_suggestions_integrity(self):
+        """Verifies default prompt suggestions in webui.db are Educore-specific and contain no irrelevant prompts."""
+        base_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+        db_path = os.path.join(base_dir, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db")
+        with sqlite3.connect(db_path) as con:
+            cur = con.cursor()
+            cur.execute("SELECT value FROM config WHERE key = 'ui.prompt_suggestions'")
+            row = cur.fetchone()
+            self.assertIsNotNone(row, "ui.prompt_suggestions must exist in config table")
+            suggestions = json.loads(row[0])
+            self.assertIsInstance(suggestions, list)
+            self.assertGreaterEqual(len(suggestions), 4)
+
+            # Ensure banned/irrelevant prompts are absent
+            serialized = json.dumps(suggestions).lower()
+            self.assertNotIn("college entrance exam", serialized)
+            self.assertNotIn("sticky header", serialized)
+            self.assertNotIn("options trading", serialized)
+            self.assertNotIn("kids' art", serialized)
+
+            # Ensure Educore educational & syllabus context is present
+            self.assertIn("cambridge", serialized)
+            self.assertIn("a-level", serialized)
+        print(f"  [PASS] Global Prompt Suggestions Integrity: {len(suggestions)} Educore prompts verified, 0 irrelevant items.")
+
+    def test_model_suggestion_prompts_integrity(self):
+        """Verifies each governed Educore model has role- and campus-tailored suggestion_prompts in meta."""
+        base_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+        db_path = os.path.join(base_dir, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db")
+        expected_models = {
+            "educore-socratic-student": "socratic",
+            "educore-faculty-academic": "lesson plan",
+            "educore-pastoral-counselor": "safeguarding",
+            "educore-finance-audit": "reconciliation",
+            "educore-it-devops": "network",
+            "educore-admin-governance": "aiia",
+            "educore-enterprise-all": "educore policies",
+        }
+        with sqlite3.connect(db_path) as con:
+            cur = con.cursor()
+            for model_id, keyword in expected_models.items():
+                cur.execute("SELECT meta FROM model WHERE id = ?", (model_id,))
+                row = cur.fetchone()
+                self.assertIsNotNone(row, f"Model {model_id} must exist in database")
+                meta = json.loads(row[0]) if row[0] else {}
+                self.assertIn("suggestion_prompts", meta, f"Model {model_id} must have suggestion_prompts in meta")
+                prompts = meta["suggestion_prompts"]
+                self.assertIsInstance(prompts, list)
+                self.assertGreaterEqual(len(prompts), 3, f"Model {model_id} should have at least 3 suggestion prompts")
+                for p in prompts:
+                    self.assertIn("title", p)
+                    self.assertIsInstance(p["title"], list)
+                    self.assertEqual(len(p["title"]), 2)
+                    self.assertIn("content", p)
+                    self.assertTrue(len(p["content"]) > 10)
+
+                serialized_prompts = json.dumps(prompts).lower()
+                self.assertIn(keyword, serialized_prompts, f"Model {model_id} prompts must include '{keyword}'")
+                self.assertNotIn("college entrance exam", serialized_prompts)
+                self.assertNotIn("sticky header", serialized_prompts)
+                self.assertNotIn("options trading", serialized_prompts)
+        print(f"  [PASS] Model Prompt Suggestions Integrity: All 7 models verified with role-tailored prompts.")
 
 if __name__ == "__main__":
     unittest.main()

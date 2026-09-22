@@ -36,7 +36,11 @@ set RAG_OLLAMA_BASE_URL=http://127.0.0.1:11434
 set HF_HUB_OFFLINE=1
 set TRANSFORMERS_OFFLINE=1
 
-REM 2. Start Educore Governance RAG Server in Background
+REM 2. Pre-Flight Provisioning: Ensure Branding, UI Governance & Laws of UX CSS are deployed
+echo [0/2] Deploying Educore Branding ^& Laws of UX CSS fixes...
+"%ROOT_DIR%\framework_control\Scripts\python.exe" "%ROOT_DIR%\src\governance\apply_educore_logos.py" --base-dir "%ROOT_DIR%"
+
+REM 3. Start Educore Governance RAG Server in Background
 echo [1/2] Launching Educore Enterprise RAG Governance Server (Port 8000)...
 start "Educore Governance Server" "%ROOT_DIR%\framework_control\Scripts\python.exe" "%ROOT_DIR%\src\backend\educore_enterprise_backend.py" 8000
 

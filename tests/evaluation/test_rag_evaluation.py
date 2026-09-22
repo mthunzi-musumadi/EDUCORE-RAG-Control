@@ -79,7 +79,11 @@ def llm_evaluator():
 # ==============================================================================
 def pytest_generate_tests(metafunc):
     if "sample_case" in metafunc.fixturenames:
-        dataset_path = os.path.join(os.path.dirname(__file__), "evaluation_dataset.json")
+        candidate_paths = [
+            os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "eval", "evaluation_dataset.json")),
+            os.path.join(os.path.dirname(__file__), "evaluation_dataset.json")
+        ]
+        dataset_path = next((p for p in candidate_paths if os.path.exists(p)), candidate_paths[0])
         with open(dataset_path, "r", encoding="utf-8") as f:
             cases = json.load(f)
         case_ids = [c["id"] for c in cases]

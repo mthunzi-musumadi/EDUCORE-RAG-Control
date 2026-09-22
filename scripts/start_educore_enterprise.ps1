@@ -33,10 +33,15 @@ $env:RAG_OLLAMA_BASE_URL = "http://127.0.0.1:11434"
 $env:HF_HUB_OFFLINE = "1"
 $env:TRANSFORMERS_OFFLINE = "1"
 
-# 2. Launch Backend
+# 2. Pre-Flight Provisioning: Ensure Branding, UI Governance & Laws of UX CSS are deployed
 $RootDir = Split-Path -Parent $ScriptDir
-Write-Host "[1/2] Launching Educore Enterprise RAG Governance Server (Port 8000)..." -ForegroundColor Yellow
 $BackendPython = Join-Path $RootDir "framework_control\Scripts\python.exe"
+$BrandingScript = Join-Path $RootDir "src\governance\apply_educore_logos.py"
+Write-Host "[0/2] Deploying Educore Branding & Laws of UX CSS fixes..." -ForegroundColor Cyan
+& "$BackendPython" "$BrandingScript" --base-dir "$RootDir"
+
+# 3. Launch Backend
+Write-Host "[1/2] Launching Educore Enterprise RAG Governance Server (Port 8000)..." -ForegroundColor Yellow
 $BackendScript = Join-Path $RootDir "src\backend\educore_enterprise_backend.py"
 Start-Process -FilePath $BackendPython -ArgumentList "`"$BackendScript`" 8000" -WindowStyle Normal
 

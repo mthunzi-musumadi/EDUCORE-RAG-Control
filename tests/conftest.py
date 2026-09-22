@@ -18,3 +18,10 @@ paths_to_add = [
 for p in paths_to_add:
     if p not in sys.path:
         sys.path.insert(0, p)
+
+# Isolate test audit logging from production ISO 42001 ledger
+os.environ.setdefault("EDUCORE_TEST_MODE", "1")
+os.environ.setdefault(
+    "EDUCORE_AUDIT_LOG_PATH",
+    os.path.abspath(os.path.join(PROJECT_ROOT, "data", "logs", "test_aims_rag_audit.jsonl"))
+)

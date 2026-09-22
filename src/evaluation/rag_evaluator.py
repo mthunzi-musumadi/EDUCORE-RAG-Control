@@ -40,7 +40,8 @@ try:
         load_enterprise_data,
         execute_rag_agent,
         PERSONAS,
-        RAW_ENTERPRISE_DATA
+        RAW_ENTERPRISE_DATA,
+        get_audit_log_path
     )
 except ImportError:
     from studio.production_rag import (
@@ -49,7 +50,8 @@ except ImportError:
         load_enterprise_data,
         execute_rag_agent,
         PERSONAS,
-        RAW_ENTERPRISE_DATA
+        RAW_ENTERPRISE_DATA,
+        get_audit_log_path
     )
 
 # ==============================================================================
@@ -98,20 +100,22 @@ class EvaluationSuiteSummary(BaseModel):
 # 2. LLM-AS-A-JUDGE PROMPTS & HEURISTIC FALLBACKS
 # ==============================================================================
 FAITHFULNESS_JUDGE_PROMPT = ChatPromptTemplate.from_messages([
-    ("system", """You are an impartial AI compliance auditor checking for hallucinations in an AI answer.
-Your task is to verify whether the factual claims in the ANSWER are supported by the CONTEXT.
+    ("system", """You are an impartial AI compliance auditor checking for hallucinations and document-dumping in an AI answer.
+Your task is to verify whether the factual claims in the ANSWER are supported by the CONTEXT, and whether the answer synthesises rather than dumps raw documents.
 - If the factual statements in the ANSWER are supported by or consistent with the CONTEXT, give a score of 1.0.
 - If the ANSWER invents or hallucinates facts not found in the CONTEXT, give a score of 0.0.
-Return JSON only: {{"score": <float between 0.0 and 1.0>, "hallucinations": [], "reasoning": "<brief explanation>"}}"""),
+- Score conciseness (0.0 to 1.0): 1.0 = concise synthesis with references; 0.5 = mixed; 0.0 = verbatim dumping of document text.
+Return JSON only: {{"score": <float between 0.0 and 1.0>, "conciseness": <float between 0.0 and 1.0>, "hallucinations": [], "reasoning": "<brief explanation>"}}"""),
     ("human", "CONTEXT:\n{context}\n\nANSWER:\n{answer}")
 ])
 
 ANSWER_RELEVANCE_JUDGE_PROMPT = ChatPromptTemplate.from_messages([
-    ("system", """You are an impartial AI evaluation judge scoring Answer Relevance.
-Your task is to determine if the ANSWER directly addresses what the QUESTION asked.
+    ("system", """You are an impartial AI evaluation judge scoring Answer Relevance and Brevity.
+Your task is to determine if the ANSWER directly addresses what the QUESTION asked without dumping unnecessary context.
 - If the ANSWER directly addresses what the QUESTION asked using authorized facts or appropriately declines unauthorized requests, give a score of 1.0.
 - If the ANSWER is evasive, off-topic, or fails to address the question, give a score of 0.0.
-Return JSON only: {{"score": <float between 0.0 and 1.0>, "reasoning": "<brief explanation>"}}"""),
+- Score conciseness (0.0 to 1.0): 1.0 = direct and succinct; 0.5 = somewhat verbose; 0.0 = entire document dump or massive padding.
+Return JSON only: {{"score": <float between 0.0 and 1.0>, "conciseness": <float between 0.0 and 1.0>, "reasoning": "<brief explanation>"}}"""),
     ("human", "QUESTION:\n{question}\n\nANSWER:\n{answer}")
 ])
 
@@ -470,8 +474,13 @@ class EnterpriseRAGEvaluator:
             "latency_p90_ms": summary.latency_p90_ms,
             "compliance_certification": summary.compliance_certification
         }
-        with open("aims_rag_audit.jsonl", "a", encoding="utf-8") as f:
-            f.write(json.dumps(audit_entry) + "\n")
+        audit_path = get_audit_log_path()
+        try:
+            os.makedirs(os.path.dirname(audit_path), exist_ok=True)
+            with open(audit_path, "a", encoding="utf-8") as f:
+                f.write(json.dumps(audit_entry) + "\n")
+        except Exception as e:
+            sys.stderr.write(f"[WARN] Failed to write evaluation audit log to {audit_path}: {e}\n")
 
 # ==============================================================================
 # 4. CLI REPORT FORMATTER (RICH TABLE)

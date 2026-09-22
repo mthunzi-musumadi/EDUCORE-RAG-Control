@@ -15,6 +15,8 @@ import base64
 import sqlite3
 import json
 import glob
+import time
+import re
 from io import BytesIO
 from PIL import Image
 
@@ -509,6 +511,29 @@ div[style*="z-index: 9999"] button[role="option"] > div.ml-auto {
 }
 
 /* ==========================================================================
+   6.1 Responsive Mobile & Tablet Viewport Rules (max-width: 640px)
+   Adapts dropdown popover smoothly to narrow viewports without horizontal clipping
+   ========================================================================== */
+@media (max-width: 640px) {
+    div[style*="z-index: 9999"] > div,
+    div[style*="z-index: 9999"] .z-40,
+    div[style*="z-index: 9999"] div:has(> [role="listbox"]),
+    .model-selector-child-menu {
+        width: calc(100vw - 1rem) !important;
+        max-width: calc(100vw - 1rem) !important;
+        min-width: 0 !important;
+    }
+
+    div[style*="z-index: 9999"] [role="listbox"] button[role="option"],
+    div[style*="z-index: 9999"] button[role="option"],
+    div[role="listbox"] button[role="option"] {
+        min-height: 3rem !important;
+        padding-top: 0.625rem !important;
+        padding-bottom: 0.625rem !important;
+    }
+}
+
+/* ==========================================================================
    7. Circular Cutout Removal & Anti-Clipping Rules (Square Corners)
    Ensure logos and model avatars have square/soft corners so edges are not cut
    ========================================================================== */
@@ -710,10 +735,58 @@ def apply_branding(base_dir: str = None, target_dirs: list = None, db_path: str 
 
         print(f"  ✓ Deployed to {target_dir}")
 
-    # 4. Update Database Models with Stylised RAG Logo
-    print("\n[4/5] Updating Open WebUI database AI model avatars...")
+    # 3.1 Save canonical assets/custom.css in repository (tracked in git)
+    assets_css = os.path.join(base_dir, "assets", "custom.css")
+    os.makedirs(os.path.dirname(assets_css), exist_ok=True)
+    with open(assets_css, "w", encoding="utf-8") as f:
+        f.write(CUSTOM_CSS_RULE.strip() + "\n")
+    print(f"  ✓ Updated canonical repository asset at {assets_css}")
+
+    # 3.2 Inject cache-busting timestamp into index.html across frontend directories
+    cache_ts = int(time.time())
+    html_candidates = [
+        os.path.join(base_dir, ".openwebui_env", "Lib", "site-packages", "open_webui", "frontend", "index.html"),
+    ]
+    for d in target_dirs:
+        html_candidates.extend([
+            os.path.join(d, "index.html"),
+            os.path.join(os.path.dirname(d), "index.html"),
+        ])
+
+    seen_html = set()
+    for html_path in html_candidates:
+        norm_path = os.path.abspath(html_path)
+        if norm_path not in seen_html and os.path.exists(norm_path):
+            seen_html.add(norm_path)
+            try:
+                with open(norm_path, "r", encoding="utf-8") as f:
+                    content = f.read()
+                updated = re.sub(
+                    r'<link\s+rel="stylesheet"\s+href="/static/custom\.css(?:\?v=[^"]*)?"',
+                    f'<link rel="stylesheet" href="/static/custom.css?v={cache_ts}"',
+                    content
+                )
+                if updated != content:
+                    with open(norm_path, "w", encoding="utf-8") as f:
+                        f.write(updated)
+                    print(f"  ✓ Injected cache-busting query parameter (?v={cache_ts}) into {norm_path}")
+            except Exception as e:
+                print(f"  ! Warning updating {norm_path}: {e}")
+
+    # 4. Update Database Models with Stylised RAG Logo & Suggested Prompts
+    print("\n[4/5] Updating Open WebUI database AI model avatars & prompt suggestions...")
     if os.path.exists(db_path):
         try:
+            try:
+                from setup_openwebui_rbac import MODELS_DEF, DEFAULT_PROMPT_SUGGESTIONS
+            except ImportError:
+                try:
+                    from src.governance.setup_openwebui_rbac import MODELS_DEF, DEFAULT_PROMPT_SUGGESTIONS
+                except ImportError:
+                    MODELS_DEF, DEFAULT_PROMPT_SUGGESTIONS = [], []
+
+            model_prompts_map = {m["id"]: m.get("suggestion_prompts") for m in MODELS_DEF if m.get("suggestion_prompts")}
+
             con = sqlite3.connect(db_path)
             cur = con.cursor()
             cur.execute("SELECT id, meta FROM model")
@@ -730,12 +803,27 @@ def apply_branding(base_dir: str = None, target_dirs: list = None, db_path: str 
 
                 # Set avatar to the stylised Educore RAG platform logo
                 meta["profile_image_url"] = "/static/educore-rag-e.png"
+
+                # Synchronize role/campus-specific suggestion prompts if model is registered
+                if model_id in model_prompts_map:
+                    meta["suggestion_prompts"] = model_prompts_map[model_id]
+
                 cur.execute("UPDATE model SET meta = ? WHERE id = ?", (json.dumps(meta), model_id))
                 updated_count += 1
 
+            # Also ensure ui.prompt_suggestions in config is updated with Educore institutional prompts
+            if DEFAULT_PROMPT_SUGGESTIONS:
+                now_ts = int(time.time())
+                cur.execute("SELECT key FROM config WHERE key = 'ui.prompt_suggestions'")
+                if cur.fetchone():
+                    cur.execute("UPDATE config SET value = ?, updated_at = ? WHERE key = 'ui.prompt_suggestions'", (json.dumps(DEFAULT_PROMPT_SUGGESTIONS), now_ts))
+                else:
+                    cur.execute("INSERT INTO config (key, value, updated_at) VALUES ('ui.prompt_suggestions', ?, ?)", (json.dumps(DEFAULT_PROMPT_SUGGESTIONS), now_ts))
+                print(f"  ✓ Synchronized Educore prompt suggestions in {db_path}.")
+
             con.commit()
             con.close()
-            print(f"  ✓ Updated {updated_count} model(s) in {db_path} with '/static/educore-rag-e.png' avatar.")
+            print(f"  ✓ Updated {updated_count} model(s) in {db_path} with '/static/educore-rag-e.png' avatar & prompt suggestions.")
         except Exception as e:
             print(f"  ! Error updating database: {e}")
     else:

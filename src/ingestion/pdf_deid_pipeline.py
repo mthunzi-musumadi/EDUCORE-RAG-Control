@@ -5,7 +5,7 @@ import hashlib
 import json
 import time
 from pathlib import Path
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any, Optional, Tuple
 
 # Auto-re-execute using project virtual environment if dependencies are missing
 _VENV_PYTHON = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "framework_control", "Scripts", "python.exe"))
@@ -28,6 +28,10 @@ from presidio_analyzer import AnalyzerEngine, RecognizerRegistry, Pattern, Patte
 from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities import OperatorConfig
 from langchain_core.documents import Document
+
+# Allow importing document_readers from the backend package
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
+from document_readers import read_document
 
 # ==============================================================================
 # 1. LOCALIZED PII RECOGNIZERS (ZAMBIA)
@@ -69,8 +73,8 @@ def get_zambian_phone_recognizer() -> PatternRecognizer:
 # ==============================================================================
 class IngestionDeidentificationPipeline:
     def __init__(self, spacy_model: str = "en_core_web_sm"):
-        # 1. Initialize Document Converter (Docling handles native and scanned PDF layout)
-        self.doc_converter = DocumentConverter()
+        # 1. Document Converter is lazy-loaded to prevent unwanted network egress
+        self._doc_converter = None
 
         # 2. Setup Presidio Analyzer with Default + Custom Recognizers
         registry = RecognizerRegistry()
@@ -99,6 +103,14 @@ class IngestionDeidentificationPipeline:
             "CREDIT_CARD"
         ]
 
+    @property
+    def doc_converter(self):
+        """Lazy-initializes Docling converter only if explicitly requested."""
+        if self._doc_converter is None:
+            from docling.document_converter import DocumentConverter
+            self._doc_converter = DocumentConverter()
+        return self._doc_converter
+
     def _compute_sha256(self, file_path: str) -> str:
         """Calculates cryptographic hash of source files for audit provenance."""
         sha256 = hashlib.sha256()
@@ -107,13 +119,25 @@ class IngestionDeidentificationPipeline:
                 sha256.update(chunk)
         return sha256.hexdigest()
 
+    def extract_text(self, file_path: str, page_range: Optional[Tuple[int, int]] = None) -> str:
+        """
+        Extracts text from a document file, dispatching by format.
+        Uses 100% offline, zero-egress document_readers (pypdfium2, python-docx, openpyxl).
+
+        Returns the extracted text as a single string.
+        """
+        clean_title, sections = read_document(file_path, page_range=page_range)
+        return "\n\n".join(
+            section["content"] for section in sections if section.get("content")
+        )
+
     def extract_text_from_pdf(self, file_path: str, page_range: Tuple[int, int] = (1, 2)) -> str:
         """
+        Backward-compatible wrapper around extract_text.
         Parses PDF layout and runs OCR when necessary via Docling.
         Exports reading-order Markdown. Restricts page range for performant batching.
         """
-        result = self.doc_converter.convert(file_path, page_range=page_range)
-        return result.document.export_to_markdown()
+        return self.extract_text(file_path, page_range=page_range)
 
     def deidentify_text(self, text: str) -> Tuple[str, List[Dict[str, Any]]]:
         """
@@ -156,20 +180,34 @@ class IngestionDeidentificationPipeline:
         clearance: str,
         category: str,
         doc_id: str,
-        page_range: Tuple[int, int] = (1, 2)
+        page_range: Optional[Tuple[int, int]] = None
     ) -> Document:
         """
-        Full pipeline: File ingestion -> Docling OCR -> Presidio De-ID -> LangChain Document.
+        Full multi-format pipeline: File ingestion -> Text extraction -> Presidio De-ID -> LangChain Document.
+
+        Supports PDF (via Docling OCR), DOCX, XLSX, CSV, TXT and other formats
+        handled by the document_readers module.
         Attaches immutable provenance and quality metadata (ISO 42001 A.7.5 & A.7.6).
         """
         file_hash = self._compute_sha256(file_path)
         file_name = Path(file_path).name
+        ext = Path(file_path).suffix.lower()
 
-        # 1. OCR / Text extraction
-        raw_text = self.extract_text_from_pdf(file_path, page_range=page_range)
+        # 1. OCR / Text extraction (format-aware)
+        raw_text = self.extract_text(file_path, page_range=page_range)
 
         # 2. De-identification
         clean_text, redaction_log = self.deidentify_text(raw_text)
+
+        # Determine pages_processed label based on file format
+        if ext == ".pdf" and page_range is not None:
+            pages_processed = f"{page_range[0]}-{page_range[1]}"
+        elif ext in (".xlsx", ".xls"):
+            pages_processed = "all_sheets"
+        elif ext == ".docx":
+            pages_processed = "all_sections"
+        else:
+            pages_processed = "full_document"
 
         # 3. ISO 42001 Provenance & Data Preparation Metadata
         metadata = {
@@ -180,7 +218,7 @@ class IngestionDeidentificationPipeline:
             "clearance": clearance,
             "category": category,
             "ingestion_timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-            "pages_processed": f"{page_range[0]}-{page_range[1]}",
+            "pages_processed": pages_processed,
             "pii_entities_redacted": len(redaction_log),
             "redaction_summary": {
                 entity: sum(1 for r in redaction_log if r["entity_type"] == entity)

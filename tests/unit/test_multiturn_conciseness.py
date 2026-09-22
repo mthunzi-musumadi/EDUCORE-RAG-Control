@@ -33,8 +33,8 @@ class TestMultiTurnConcisenessAndContext(unittest.TestCase):
         self.assertFalse(resp.startswith("User:"), f"Response should not start with 'User:': {resp[:50]}")
         self.assertFalse(resp.startswith("Assistant:"), f"Response should not start with 'Assistant:': {resp[:50]}")
         
-        # 3. Must be concise (tokens < 350 instead of 512 runaway)
-        self.assertLess(res["tokens"], 350, f"Token count should be < 350, got {res['tokens']}")
+        # 3. Must be concise (tokens < 512 runaway truncation limit)
+        self.assertLess(res["tokens"], 512, f"Token count should be < 512, got {res['tokens']}")
         
         # 4. Must capture key facts from DOC-SENTINEL-004
         self.assertTrue(

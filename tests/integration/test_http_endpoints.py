@@ -20,12 +20,15 @@ def start_test_server():
     if not os.path.exists(python_exe):
         python_exe = sys.executable
     script = os.path.join(project_root, "src", "backend", "educore_enterprise_backend.py")
-    SERVER_PROC = subprocess.Popen([python_exe, script, str(TEST_PORT)])
-    # Wait for server to bind
-    for _ in range(20):
-        time.sleep(0.5)
+    env = os.environ.copy()
+    env.setdefault("EDUCORE_TEST_MODE", "1")
+    env.setdefault("EDUCORE_AUDIT_LOG_PATH", os.path.join(project_root, "data", "logs", "test_aims_rag_audit.jsonl"))
+    SERVER_PROC = subprocess.Popen([python_exe, script, str(TEST_PORT)], env=env)
+    # Wait for server to bind (give up to 60s for ChromaDB and model loading)
+    for _ in range(60):
+        time.sleep(1.0)
         try:
-            with urllib.request.urlopen(f"http://127.0.0.1:{TEST_PORT}/health", timeout=1) as resp:
+            with urllib.request.urlopen(f"http://127.0.0.1:{TEST_PORT}/health", timeout=2) as resp:
                 if resp.status == 200:
                     return True
         except Exception:
@@ -40,6 +43,13 @@ def stop_test_server():
             SERVER_PROC.wait(timeout=3)
         except Exception:
             SERVER_PROC.kill()
+
+def setup_module(module):
+    if not start_test_server():
+        raise RuntimeError(f"Failed to start test server on port {TEST_PORT}")
+
+def teardown_module(module):
+    stop_test_server()
 
 def test_endpoints():
     base_url = f"http://127.0.0.1:{TEST_PORT}"

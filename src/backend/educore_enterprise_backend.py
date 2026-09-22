@@ -4,6 +4,7 @@
 # Multi-Tenant RBAC | Microsoft Purview Containers | Non-Software Guardrails
 # Compatible with Open WebUI (OpenAI API /v1/chat/completions & Ollama API /api/chat)
 # ==============================================================================
+from ast import Tuple
 import os
 import sys
 import re
@@ -53,12 +54,31 @@ _candidate_data_paths = [
 ]
 DATA_PATH = next((p for p in _candidate_data_paths if os.path.exists(p)), _candidate_data_paths[0])
 
-# Resolve audit log path (prefer data/logs/, fallback to root)
-_candidate_audit_paths = [
-    os.path.join(BASE_DIR, "data", "logs", "aims_rag_audit.jsonl"),
-    os.path.join(BASE_DIR, "aims_rag_audit.jsonl")
-]
-AUDIT_LOG_PATH = next((p for p in _candidate_audit_paths if os.path.exists(p)), _candidate_audit_paths[0])
+# Dynamic ISO 42001 audit ledger resolution
+def get_audit_log_path() -> str:
+    """Resolves active audit log path with support for env override and test isolation."""
+    env_path = os.environ.get("EDUCORE_AUDIT_LOG_PATH") or os.environ.get("AIMS_RAG_AUDIT_LOG_PATH")
+    if env_path:
+        return os.path.abspath(env_path)
+
+    is_test_env = (
+        os.environ.get("EDUCORE_TEST_MODE") == "1"
+        or "pytest" in sys.modules
+        or "unittest" in sys.modules
+        or "PYTEST_CURRENT_TEST" in os.environ
+        or any(arg.endswith("pytest") or "test" in os.path.basename(arg).lower() for arg in sys.argv)
+    )
+    if is_test_env:
+        return os.path.join(BASE_DIR, "data", "logs", "test_aims_rag_audit.jsonl")
+
+    _candidate_audit_paths = [
+        os.path.join(BASE_DIR, "data", "logs", "aims_rag_audit.jsonl"),
+        os.path.join(BASE_DIR, "aims_rag_audit.jsonl")
+    ]
+    return next((p for p in _candidate_audit_paths if os.path.exists(p)), _candidate_audit_paths[0])
+
+AUDIT_LOG_PATH = get_audit_log_path()
+os.makedirs(os.path.dirname(AUDIT_LOG_PATH), exist_ok=True)
 
 # ==============================================================================
 # 1. ENTERPRISE DATA LOADER & CHROMA RETRIEVAL
@@ -71,6 +91,7 @@ from langchain_ollama import OllamaEmbeddings, ChatOllama
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.output_parsers import StrOutputParser
 from framework_sync_service import FrameworkSyncService, FRAMEWORK_DIR
+from document_readers import SUPPORTED_EXTENSIONS
 from tps_counter import TPSCounter, TELEMETRY
 
 _CHROMA_DB = None
@@ -157,8 +178,8 @@ def get_chroma_db() -> Chroma:
 
 def sync_chroma_corpus(force: bool = False) -> Dict[str, Any]:
     """
-    Incrementally translates updated or new .docx framework files into embeddings
-    and applies atomic upserts/deletions to the Chroma vector store.
+    Incrementally translates updated or new framework documents (.docx, .pdf, .xlsx)
+    into embeddings and applies atomic upserts/deletions to the Chroma vector store.
     """
     global _CHROMA_DB
     with _CHROMA_LOCK:
@@ -239,11 +260,13 @@ def sync_chroma_corpus(force: bool = False) -> Dict[str, Any]:
             "duration_ms": delta["duration_ms"],
             "compliance": "ISO/IEC 42001:2023 Clause 8.2 & Annex A.8"
         }
+        target_log_path = get_audit_log_path()
         try:
-            with open(AUDIT_LOG_PATH, "a", encoding="utf-8") as f:
+            os.makedirs(os.path.dirname(target_log_path), exist_ok=True)
+            with open(target_log_path, "a", encoding="utf-8") as f:
                 f.write(json.dumps(log_entry, ensure_ascii=False) + "\n")
-        except Exception:
-            pass
+        except Exception as e:
+            sys.stderr.write(f"[WARN] Failed to write sync audit log to {target_log_path}: {e}\n")
 
         return {
             "status": "synced",
@@ -360,17 +383,18 @@ def extract_clean_user_prompt(text: str) -> str:
     return cleaned.strip() or text.strip()
 
 # Regex patterns for deterministic document ID and filename matching
-_EXPLICIT_ID_REGEX = re.compile(r'\b(?:EDU-FW|DOC)[A-Za-z0-9_-]+\b', re.IGNORECASE)
-_DOCX_FILENAME_REGEX = re.compile(r'\b[A-Za-z0-9_-]+\.docx\b', re.IGNORECASE)
+_EXPLICIT_ID_REGEX = re.compile(r'\b(?:EDU-FW|EDU-PDF|EDU-XLS|DOC)[A-Za-z0-9_-]+\b', re.IGNORECASE)
+_DOC_FILENAME_REGEX = re.compile(r'\b[A-Za-z0-9_-]+\.(?:docx|pdf|xlsx?)\b', re.IGNORECASE)
 _SLUG_ID_REGEX = re.compile(r'\b(?:EDU|DOC)[-_][A-Za-z0-9_-]+\b', re.IGNORECASE)
 
-def find_explicit_document_matches(raw_prompt: str, clean_query: str, chroma: Chroma) -> List[Tuple[Document, float]]:
+def find_explicit_document_matches(raw_prompt: str, clean_query: str, chroma: Chroma) -> List[tuple[Document, float]]:
     """
     Deterministic hybrid lookup: If the user query contains an explicit document ID,
-    chunk ID, .docx filename, or ID slug, fetch the matching document(s) directly
-    from Chroma with a score of 0.0, bypassing semantic vector distance thresholds.
+    chunk ID, document filename (.docx, .pdf, .xlsx), or ID slug, fetch the matching
+    document(s) directly from Chroma with a score of 0.0, bypassing semantic vector
+    distance thresholds.
     """
-    matches: List[Tuple[Document, float]] = []
+    matches: List[tuple[Document, float]] = []
     seen_ids = set()
 
     # 1. Check for exact full IDs (e.g. EDU-FW-EDU-126-S01-001, DOC-CURR-001)
@@ -388,8 +412,8 @@ def find_explicit_document_matches(raw_prompt: str, clean_query: str, chroma: Ch
         except Exception:
             pass
 
-    # 2. Check for .docx filenames (e.g. EDU-126.docx)
-    found_files = _DOCX_FILENAME_REGEX.findall(raw_prompt) + _DOCX_FILENAME_REGEX.findall(clean_query)
+    # 2. Check for document filenames (e.g. EDU-126.docx, report.pdf, data.xlsx)
+    found_files = _DOC_FILENAME_REGEX.findall(raw_prompt) + _DOC_FILENAME_REGEX.findall(clean_query)
     for fname in dict.fromkeys(found_files):
         try:
             res = chroma.get(where={"source_file": fname})
@@ -1202,11 +1226,13 @@ def log_audit(user_session: Dict[str, Any], query: str, docs: List[Any], respons
         "response_length": len(response),
         "latency_ms": round(latency_ms, 2)
     }
+    target_log_path = get_audit_log_path()
     try:
-        with open(AUDIT_LOG_PATH, "a", encoding="utf-8") as f:
+        os.makedirs(os.path.dirname(target_log_path), exist_ok=True)
+        with open(target_log_path, "a", encoding="utf-8") as f:
             f.write(json.dumps(entry) + "\n")
-    except Exception:
-        pass
+    except Exception as e:
+        sys.stderr.write(f"[WARN] Failed to write RAG audit log to {target_log_path}: {e}\n")
 
 # ==============================================================================
 # 5. OPEN WEBUI INTEGRATION PERSONAS & USER MAPPINGS
@@ -1634,6 +1660,7 @@ class EducoreOpenAIHandler(BaseHTTPRequestHandler):
             chroma = get_chroma_db()
             resp = {
                 "status": "online",
+                "supported_formats": sorted(SUPPORTED_EXTENSIONS),
                 "framework_dirs": _SYNC_SERVICE.watch_dirs,
                 "framework_dir": _SYNC_SERVICE.framework_dir,
                 "last_sync_time": state.get("last_sync_time", 0),
@@ -1651,8 +1678,9 @@ class EducoreOpenAIHandler(BaseHTTPRequestHandler):
             self.send_cors_headers()
             self.end_headers()
             entries = []
-            if os.path.exists(AUDIT_LOG_PATH):
-                with open(AUDIT_LOG_PATH, "r", encoding="utf-8") as f:
+            active_audit_path = get_audit_log_path()
+            if os.path.exists(active_audit_path):
+                with open(active_audit_path, "r", encoding="utf-8") as f:
                     for line in f:
                         if line.strip():
                             try:
@@ -1887,7 +1915,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Educore Enterprise RAG Governance Server")
     parser.add_argument("port", nargs="?", type=int, default=8000, help="Port to bind the server to (default: 8000)")
     parser.add_argument("--port", "-p", dest="port_opt", type=int, default=None, help="Port to bind the server to")
-    parser.add_argument("--watch-dir", "-w", action="append", help="Directory to watch for .docx files (can specify multiple times)")
+    parser.add_argument("--watch-dir", "-w", action="append", help="Directory to watch for .docx, .pdf, and .xlsx files (can specify multiple times)")
     parser.add_argument("--sync-interval", type=int, default=10, help="Background watcher polling interval in seconds (default: 10)")
     args = parser.parse_args()
 

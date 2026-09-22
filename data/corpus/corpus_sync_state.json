@@ -81,8 +81,98 @@
       ],
       "chunk_count": 6,
       "last_synced": 1790065256.6091743
+    },
+    "EDU-2026-09-21.docx": {
+      "hash": "1dbaa31460feba0402fa3f402d269d93df3d20f966beca014680cfdc36b2ad67",
+      "mtime": 1790073784.6307812,
+      "chunk_ids": [
+        "EDU-FW-EDU-2026-09-21-S01-001"
+      ],
+      "chunk_count": 1,
+      "last_synced": 1790073785.0762434
+    },
+    "September 2026 Purchases.docx": {
+      "hash": "3a57382276bda41c6cce12d696faf158e2d3fd6b21c25423c8e5e13055ac25bb",
+      "mtime": 1790074670.620178,
+      "chunk_ids": [
+        "EDU-FW-SEPTEMBER-2026-PURCH-S01-001",
+        "EDU-FW-SEPTEMBER-2026-PURCH-S02-001"
+      ],
+      "chunk_count": 2,
+      "last_synced": 1790074674.987139
+    },
+    "0652_w25_ms_21.pdf": {
+      "hash": "82bed0acc3fb5ac77160ce1d965d0413fe49da4f536235fb8491f8c4f763a4fd",
+      "mtime": 1790079016.2828336,
+      "chunk_ids": [
+        "EDU-PDF-0652-W25-MS-21-S01-001",
+        "EDU-PDF-0652-W25-MS-21-S02-001",
+        "EDU-PDF-0652-W25-MS-21-S03-001",
+        "EDU-PDF-0652-W25-MS-21-S04-001",
+        "EDU-PDF-0652-W25-MS-21-S05-001",
+        "EDU-PDF-0652-W25-MS-21-S06-001",
+        "EDU-PDF-0652-W25-MS-21-S07-001",
+        "EDU-PDF-0652-W25-MS-21-S08-001",
+        "EDU-PDF-0652-W25-MS-21-S09-001"
+      ],
+      "chunk_count": 9,
+      "last_synced": 1790079655.199426
+    },
+    "0652_w25_qp_21.pdf": {
+      "hash": "c91b9cd2ffe9c140c676319af6f3c3a2799e8a992e9b25a3f0f0a2e5fc86865a",
+      "mtime": 1790079010.255322,
+      "chunk_ids": [
+        "EDU-PDF-0652-W25-QP-21-S01-001",
+        "EDU-PDF-0652-W25-QP-21-S02-001",
+        "EDU-PDF-0652-W25-QP-21-S03-001",
+        "EDU-PDF-0652-W25-QP-21-S04-001",
+        "EDU-PDF-0652-W25-QP-21-S05-001",
+        "EDU-PDF-0652-W25-QP-21-S06-001",
+        "EDU-PDF-0652-W25-QP-21-S07-001",
+        "EDU-PDF-0652-W25-QP-21-S08-001",
+        "EDU-PDF-0652-W25-QP-21-S09-001",
+        "EDU-PDF-0652-W25-QP-21-S10-001",
+        "EDU-PDF-0652-W25-QP-21-S11-001",
+        "EDU-PDF-0652-W25-QP-21-S12-001",
+        "EDU-PDF-0652-W25-QP-21-S13-001",
+        "EDU-PDF-0652-W25-QP-21-S14-001",
+        "EDU-PDF-0652-W25-QP-21-S15-001",
+        "EDU-PDF-0652-W25-QP-21-S16-001",
+        "EDU-PDF-0652-W25-QP-21-S17-001",
+        "EDU-PDF-0652-W25-QP-21-S18-001",
+        "EDU-PDF-0652-W25-QP-21-S19-001",
+        "EDU-PDF-0652-W25-QP-21-S20-001",
+        "EDU-PDF-0652-W25-QP-21-S21-001",
+        "EDU-PDF-0652-W25-QP-21-S22-001",
+        "EDU-PDF-0652-W25-QP-21-S23-001",
+        "EDU-PDF-0652-W25-QP-21-S24-001",
+        "EDU-PDF-0652-W25-QP-21-S25-001",
+        "EDU-PDF-0652-W25-QP-21-S26-001",
+        "EDU-PDF-0652-W25-QP-21-S27-001",
+        "EDU-PDF-0652-W25-QP-21-S28-001",
+        "EDU-PDF-0652-W25-QP-21-S29-001",
+        "EDU-PDF-0652-W25-QP-21-S30-001",
+        "EDU-PDF-0652-W25-QP-21-S31-001",
+        "EDU-PDF-0652-W25-QP-21-S32-001",
+        "EDU-PDF-0652-W25-QP-21-S33-001",
+        "EDU-PDF-0652-W25-QP-21-S34-001",
+        "EDU-PDF-0652-W25-QP-21-S35-001",
+        "EDU-PDF-0652-W25-QP-21-S36-001",
+        "EDU-PDF-0652-W25-QP-21-S37-001",
+        "EDU-PDF-0652-W25-QP-21-S38-001",
+        "EDU-PDF-0652-W25-QP-21-S39-001",
+        "EDU-PDF-0652-W25-QP-21-S40-001",
+        "EDU-PDF-0652-W25-QP-21-S41-001",
+        "EDU-PDF-0652-W25-QP-21-S42-001",
+        "EDU-PDF-0652-W25-QP-21-S43-001",
+        "EDU-PDF-0652-W25-QP-21-S44-001",
+        "EDU-PDF-0652-W25-QP-21-S45-001",
+        "EDU-PDF-0652-W25-QP-21-S45-002"
+      ],
+      "chunk_count": 46,
+      "last_synced": 1790079655.27421
     }
   },
-  "last_sync_time": 1790069211.2695131,
-  "total_chunks": 34
+  "last_sync_time": 1790079655.282427,
+  "total_chunks": 92
 }

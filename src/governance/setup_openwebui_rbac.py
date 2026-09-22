@@ -138,42 +138,177 @@ GROUPS_DEF = [
     }
 ]
 
+DEFAULT_PROMPT_SUGGESTIONS = [
+    {
+        "title": ["Study assistance", "Cambridge IGCSE & A-Level"],
+        "content": "Help me study and understand a core concept for Cambridge IGCSE or A-Level exams with guided explanations."
+    },
+    {
+        "title": ["Lesson planning", "Cambridge syllabus alignment"],
+        "content": "Help me draft a structured lesson plan aligned with Cambridge curriculum standards and differentiated classroom tasks."
+    },
+    {
+        "title": ["Educore policies", "safeguarding & campus guidelines"],
+        "content": "Explain Educore's child safeguarding and ICT acceptable use policies across our campuses."
+    },
+    {
+        "title": ["Campus operations", "Trident, Sentinel & Frontier"],
+        "content": "What are the standard operational procedures and calendar dates across Trident, Sentinel, and Frontier campuses?"
+    },
+    {
+        "title": ["IT & systems support", "campus tech troubleshooting"],
+        "content": "How do I troubleshoot campus lab connectivity or report a systems issue to Educore IT DevOps?"
+    },
+    {
+        "title": ["Pastoral & wellbeing", "student support guidelines"],
+        "content": "What pastoral care and student wellbeing resources are available for day and boarding learners at Educore schools?"
+    }
+]
+
 MODELS_DEF = [
     {
         "id": "educore-socratic-student",
         "name": "Educore Socratic Tutor (Tier C - Student)",
         "description": "Student Socratic tutor enforcing diagnostic hints, cognitive bypass prevention, and Adelaide declarations.",
-        "allowed_groups": ["group-students-001", "group-execadmin-006"]
+        "allowed_groups": ["group-students-001", "group-execadmin-006"],
+        "suggestion_prompts": [
+            {
+                "title": ["Socratic vocabulary", "Cambridge IGCSE & A-Level"],
+                "content": "Help me study key terminology and vocabulary for Cambridge IGCSE / A-Level subjects. Quiz me with Socratic questions and fill-in-the-blanks to test my understanding."
+            },
+            {
+                "title": ["Step-by-step problem", "Socratic guidance"],
+                "content": "I have a challenging math or science problem from my homework. Guide me through the method step-by-step with Socratic diagnostic hints rather than giving me the final answer."
+            },
+            {
+                "title": ["Revise exam topic", "A-Level & IGCSE concepts"],
+                "content": "Help me revise a difficult topic for my Cambridge exams (e.g. mechanics, cell biology, or organic chemistry). Ask me questions to test my grasp."
+            },
+            {
+                "title": ["Essay structure", "planning an argument"],
+                "content": "Help me structure an analytical essay for Cambridge English Literature or History following Cambridge assessment objectives. Critique my thesis and outline."
+            }
+        ]
     },
     {
         "id": "educore-faculty-academic",
         "name": "Educore Faculty Academic Copilot (Tier B - Educator)",
         "description": "Lesson design, rubric creation, and Cambridge 0580 syllabus alignment with Edu-03 PII de-id.",
-        "allowed_groups": ["group-faculty-002", "group-execadmin-006"]
+        "allowed_groups": ["group-faculty-002", "group-execadmin-006"],
+        "suggestion_prompts": [
+            {
+                "title": ["Lesson planning", "Cambridge 0580 syllabus"],
+                "content": "Draft a 50-minute structured lesson plan aligned with Cambridge IGCSE Mathematics (0580) or Science, including differentiated learning activities."
+            },
+            {
+                "title": ["Assessment rubric", "formative & summative criteria"],
+                "content": "Generate a 4-tier assessment rubric for a Secondary or Primary coursework project with clear performance descriptors and moderation guidelines."
+            },
+            {
+                "title": ["Differentiated tasks", "mixed-ability classroom"],
+                "content": "Suggest differentiated extension and support activities for a mixed-ability class across our Sentinel and Trident campuses."
+            },
+            {
+                "title": ["Curriculum alignment", "Cambridge & Zambian standards"],
+                "content": "How do I cross-align this Cambridge curriculum unit with Zambian national syllabus requirements for our primary and secondary learners?"
+            }
+        ]
     },
     {
         "id": "educore-pastoral-counselor",
         "name": "Educore Pastoral Safeguarding Copilot (Tier A - Counselor)",
         "description": "Confidential student welfare and pastoral care review with egress NRC/phone shield.",
-        "allowed_groups": ["group-pastoral-003", "group-execadmin-006"]
+        "allowed_groups": ["group-pastoral-003", "group-execadmin-006"],
+        "suggestion_prompts": [
+            {
+                "title": ["Safeguarding review", "pastoral care protocol"],
+                "content": "Review our Educore child safeguarding policy guidelines and reporting workflow for a confidential student welfare concern."
+            },
+            {
+                "title": ["Boarding welfare", "pastoral support strategies"],
+                "content": "What are effective pastoral support interventions and wellbeing routines for secondary boarding students at Trident College?"
+            },
+            {
+                "title": ["Restorative discussion", "resolving peer conflicts"],
+                "content": "Provide a restorative conversation framework to guide a pastoral mediation session between students while ensuring emotional safety."
+            },
+            {
+                "title": ["De-identified notes", "structuring pastoral logs"],
+                "content": "Help me format a pastoral incident follow-up report adhering strictly to Zambian Data Protection Act No. 3 de-identification standards."
+            }
+        ]
     },
     {
         "id": "educore-finance-audit",
         "name": "Educore Finance & Bursar Copilot (Tier A - Finance)",
         "description": "M365 Copilot Finance with Fin-01 Dual-Key manual calculation audits and FQM subsidy masking.",
-        "allowed_groups": ["group-finance-004", "group-execadmin-006"]
+        "allowed_groups": ["group-finance-004", "group-execadmin-006"],
+        "suggestion_prompts": [
+            {
+                "title": ["Fee reconciliation", "campus bursary operations"],
+                "content": "Review standard reconciliation procedures for termly school fees, meal allowances, and boarding charges across Educore campuses."
+            },
+            {
+                "title": ["FQM subsidy review", "corporate bursary guidelines"],
+                "content": "Outline the audit verification checklist for First Quantum Minerals (FQM) educational subsidies and staff bursary allocations."
+            },
+            {
+                "title": ["Procurement policy", "departmental requisitions"],
+                "content": "Verify the approval thresholds, quotation requirements, and dual-key authorization workflow for campus departmental purchase requisitions."
+            },
+            {
+                "title": ["Budget variance", "quarterly operational expenses"],
+                "content": "How should campus heads of department structure their quarterly budget variance report against approved annual CAPEX/OPEX allocations?"
+            }
+        ]
     },
     {
         "id": "educore-it-devops",
         "name": "Educore IT & DevOps Copilot (Tier A - Restricted IT)",
         "description": "GitHub Copilot Enterprise with IT-01 pre-commit secret scanning and SAST validation.",
-        "allowed_groups": ["group-itdevops-005", "group-execadmin-006"]
+        "allowed_groups": ["group-itdevops-005", "group-execadmin-006"],
+        "suggestion_prompts": [
+            {
+                "title": ["Campus network", "VLAN & Wi-Fi diagnostics"],
+                "content": "Provide a diagnostic script and checklist to troubleshoot school lab Wi-Fi roaming and VLAN routing between staff and student networks."
+            },
+            {
+                "title": ["Workstation script", "automated lab maintenance"],
+                "content": "Generate a PowerShell maintenance script to verify Windows updates, clear temporary profiles, and audit software on campus computer lab machines."
+            },
+            {
+                "title": ["School MIS audit", "backup verification"],
+                "content": "Outline an automated procedure to verify daily school management system (MIS) database backups and ensure off-site encryption compliance."
+            },
+            {
+                "title": ["IT security policy", "incident response protocol"],
+                "content": "Review the incident response protocol for suspected phishing emails targeting campus staff accounts or school credentials."
+            }
+        ]
     },
     {
         "id": "educore-admin-governance",
         "name": "Educore Executive Governance & ISO 42001 Copilot (Tier A - Admin)",
         "description": "Executive administration, cross-campus multi-tenant oversight, and 6-Step AIIA management.",
-        "allowed_groups": ["group-execadmin-006"]
+        "allowed_groups": ["group-execadmin-006"],
+        "suggestion_prompts": [
+            {
+                "title": ["AIIA risk review", "AI system impact assessment"],
+                "content": "Guide me through conducting a 6-Step Algorithmic Impact Assessment (AIIA) for a new educational technology deployment under ISO 42001."
+            },
+            {
+                "title": ["Multi-campus audit", "cross-campus compliance"],
+                "content": "Generate a compliance audit checklist covering academic standards, health & safety, and licensing across Trident, Sentinel, and Frontier campuses."
+            },
+            {
+                "title": ["Campus policy update", "governance harmonization"],
+                "content": "Draft an executive policy memo harmonizing staff professional development and Cambridge teacher accreditation standards across all campuses."
+            },
+            {
+                "title": ["Executive summary", "termly performance review"],
+                "content": "Provide an executive briefing template summarizing termly academic progression, boarding capacity, and operational KPIs for the Educore board."
+            }
+        ]
     },
     {
         "id": "educore-enterprise-all",
@@ -186,6 +321,24 @@ MODELS_DEF = [
             "group-finance-004",
             "group-itdevops-005",
             "group-execadmin-006"
+        ],
+        "suggestion_prompts": [
+            {
+                "title": ["Educore policies", "institutional guidelines"],
+                "content": "Search and summarize Educore institutional policies regarding staff conduct, child safeguarding, and ICT acceptable use."
+            },
+            {
+                "title": ["Campus calendar", "term dates & events"],
+                "content": "What are the key academic calendar dates, exeat weekends, and assessment periods across Trident and Sentinel campuses this academic year?"
+            },
+            {
+                "title": ["Cross-campus inquiry", "Trident, Sentinel & Frontier"],
+                "content": "Explain how curricular coordination and sports fixtures are organized across Trident College, Sentinel Kabitaka, and the Prep schools."
+            },
+            {
+                "title": ["Staff resources", "administrative procedures"],
+                "content": "Where can I find the official standard operating procedures for travel requisitions, professional development requests, and HR inquiries?"
+            }
         ]
     }
 ]
@@ -266,7 +419,8 @@ def provision_openwebui_rbac():
         meta_dict = {
             "description": m["description"],
             "profile_image_url": "/static/educore-rag-e.png",
-            "capabilities": {"vision": False, "citations": True}
+            "capabilities": {"vision": False, "citations": True},
+            "suggestion_prompts": m.get("suggestion_prompts", [])
         }
         params_dict = {}
 
@@ -374,7 +528,7 @@ def provision_openwebui_rbac():
         )
     print(f"  ✓ Function '{func_name}' registered as Global Active Filter.")
 
-    # 5. Disable Direct Ollama Provider in Open WebUI Configuration
+    # 5. Disable Direct Ollama Provider & Update Default Prompt Suggestions
     cur.execute("SELECT key FROM config WHERE key = 'ollama.enable'")
     if cur.fetchone():
         cur.execute("UPDATE config SET value = 'false', updated_at = ? WHERE key = 'ollama.enable'", (now,))
@@ -382,8 +536,29 @@ def provision_openwebui_rbac():
         cur.execute("INSERT INTO config (key, value, updated_at) VALUES ('ollama.enable', 'false', ?)", (now,))
     print("  ✓ Open WebUI direct Ollama provider disabled (exposing only governed Educore models).")
 
+    cur.execute("SELECT key FROM config WHERE key = 'ui.prompt_suggestions'")
+    if cur.fetchone():
+        cur.execute("UPDATE config SET value = ?, updated_at = ? WHERE key = 'ui.prompt_suggestions'", (json.dumps(DEFAULT_PROMPT_SUGGESTIONS), now))
+    else:
+        cur.execute("INSERT INTO config (key, value, updated_at) VALUES ('ui.prompt_suggestions', ?, ?)", (json.dumps(DEFAULT_PROMPT_SUGGESTIONS), now))
+    print("  ✓ Open WebUI default prompt suggestions updated with Educore institutional prompts.")
+
     con.commit()
     con.close()
+
+    # 6. Synchronize Branding, Logos & Laws of UX CSS
+    try:
+        from apply_educore_logos import apply_branding
+    except ImportError:
+        try:
+            from src.governance.apply_educore_logos import apply_branding
+        except ImportError:
+            apply_branding = None
+
+    if apply_branding:
+        print("\n  [Synchronizing Educore Branding & Laws of UX CSS...]")
+        apply_branding(base_dir=BASE_DIR, db_path=WEBUI_DB_PATH)
+
     print("\n==============================================================================")
     print("  OPEN WEBUI RBAC & CLEARANCE PROVISIONING COMPLETE!")
     print("  - 6 Organizational Role Groups Active")
