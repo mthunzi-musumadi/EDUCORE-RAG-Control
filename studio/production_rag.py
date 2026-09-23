@@ -1002,6 +1002,388 @@ def execute_rag_agent(
     return final_response
 
 # ==============================================================================
+# CONTEXTUAL FOLLOW-UP SUGGESTIONS ENGINE
+# ==============================================================================
+def generate_contextual_followups(
+    query: str,
+    response_text: str,
+    retrieved_docs: List[Any],
+    user_session: Dict[str, Any],
+    chat_history: Optional[List[Dict[str, str]]] = None,
+    model_id: Optional[str] = None
+) -> List[str]:
+    """
+    Generates dynamic, context-aware suggested follow-up questions tailored to:
+    1. Multi-turn conversational context & trajectory (user query + assistant response + past turns)
+    2. Active topic and entities (Cambridge syllabus, math topics, lesson plans, safeguarding, policies, finances, AI governance)
+    3. User role & zero-trust clearance boundaries (public, staff, counselor, admin)
+    4. Anti-repetition deduplication against queries and concepts already addressed in the active session.
+    """
+    clearance = str(user_session.get("clearance", "public")).lower()
+    role = str(user_session.get("role", clearance)).lower()
+    campus_raw = str(user_session.get("campus", "")).strip()
+    campus = campus_raw.upper() if campus_raw.lower() not in ["", "all"] else "Educore"
+
+    # Track all past user turns in this conversation to avoid repeating questions
+    past_user_queries: List[str] = []
+    past_assistant_replies: List[str] = []
+    if chat_history:
+        for turn in chat_history:
+            if turn.get("role") == "user":
+                past_user_queries.append(str(turn.get("content", "")).strip())
+            elif turn.get("role") == "assistant":
+                past_assistant_replies.append(str(turn.get("content", "")).strip())
+
+    current_q_clean = query.strip()
+    all_past_queries_clean = [q.lower().rstrip("?.!") for q in past_user_queries + [current_q_clean]]
+
+    q_lower = query.lower().strip()
+    r_lower = response_text.lower().strip()
+    combined = f"{q_lower} {r_lower}"
+
+    doc_titles = [str(d.metadata.get("title", "")) for d in retrieved_docs if hasattr(d, "metadata")]
+    doc_ids = [str(d.metadata.get("id", "")) for d in retrieved_docs if hasattr(d, "metadata")]
+    doc_meta_str = f"{' '.join(doc_titles)} {' '.join(doc_ids)}".lower()
+    history_texts = [str(t.get("content", "")) for t in (chat_history or [])]
+    history_str = " ".join(history_texts).lower()
+    all_context = f"{combined} {history_str} {doc_meta_str}"
+
+    # Semantic concept extraction: identify topics and questions already addressed in dialogue
+    addressed_concepts = set()
+    dialogue_corpus = f"{history_str} {combined}"
+
+    if any(k in dialogue_corpus for k in ["emergency contact", "guardian", "phone number", "nrc", "next of kin"]):
+        addressed_concepts.add("emergency_contact")
+    if any(k in dialogue_corpus for k in ["accommodation", "accommodations", "flexible deadline", "extra time"]):
+        addressed_concepts.add("accommodations")
+    if any(k in dialogue_corpus for k in ["bereavement notification", "sensitive notification", "notify teachers", "notification for"]):
+        addressed_concepts.add("bereavement_notification")
+    if any(k in dialogue_corpus for k in ["review date", "check-in milestone", "30-day", "scheduled review"]):
+        addressed_concepts.add("review_date")
+    if any(k in dialogue_corpus for k in ["de-identification", "dpa no. 3", "zambian data protection act", "anonymi"]):
+        addressed_concepts.add("de_identification")
+    if any(k in dialogue_corpus for k in ["practice problem on probability", "probability problem", "bag contains 4 red", "calculate the probability"]):
+        addressed_concepts.add("prob_practice")
+    if any(k in dialogue_corpus for k in ["diagnostic hint", "step-by-step diagnostic hint", "p(first counter"]):
+        addressed_concepts.add("prob_hint")
+    if any(k in dialogue_corpus for k in ["mark scheme and working", "full mark scheme", "mark allocation"]):
+        addressed_concepts.add("prob_mark_scheme")
+    if any(k in dialogue_corpus for k in ["quadratic formula method", "quadratic formula ax^2", "break down the quadratic"]):
+        addressed_concepts.add("quad_formula")
+    if any(k in dialogue_corpus for k in ["creative starter", "starter activities for introducing quadratic", "creative ideas for introducing quadratic"]):
+        addressed_concepts.add("quad_starter")
+    if any(k in dialogue_corpus for k in ["45-minute lesson plan", "introductory lesson plan"]):
+        addressed_concepts.add("lesson_plan")
+    if any(k in dialogue_corpus for k in ["turnaround time for publishing", "moderation and published within 5"]):
+        addressed_concepts.add("marking_turnaround")
+    if any(k in dialogue_corpus for k in ["moderation is delayed", "delayed beyond the turnaround"]):
+        addressed_concepts.add("moderation_delay")
+    if any(k in dialogue_corpus for k in ["summarize student submission #8812", "submission #8812 provides an analysis"]):
+        addressed_concepts.add("submission_8812_summary")
+    if any(k in dialogue_corpus for k in ["q3 operational expenditure and science", "q3 expenditure totaled zmw"]):
+        addressed_concepts.add("q3_expenditure")
+    if any(k in dialogue_corpus for k in ["bursary disbursements for trident", "executive summary of bursary"]):
+        addressed_concepts.add("bursary_summary")
+
+    candidates: List[str] = []
+
+    # 1. Restricted Access Fallback: suggest permissible alternative pathways
+    if "i do not have access" in r_lower or "access strictly barred" in r_lower or "access denied" in r_lower:
+        if clearance in ["public", "student"]:
+            candidates = [
+                "What topics are covered in the Cambridge IGCSE 0580 syllabus?",
+                "Can you guide me through a practice math problem with Socratic hints?",
+                "What public academic resources are available for Educore students?",
+                "How does Educore AI assist with revision and study planning?"
+            ]
+        elif clearance in ["staff", "faculty"]:
+            candidates = [
+                "Show me authorized faculty curriculum standards and teaching guidelines",
+                "What are the assessment grading turnaround policies for my campus?",
+                "How do I submit an elevated access request to the AI Steering Committee?",
+                "Draft a lesson plan aligned with Cambridge curriculum standards"
+            ]
+        elif clearance in ["counselor", "pastoral"]:
+            candidates = [
+                "Summarize active student welfare accommodation guidelines",
+                "How do I log a confidential safeguarding case under Zambian DPA No. 3?",
+                "What pastoral care resources are available for Sentinel students?",
+                "What is the procedure for scheduling a student welfare review?"
+            ]
+        else:
+            candidates = [
+                "List all available institutional records in the Chroma enterprise store",
+                "What are the multi-campus governance frameworks under ISO 42001?",
+                "Inspect current access control rules across campuses",
+                "Review the master RACI matrix for institutional AI rollout"
+            ]
+
+    # 2. Conversational Greetings / Polite Courtesies
+    elif re.search(r'^(hi|hello|hey|good\s+morning|good\s+afternoon|good\s+day|good\s+evening|howdy|greetings)\b', q_lower) or (len(q_lower.split()) <= 3 and any(w in q_lower for w in ["hello", "hi", "morning", "afternoon", "evening", "assist", "help me"])):
+        if clearance in ["public", "student"]:
+            candidates = [
+                "What topics are in the Cambridge IGCSE Mathematics 0580 syllabus?",
+                "Can you explain the quadratic formula ax^2 + bx + c = 0 with an example?",
+                "Help me revise key concepts for my upcoming Cambridge exams",
+                "Give me a step-by-step math problem with Socratic hints"
+            ]
+        elif clearance in ["staff", "faculty"]:
+            candidates = [
+                "What time is the mandatory staff morning briefing?",
+                "What is the turnaround time for publishing assessment marks to the portal?",
+                "Give me 2 creative ideas for introducing quadratic factoring in class",
+                "Summarize student submission #8812 regarding network security"
+            ]
+        elif clearance in ["counselor", "pastoral"]:
+            candidates = [
+                "Summarize pastoral safeguarding case #402 assessment notes and recommended timeline",
+                "What accommodations should we offer to student #402 for Term 2?",
+                "How do I formulate a sensitive bereavement notification for teachers?",
+                "What are the de-identification standards under Zambian Data Protection Act No. 3?"
+            ]
+        else:
+            candidates = [
+                "What was the Trident campus Q3 operational expenditure and science lab allocation?",
+                "Provide an executive summary of bursary disbursements for Trident campus",
+                "How are child safeguarding pastoral cases partitioned across campuses?",
+                "What is the status of our ISO/IEC 42001 AIMS controls and audit ledger?"
+            ]
+
+    # 3. Topic: Pastoral Safeguarding & Case #402 (Only authorized for counselor / admin)
+    elif clearance in ["counselor", "admin", "pastoral"] and any(w in all_context for w in ["402", "case #402", "safeguarding", "pastoral", "bereavement", "anxiety", "welfare", "doc-sentinel-004"]):
+        if any(w in q_lower for w in ["emergency contact", "guardian", "phone"]):
+            candidates = [
+                "What accommodations should we offer to student #402 for Term 2?",
+                "How do I formulate a sensitive bereavement notification for academic teachers?",
+                "What is the scheduled follow-up review date with the campus head?",
+                "What de-identification steps are required before archiving this pastoral case?"
+            ]
+        elif any(w in q_lower for w in ["accommodation", "accommodations"]):
+            candidates = [
+                "Is there an emergency contact or guardian designated in Case #402?" if "emergency_contact" not in addressed_concepts else "What is the recommended timeline for reviewing academic progress under these accommodations?",
+                "How do I formulate a sensitive bereavement notification for academic teachers?",
+                "What is the recommended timeline for reviewing academic progress under these accommodations?",
+                "What support services can Sentinel campus provide for family counseling?"
+            ]
+        elif any(w in q_lower for w in ["notification", "bereavement"]):
+            candidates = [
+                "What accommodations should we offer to student #402 for Term 2?",
+                "Is there an emergency contact or guardian designated in Case #402?" if "emergency_contact" not in addressed_concepts else "What is the scheduled follow-up review date with the campus head?",
+                "How do we handle confidential pastoral records under Zambian Data Protection Act No. 3?",
+                "Schedule a 30-day check-in milestone for student #402"
+            ]
+        else:
+            # Trajectory progression: select next unaddressed facets
+            pool = [
+                ("accommodations", "What accommodations should we offer to student #402 for Term 2?"),
+                ("emergency_contact", "Is there an emergency contact or guardian designated in Case #402?"),
+                ("bereavement_notification", "How do I formulate a sensitive bereavement notification for teachers?"),
+                ("review_date", "What is the scheduled follow-up review date with the campus head?"),
+                ("de_identification", "What de-identification steps are required before archiving this pastoral case?")
+            ]
+            unaddressed = [q for tag, q in pool if tag not in addressed_concepts]
+            candidates = unaddressed if len(unaddressed) >= 2 else [q for _, q in pool]
+
+    # 4. Topic: Cambridge IGCSE Math 0580 / Mathematics
+    elif any(w in all_context for w in ["0580", "cambridge", "igcse", "mathematics", "math", "quadratic", "probability", "geometry", "algebra", "statistics", "trigonometry", "factoring", "tree diagram"]):
+        if any(w in all_context for w in ["probability", "tree diagram", "dice", "marble", "independent", "counters"]):
+            if any(w in q_lower for w in ["hint", "guide", "step", "clue"]):
+                candidates = [
+                    "Give me the next hint to verify my calculation",
+                    "Show the complete mark allocation for each working step",
+                    "Can we try another exam-style question on this topic?",
+                    "Provide 3 differentiated practice exercises on probability (Foundation to Extended)"
+                ]
+            elif any(w in q_lower for w in ["practice", "problem", "exercise", "question"]):
+                candidates = [
+                    "Can you give me a step-by-step diagnostic hint for solving this problem?",
+                    "Provide the full mark scheme and working for this problem",
+                    "Can we try a more challenging Extended syllabus probability question?",
+                    "How do I explain conditional probability using a tree diagram to students?"
+                ]
+            else:
+                candidates = [
+                    "Give me a practice problem on Probability (Topic 5)",
+                    "How do I explain conditional probability using a tree diagram to students?",
+                    "Provide 3 differentiated practice exercises on probability (Foundation to Extended)",
+                    "What are the Cambridge 0580 calculator and formula sheet rules for this topic?"
+                ]
+        elif any(w in all_context for w in ["quadratic", "factoring", "ax^2", "parabola"]):
+            if any(w in q_lower for w in ["formula", "example", "ax^2", "solve"]):
+                candidates = [
+                    "Can you break down the quadratic formula method with a step-by-step example?",
+                    "Give me 2 creative starter activities for introducing quadratic factoring in class",
+                    "What are common student misconceptions when solving ax^2 + bx + c = 0?",
+                    "Draft a 5-question quick exit ticket testing quadratic factorisation"
+                ]
+            elif any(w in q_lower for w in ["creative", "ideas", "starter", "factoring"]):
+                candidates = [
+                    "Draft a 45-minute lesson plan incorporating these factoring starter activities",
+                    "How do I differentiate quadratic factoring for struggling vs advanced learners?",
+                    "What real-world applications of parabolas and quadratics can I show the class?",
+                    "Provide a 4-tier rubric for assessing quadratic problem-solving"
+                ]
+            else:
+                candidates = [
+                    "Can you explain the quadratic formula ax^2 + bx + c = 0 with an example?",
+                    "Give me 2 creative ideas for introducing quadratic factoring in class",
+                    "What are common student misconceptions when solving quadratic equations?",
+                    "Provide 3 practice problems ranging from standard factorising to completing the square"
+                ]
+        else:
+            candidates = [
+                "Give me a practice problem on Probability (Topic 5)",
+                "Explain the Algebra & Sequences core objectives in Cambridge 0580",
+                "Draft a 45-minute introductory lesson plan for Topic 1",
+                "What are the differences between Core (Papers 1 & 3) and Extended (Papers 2 & 4)?"
+            ]
+
+    # 5. Topic: Staff Policies, Morning Briefing, Assessment Marking & Submissions
+    elif any(w in all_context for w in ["turnaround", "moderation", "briefing", "staff policy", "portal", "submission #8812", "submission"]):
+        if any(w in combined for w in ["8812", "submission", "student work", "network security"]):
+            candidates = [
+                "How does submission #8812 address firewall and encryption fundamentals?",
+                "Generate formative feedback highlighting areas for student improvement",
+                "Check whether submission #8812 adheres to the Adelaide Declaration on AI assistance",
+                "Suggest a follow-up assignment question challenging the student on zero-trust principles"
+            ]
+        elif any(w in q_lower for w in ["delay", "delayed", "moderation"]):
+            candidates = [
+                f"Where do I submit the finalized moderation sheets for {campus} campus?",
+                "What are the communication guidelines for contacting parents regarding missed work?",
+                "What support does the department head provide for grading backlogs?",
+                "What is the mandatory agenda structure for the weekly staff briefing?"
+            ]
+        else:
+            candidates = [
+                "What is the procedure if assessment moderation is delayed beyond the turnaround window?",
+                f"Where do I submit the finalized moderation sheets for {campus} campus?",
+                "What are the communication guidelines for contacting parents regarding missed work?",
+                "What is the mandatory agenda structure for the weekly staff briefing?"
+            ]
+
+    # 6. Topic: Lesson Planning, Pedagogy & Assessment Rubrics
+    elif any(w in all_context for w in ["lesson plan", "starter", "exit ticket", "rubric", "pedagogy", "differentiated", "worksheet"]):
+        candidates = [
+            "Draft a 4-tier assessment rubric with specific formative criteria for this topic",
+            "Suggest differentiated extension tasks for high-achieving learners",
+            "What scaffolding support should I provide for struggling students?",
+            "Provide an interactive exit ticket to gauge understanding in the last 5 minutes"
+        ]
+
+    # 7. Topic: Campus Finances, Expenditure & Bursaries (Admin / Finance clearance)
+    elif any(w in all_context for w in ["expenditure", "budget", "finance", "q3", "lab allocation", "bursary", "zmw", "kwacha", "operating expenses"]):
+        if clearance in ["admin", "finance"]:
+            if any(w in q_lower for w in ["bursary", "bursaries"]):
+                candidates = [
+                    "How does this compare with the budget allocation for Sentinel campus?",
+                    "What capital expenditure was designated for science lab and ICT upgrades?",
+                    "What is the approval workflow for emergency bursary supplements?",
+                    "Generate a concise executive summary slide for the Board meeting"
+                ]
+            else:
+                candidates = [
+                    "Provide an executive summary of bursary disbursements for Trident campus",
+                    "How does this compare with the budget allocation for Sentinel campus?",
+                    "What capital expenditure was designated for science lab and ICT upgrades?",
+                    "Generate a concise executive summary slide for the Board meeting"
+                ]
+        else:
+            candidates = [
+                "What academic and curriculum resources are authorized for my role?",
+                "How can I submit an official department procurement request?",
+                "Explain the Educore AI governance framework for staff"
+            ]
+
+    # 8. Topic: ISO 42001, AI Framework, Discovery Audit & Policies
+    elif any(w in all_context for w in ["iso 42001", "aiia", "framework", "handbook", "discovery", "casb", "vector", "doc-01", "doc-02", "doc-03", "governance policy"]):
+        candidates = [
+            "What is the 6-step AI Impact Assessment (AIIA) workflow under ISO 42001?",
+            "Who are the RACI owners for Phase 3 enterprise pilots in the action plan?",
+            "What were the key findings of the 3-vector pre-rollout discovery audit?",
+            "How are Level 1 (Read Only) vs Level 4 (Act) AI agents regulated?"
+        ]
+
+    # 9. Fallback from retrieved documents
+    else:
+        if doc_titles:
+            primary_doc = doc_titles[0]
+            candidates = [
+                f"What are the key policy directives in {primary_doc}?",
+                f"How does {primary_doc} apply specifically to {campus} campus?",
+                f"What are the required compliance steps and timelines in {primary_doc}?",
+                "Can you provide a concise executive summary with action items?"
+            ]
+        else:
+            # Default role-guided questions
+            candidates = [
+                "Can you explain this concept in greater detail?",
+                f"How does this apply to {campus} campus academic and operational standards?",
+                "Provide a practical example or classroom application",
+                "What guidelines should staff follow regarding this topic?"
+            ]
+
+    # Stopwords to extract meaningful keywords for overlap detection
+    STOPWORDS = {
+        "what", "when", "where", "which", "who", "whom", "whose", "why", "how",
+        "can", "could", "would", "should", "will", "shall", "does", "do", "did",
+        "give", "tell", "show", "help", "provide", "explain", "summarize", "draft",
+        "the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for", "with",
+        "by", "from", "up", "about", "into", "over", "after", "is", "are", "was",
+        "were", "be", "been", "being", "have", "has", "had", "this", "that", "these",
+        "those", "my", "your", "our", "their", "his", "her", "its", "i", "me", "we", "you"
+    }
+
+    def _extract_keywords(text: str) -> set:
+        words = re.findall(r'[a-z0-9#]+', text.lower())
+        return {w for w in words if len(w) >= 3 and w not in STOPWORDS}
+
+    # Deduplicate against past queries in the session
+    def _is_redundant(cand: str) -> bool:
+        c_clean = cand.lower().strip().rstrip("?.!")
+        c_words = _extract_keywords(cand)
+
+        for pq in all_past_queries_clean:
+            if c_clean == pq or c_clean in pq or pq in c_clean:
+                return True
+            pq_words = _extract_keywords(pq)
+            if c_words and pq_words:
+                overlap = c_words.intersection(pq_words)
+                # If high distinctive keyword overlap, consider candidate redundant
+                if len(overlap) >= 3 or (len(c_words) >= 2 and len(overlap) / len(c_words) >= 0.75):
+                    return True
+
+        # Also check against addressed concepts to avoid repeating answered questions
+        cand_lower = cand.lower()
+        if "emergency_contact" in addressed_concepts and any(k in cand_lower for k in ["emergency contact", "guardian designated"]):
+            return True
+        if "accommodations" in addressed_concepts and "what accommodations should we offer" in cand_lower:
+            return True
+        if "prob_practice" in addressed_concepts and "give me a practice problem on probability" in cand_lower:
+            return True
+        if "prob_hint" in addressed_concepts and "diagnostic hint for solving this problem" in cand_lower:
+            return True
+
+        return False
+
+    filtered = [c for c in candidates if not _is_redundant(c)]
+
+    # If too few remained after filtering, supplement with progression questions
+    if len(filtered) < 3:
+        progression = [
+            "Can you provide an advanced or extended example on this topic?",
+            f"What are the practical next steps for implementing this at {campus}?",
+            "Summarize the key takeaways and actionable points into a checklist",
+            "What related policies or curriculum areas connect to this discussion?",
+            "What are common misconceptions or pitfalls to watch out for?"
+        ]
+        for p in progression:
+            if not _is_redundant(p) and p not in filtered:
+                filtered.append(p)
+
+    return filtered[:4]
+
+# ==============================================================================
 # 7. INTERACTIVE TERMINAL LOOP, DEMO PERSONAS & VISUAL PRESENTATION
 # ==============================================================================
 PERSONAS = {

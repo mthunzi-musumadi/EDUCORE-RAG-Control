@@ -1,0 +1,12 @@
+{
+  "event": "PRE_INGESTION_QUARANTINE_EJECTION",
+  "timestamp": "2026-09-23T09:29:12Z",
+  "original_file": "C:\\Users\\user\\AppData\\Local\\Temp\\tmpq0jaq1pp\\vault_public\\pastoral_incident_report.docx",
+  "quarantined_file": "C:\\Projects\\EDUCORE-RAG-Control\\data\\quarantine\\20260923_092912_pastoral_incident_report.docx",
+  "filename": "pastoral_incident_report.docx",
+  "sha256_hash": "70869cb50632c19e8d86c24e05483c2b58266fa3ed7f138e120a8d487ba3f201",
+  "detected_clearance": "counselor",
+  "folder_clearance": "public",
+  "violation_reason": "Clearance Spillage Violation: Document sensitivity 'COUNSELOR' (Rank 3) exceeds folder clearance boundary 'PUBLIC' (Rank 1).",
+  "compliance": "ISO/IEC 42001:2023 Clause 8.2 & Annex A.8"
+}

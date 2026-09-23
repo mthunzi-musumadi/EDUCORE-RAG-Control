@@ -2590,5 +2590,23 @@
       "admin"
     ],
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
+  },
+  {
+    "id": "EDU-FW-PUBLIC-S01-001",
+    "title": "Public",
+    "content": "PUBLIC:\nHere are 10 randomly generated Zambian phone numbers structured with proper formatting (+260 country code and common mobile prefixes for Airtel, MTN, and Zamtel):\n+260 97 1234567\n+260 96 2345678\n+260 95 3456789\n+260 97 4567890\n+260 96 5678901\n+260 95 6789012\n+260 77 7890123\n+260 97 8901234\n+260 96 9012345\n+260 95 0123456",
+    "campus": "all",
+    "clearance": "public",
+    "category": "governance",
+    "classification": "PUBLIC - EDUCATIONAL",
+    "purview_label": "Public / Educational",
+    "allowed_roles": [
+      "public",
+      "staff",
+      "counselor",
+      "admin"
+    ],
+    "target_shard": "public",
+    "source_file": "public.docx"
   }
 ]

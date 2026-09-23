@@ -83,11 +83,20 @@ class TelemetryTracker:
         self.cumulative_embed_ms: float = 0.0
         self.total_synced_files_count: int = 0
         self.watch_dirs_count: int = 1
+        self.quarantine_events_count: int = 0
+        self.last_quarantined_files: List[Dict[str, Any]] = []
         self._initialized = True
 
     def set_watch_dirs_count(self, count: int):
         with self._state_lock:
             self.watch_dirs_count = max(1, count)
+
+    def record_quarantine_event(self, meta: Dict[str, Any]):
+        with self._state_lock:
+            self.quarantine_events_count += 1
+            self.last_quarantined_files.append(meta)
+            if len(self.last_quarantined_files) > 20:
+                self.last_quarantined_files = self.last_quarantined_files[-20:]
 
     def record_initial_embed(self, duration_ms: float, vector_count: int):
         with self._state_lock:
@@ -124,7 +133,9 @@ class TelemetryTracker:
                 "cumulative_parse_ms": round(self.cumulative_parse_ms, 2),
                 "cumulative_embed_ms": round(self.cumulative_embed_ms, 2),
                 "total_synced_files_count": self.total_synced_files_count,
-                "watch_dirs_count": self.watch_dirs_count
+                "watch_dirs_count": self.watch_dirs_count,
+                "quarantine_events_count": self.quarantine_events_count,
+                "last_quarantined_files": list(self.last_quarantined_files)
             }
 
     def format_telemetry_footer(

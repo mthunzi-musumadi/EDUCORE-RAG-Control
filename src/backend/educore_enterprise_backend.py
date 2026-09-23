@@ -42,10 +42,18 @@ def _resolve_project_root() -> str:
 
 BASE_DIR = _resolve_project_root()
 
-# Ensure backend package directory and project root are on sys.path
-for p in (CURRENT_DIR, BASE_DIR, os.path.join(BASE_DIR, "src")):
+# Ensure backend package directory, project root, and studio are on sys.path
+for p in (CURRENT_DIR, BASE_DIR, os.path.join(BASE_DIR, "src"), os.path.join(BASE_DIR, "studio")):
     if p not in sys.path:
         sys.path.insert(0, p)
+
+try:
+    from production_rag import generate_contextual_followups
+except Exception:
+    try:
+        from studio.production_rag import generate_contextual_followups
+    except Exception:
+        generate_contextual_followups = None
 
 # Resolve corpus data path (prefer data/corpus/, fallback to legacy production_setup/)
 _candidate_data_paths = [
@@ -94,8 +102,30 @@ from framework_sync_service import FrameworkSyncService, FRAMEWORK_DIR
 from document_readers import SUPPORTED_EXTENSIONS
 from tps_counter import TPSCounter, TELEMETRY
 
-_CHROMA_DB = None
-_CHROMA_LOCK = threading.RLock()
+# ==============================================================================
+# PHYSICAL GATES: CLEARANCE-SHARDED VECTOR STORE ARCHITECTURE
+# ==============================================================================
+CLEARANCE_SHARDS = ["public", "staff", "counselor", "finance", "devops", "admin"]
+SHARD_COLLECTION_PREFIX = "educore_shard_"
+
+CLEARANCE_SHARD_HIERARCHY = {
+    "public": ["public"],
+    "student": ["public"],
+    "staff": ["public", "staff"],
+    "faculty": ["public", "staff"],
+    "counselor": ["public", "staff", "counselor"],
+    "pastoral": ["public", "staff", "counselor"],
+    "finance": ["public", "staff", "finance"],
+    "devops": ["public", "staff", "devops"],
+    "it": ["public", "staff", "devops"],
+    "admin": ["public", "staff", "counselor", "finance", "devops", "admin"],
+    "executive": ["public", "staff", "counselor", "finance", "devops", "admin"]
+}
+
+_CHROMA_SHARDS: Dict[str, Chroma] = {}
+_CHROMA_SHARD_LOCK = threading.RLock()
+_CHROMA_LOCK = _CHROMA_SHARD_LOCK
+_CHROMA_ROUTER = None
 _SYNC_SERVICE = FrameworkSyncService()
 
 def configure_framework_watch_dirs(custom_dirs: Optional[Any] = None):
@@ -105,123 +135,72 @@ def configure_framework_watch_dirs(custom_dirs: Optional[Any] = None):
 
 CHROMA_DIR = os.path.join(BASE_DIR, "chroma_enterprise_store")
 
-def get_chroma_db() -> Chroma:
-    global _CHROMA_DB
-    with _CHROMA_LOCK:
-        if _CHROMA_DB is not None:
-            return _CHROMA_DB
+def get_chroma_shard(clearance: str) -> Chroma:
+    """
+    Returns the dedicated, physically segregated Chroma collection for the specified clearance tier.
+    """
+    c_key = str(clearance or "public").strip().lower()
+    if c_key not in CLEARANCE_SHARDS:
+        c_key = "public"
+    with _CHROMA_SHARD_LOCK:
+        if c_key in _CHROMA_SHARDS:
+            return _CHROMA_SHARDS[c_key]
+        embeddings = OllamaEmbeddings(model="nomic-embed-text", keep_alive=-1)
+        collection_name = f"{SHARD_COLLECTION_PREFIX}{c_key}"
+        shard = Chroma(
+            persist_directory=CHROMA_DIR,
+            embedding_function=embeddings,
+            collection_name=collection_name
+        )
+        _CHROMA_SHARDS[c_key] = shard
+        return shard
 
+def get_authorized_shards(user_clearance: str) -> List[Chroma]:
+    """
+    Resolves the physical Chroma shards accessible to the user based on clearance hierarchy.
+    Crucially: unauthorized shards are NEVER returned and NEVER queried.
+    """
+    c_key = str(user_clearance or "public").strip().lower()
+    authorized_keys = CLEARANCE_SHARD_HIERARCHY.get(c_key, ["public"])
+    return [get_chroma_shard(k) for k in authorized_keys]
+
+def init_chroma_shards() -> Dict[str, Chroma]:
+    """
+    Initializes all clearance shards from enterprise_data.json if shards are empty.
+    Partitions documents strictly by their metadata clearance into distinct collection shards.
+    """
+    with _CHROMA_SHARD_LOCK:
         if not os.path.exists(DATA_PATH):
             raise FileNotFoundError(f"Corpus file not found: {DATA_PATH}")
 
         with open(DATA_PATH, "r", encoding="utf-8") as f:
             records = json.load(f)
 
-        embeddings = OllamaEmbeddings(model="nomic-embed-text", keep_alive=-1)
+        shards = {c: get_chroma_shard(c) for c in CLEARANCE_SHARDS}
+        total_vectors = sum(s._collection.count() for s in shards.values())
 
-        # If persistent store already exists and has records, load directly
-        if os.path.exists(CHROMA_DIR) and os.listdir(CHROMA_DIR):
-            try:
-                _CHROMA_DB = Chroma(
-                    persist_directory=CHROMA_DIR,
-                    embedding_function=embeddings,
-                    collection_name="educore_enterprise_governed_corpus"
-                )
-                count = _CHROMA_DB._collection.count()
-                if count >= len(records):
-                    print(f"[Embedding] Loaded existing Chroma store with {count} dense vectors from {CHROMA_DIR}")
-                    return _CHROMA_DB
-            except Exception:
-                pass
+        if total_vectors >= len(records):
+            return shards
 
-        print(f"[Embedding] Initializing Chroma vector store with {len(records)} records...")
-        print(f"[Embedding] Generating embeddings using model '{embeddings.model}'...")
+        print(f"[Embedding] Initializing clearance-sharded Chroma store with {len(records)} records across {len(CLEARANCE_SHARDS)} shards...")
         t_embed_start = time.time()
 
-        documents = []
-        doc_ids = []
+        records_by_clearance: Dict[str, List[Dict[str, Any]]] = {c: [] for c in CLEARANCE_SHARDS}
         for r in records:
-            allowed = r.get("allowed_roles", [])
-            if isinstance(allowed, list):
-                allowed_str = ",".join(allowed)
-            else:
-                allowed_str = str(allowed)
+            c = str(r.get("clearance", "public")).lower()
+            if c not in records_by_clearance:
+                c = "public"
+            records_by_clearance[c].append(r)
 
-            doc = Document(
-                page_content=r["content"],
-                metadata={
-                    "id": r["id"],
-                    "title": r.get("title", "Untitled"),
-                    "campus": str(r.get("campus", "all")).lower(),
-                    "clearance": str(r.get("clearance", "public")).lower(),
-                    "category": str(r.get("category", "general")).lower(),
-                    "classification": r.get("classification", "INTERNAL"),
-                    "purview_label": r.get("purview_label", "Internal - Educational"),
-                    "allowed_roles": allowed_str,
-                    "source_file": r.get("source_file", "")
-                }
-            )
-            documents.append(doc)
-            doc_ids.append(r["id"])
+        for c, shard_records in records_by_clearance.items():
+            shard = shards[c]
+            existing_count = shard._collection.count()
+            if existing_count >= len(shard_records):
+                continue
 
-        _CHROMA_DB = Chroma.from_documents(
-            documents=documents,
-            embedding=embeddings,
-            ids=doc_ids,
-            persist_directory=CHROMA_DIR,
-            collection_name="educore_enterprise_governed_corpus"
-        )
-        init_embed_ms = round((time.time() - t_embed_start) * 1000, 1)
-        TELEMETRY.record_initial_embed(init_embed_ms, _CHROMA_DB._collection.count())
-        print(f"[Embedding] Initial corpus embedding complete: {_CHROMA_DB._collection.count()} vectors stored in {init_embed_ms}ms.")
-        return _CHROMA_DB
-
-def sync_chroma_corpus(force: bool = False) -> Dict[str, Any]:
-    """
-    Incrementally translates updated or new framework documents (.docx, .pdf, .xlsx)
-    into embeddings and applies atomic upserts/deletions to the Chroma vector store.
-    """
-    global _CHROMA_DB
-    with _CHROMA_LOCK:
-        chroma = get_chroma_db()
-        delta = _SYNC_SERVICE.generate_incremental_update(force=force)
-        if not delta["changed"]:
-            return {
-                "status": "up_to_date",
-                "changed": False,
-                "updated_files": [],
-                "records_upserted": 0,
-                "ids_deleted": 0,
-                "total_collection_count": chroma._collection.count(),
-                "duration_ms": delta["duration_ms"]
-            }
-
-        # 1. Purge deleted or replaced chunks to prevent stale vectors
-        ids_to_purge = set(delta["ids_to_delete"]) | {r["id"] for r in delta["records_to_upsert"]}
-        if ids_to_purge:
-            try:
-                print(f"[Embedding] Evicting {len(ids_to_purge)} stale/superseded chunk vectors from Chroma...")
-                chroma.delete(ids=list(ids_to_purge))
-            except Exception as e:
-                print(f"[Embedding] Eviction notice: {e}")
-
-        # 2. Add new/updated chunks into Chroma
-        if delta["records_to_upsert"]:
-            by_file = {}
-            for r in delta["records_to_upsert"]:
-                src = r.get("source_file", "unknown")
-                by_file.setdefault(src, []).append(r)
-
-            embeddings = OllamaEmbeddings(model="nomic-embed-text", keep_alive=-1)
-            print(f"[Embedding] Translating {len(delta['records_to_upsert'])} chunks across {len(by_file)} file(s) into dense vectors via '{embeddings.model}'...")
-            for src, file_records in by_file.items():
-                purview_tags = sorted({str(r.get("purview_label")) for r in file_records if r.get("purview_label")})
-                print(f"  -> [{src}] {len(file_records)} chunk(s) | Purview: {', '.join(purview_tags)}")
-
-            t_upsert_start = time.time()
-            docs_to_add = []
-            doc_ids_to_add = []
-            for r in delta["records_to_upsert"]:
+            docs = []
+            ids = []
+            for r in shard_records:
                 allowed = r.get("allowed_roles", [])
                 allowed_str = ",".join(allowed) if isinstance(allowed, list) else str(allowed)
                 doc = Document(
@@ -238,13 +217,164 @@ def sync_chroma_corpus(force: bool = False) -> Dict[str, Any]:
                         "source_file": r.get("source_file", "")
                     }
                 )
-                docs_to_add.append(doc)
-                doc_ids_to_add.append(r["id"])
+                docs.append(doc)
+                ids.append(r["id"])
 
-            chroma.add_documents(documents=docs_to_add, ids=doc_ids_to_add)
+            if docs:
+                shard.add_documents(documents=docs, ids=ids)
+                print(f"[Embedding] Populated shard 'educore_shard_{c}' with {len(docs)} vectors.")
+
+        init_embed_ms = round((time.time() - t_embed_start) * 1000, 1)
+        total_count = sum(s._collection.count() for s in shards.values())
+        TELEMETRY.record_initial_embed(init_embed_ms, total_count)
+        print(f"[Embedding] Clearance sharding complete: {total_count} total vectors stored across shards in {init_embed_ms}ms.")
+        return shards
+
+class ChromaShardRouter:
+    """
+    Unified router providing a backward-compatible interface over physical clearance shards.
+    Preserves _collection.count(), get(), similarity_search_with_score(), add_documents(), and delete().
+    """
+    def __init__(self):
+        self._shards = {c: get_chroma_shard(c) for c in CLEARANCE_SHARDS}
+
+    @property
+    def _collection(self):
+        class _CollectionProxy:
+            def __init__(proxy_self, shards):
+                proxy_self._shards = shards
+            def count(proxy_self):
+                return sum(s._collection.count() for s in proxy_self._shards.values())
+        return _CollectionProxy(self._shards)
+
+    def similarity_search_with_score(self, query: str, k: int = 15):
+        results = []
+        for s in self._shards.values():
+            try:
+                results.extend(s.similarity_search_with_score(query, k=k))
+            except Exception:
+                pass
+        results.sort(key=lambda x: x[1])
+        return results[:k]
+
+    def get(self, ids: Optional[List[str]] = None, where: Optional[Dict[str, Any]] = None):
+        combined = {"ids": [], "documents": [], "metadatas": []}
+        for s in self._shards.values():
+            try:
+                res = s.get(ids=ids, where=where)
+                if res and res.get("ids"):
+                    combined["ids"].extend(res["ids"])
+                    if res.get("documents"):
+                        combined["documents"].extend(res["documents"])
+                    if res.get("metadatas"):
+                        combined["metadatas"].extend(res["metadatas"])
+            except Exception:
+                pass
+        return combined
+
+    def delete(self, ids: List[str]):
+        for s in self._shards.values():
+            try:
+                s.delete(ids=ids)
+            except Exception:
+                pass
+
+    def add_documents(self, documents: List[Document], ids: List[str]):
+        by_clearance = {}
+        for doc, doc_id in zip(documents, ids):
+            c = str(doc.metadata.get("clearance", "public")).lower()
+            if c not in CLEARANCE_SHARDS:
+                c = "public"
+            by_clearance.setdefault(c, []).append((doc, doc_id))
+        for c, items in by_clearance.items():
+            shard = get_chroma_shard(c)
+            docs = [it[0] for it in items]
+            doc_ids = [it[1] for it in items]
+            shard.add_documents(documents=docs, ids=doc_ids)
+
+def get_chroma_db():
+    global _CHROMA_ROUTER
+    with _CHROMA_SHARD_LOCK:
+        if _CHROMA_ROUTER is not None:
+            return _CHROMA_ROUTER
+        init_chroma_shards()
+        _CHROMA_ROUTER = ChromaShardRouter()
+        return _CHROMA_ROUTER
+
+def sync_chroma_corpus(force: bool = False) -> Dict[str, Any]:
+    """
+    Incrementally translates updated or new framework documents (.docx, .pdf, .xlsx)
+    into embeddings and applies atomic upserts/deletions directly to the designated
+    clearance collection shards.
+    """
+    global _CHROMA_ROUTER
+    with _CHROMA_SHARD_LOCK:
+        chroma = get_chroma_db()
+        delta = _SYNC_SERVICE.generate_incremental_update(force=force)
+        if not delta["changed"]:
+            return {
+                "status": "up_to_date",
+                "changed": False,
+                "updated_files": [],
+                "quarantined_files": delta.get("quarantined_files", []),
+                "records_upserted": 0,
+                "ids_deleted": 0,
+                "total_collection_count": chroma._collection.count(),
+                "duration_ms": delta["duration_ms"]
+            }
+
+        # 1. Purge deleted or replaced chunks across all shards to prevent stale vectors
+        ids_to_purge = set(delta["ids_to_delete"]) | {r["id"] for r in delta["records_to_upsert"]}
+        if ids_to_purge:
+            try:
+                print(f"[Embedding] Evicting {len(ids_to_purge)} stale/superseded chunk vectors from Chroma shards...")
+                chroma.delete(ids=list(ids_to_purge))
+            except Exception as e:
+                print(f"[Embedding] Eviction notice: {e}")
+
+        # 2. Add new/updated chunks directly into designated clearance shards
+        records_upserted = len(delta["records_to_upsert"])
+        if delta["records_to_upsert"]:
+            by_shard: Dict[str, List[Dict[str, Any]]] = {}
+            for r in delta["records_to_upsert"]:
+                shard_key = str(r.get("target_shard") or r.get("clearance") or "public").lower()
+                if shard_key not in CLEARANCE_SHARDS:
+                    shard_key = "public"
+                by_shard.setdefault(shard_key, []).append(r)
+
+            t_upsert_start = time.time()
+            total_added = 0
+
+            for shard_key, shard_records in by_shard.items():
+                shard = get_chroma_shard(shard_key)
+                docs_to_add = []
+                doc_ids_to_add = []
+                for r in shard_records:
+                    allowed = r.get("allowed_roles", [])
+                    allowed_str = ",".join(allowed) if isinstance(allowed, list) else str(allowed)
+                    doc = Document(
+                        page_content=r["content"],
+                        metadata={
+                            "id": r["id"],
+                            "title": r.get("title", "Untitled"),
+                            "campus": str(r.get("campus", "all")).lower(),
+                            "clearance": str(r.get("clearance", "public")).lower(),
+                            "category": str(r.get("category", "general")).lower(),
+                            "classification": r.get("classification", "INTERNAL"),
+                            "purview_label": r.get("purview_label", "Internal - Educational"),
+                            "allowed_roles": allowed_str,
+                            "source_file": r.get("source_file", "")
+                        }
+                    )
+                    docs_to_add.append(doc)
+                    doc_ids_to_add.append(r["id"])
+
+                shard.add_documents(documents=docs_to_add, ids=doc_ids_to_add)
+                total_added += len(docs_to_add)
+                print(f"[Embedding] Upserted {len(docs_to_add)} vectors into shard 'educore_shard_{shard_key}'.")
+
             upsert_ms = round((time.time() - t_upsert_start) * 1000, 1)
-            TELEMETRY.record_embed(upsert_ms, len(docs_to_add))
-            print(f"[Embedding] Upserted {len(docs_to_add)} vectors into Chroma collection 'educore_enterprise_governed_corpus' in {upsert_ms}ms.")
+            TELEMETRY.record_embed(upsert_ms, total_added)
         else:
             upsert_ms = 0.0
 
@@ -253,8 +383,9 @@ def sync_chroma_corpus(force: bool = False) -> Dict[str, Any]:
             "event": "FRAMEWORK_DOCS_INCREMENTAL_SYNC",
             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "updated_files": delta["updated_files"],
+            "quarantined_files": delta.get("quarantined_files", []),
             "deleted_files": delta.get("deleted_files", []),
-            "records_upserted": len(delta["records_to_upsert"]),
+            "records_upserted": records_upserted,
             "ids_deleted": len(delta["ids_to_delete"]),
             "total_collection_count": chroma._collection.count(),
             "duration_ms": delta["duration_ms"],
@@ -272,8 +403,9 @@ def sync_chroma_corpus(force: bool = False) -> Dict[str, Any]:
             "status": "synced",
             "changed": True,
             "updated_files": delta["updated_files"],
+            "quarantined_files": delta.get("quarantined_files", []),
             "deleted_files": delta.get("deleted_files", []),
-            "records_upserted": len(delta["records_to_upsert"]),
+            "records_upserted": records_upserted,
             "ids_deleted": len(delta["ids_to_delete"]),
             "total_collection_count": chroma._collection.count(),
             "parse_duration_ms": delta.get("parse_duration_ms", 0.0),
@@ -387,45 +519,51 @@ _EXPLICIT_ID_REGEX = re.compile(r'\b(?:EDU-FW|EDU-PDF|EDU-XLS|DOC)[A-Za-z0-9_-]+
 _DOC_FILENAME_REGEX = re.compile(r'\b[A-Za-z0-9_-]+\.(?:docx|pdf|xlsx?)\b', re.IGNORECASE)
 _SLUG_ID_REGEX = re.compile(r'\b(?:EDU|DOC)[-_][A-Za-z0-9_-]+\b', re.IGNORECASE)
 
-def find_explicit_document_matches(raw_prompt: str, clean_query: str, chroma: Chroma) -> List[tuple[Document, float]]:
+def find_explicit_document_matches(raw_prompt: str, clean_query: str, chroma_or_shards: Any) -> List[tuple[Document, float]]:
     """
     Deterministic hybrid lookup: If the user query contains an explicit document ID,
     chunk ID, document filename (.docx, .pdf, .xlsx), or ID slug, fetch the matching
-    document(s) directly from Chroma with a score of 0.0, bypassing semantic vector
+    document(s) directly from authorized Chroma shard(s) with a score of 0.0, bypassing semantic vector
     distance thresholds.
+
+    Crucially: queries ONLY the provided shard(s). If higher-clearance shards are omitted,
+    unauthorized documents cannot be retrieved by explicit ID.
     """
     matches: List[tuple[Document, float]] = []
     seen_ids = set()
+    shards = chroma_or_shards if isinstance(chroma_or_shards, list) else [chroma_or_shards]
 
     # 1. Check for exact full IDs (e.g. EDU-FW-EDU-126-S01-001, DOC-CURR-001)
     found_ids = _EXPLICIT_ID_REGEX.findall(raw_prompt) + _EXPLICIT_ID_REGEX.findall(clean_query)
     for fid in dict.fromkeys(found_ids):
-        try:
-            res = chroma.get(ids=[fid])
-            if res and res.get("ids"):
-                for idx, doc_id in enumerate(res["ids"]):
-                    if doc_id not in seen_ids:
-                        seen_ids.add(doc_id)
-                        content = res["documents"][idx] if res.get("documents") else ""
-                        metadata = res["metadatas"][idx] if res.get("metadatas") else {}
-                        matches.append((Document(page_content=content, metadata=metadata), 0.0))
-        except Exception:
-            pass
+        for shard in shards:
+            try:
+                res = shard.get(ids=[fid])
+                if res and res.get("ids"):
+                    for idx, doc_id in enumerate(res["ids"]):
+                        if doc_id not in seen_ids:
+                            seen_ids.add(doc_id)
+                            content = res["documents"][idx] if res.get("documents") else ""
+                            metadata = res["metadatas"][idx] if res.get("metadatas") else {}
+                            matches.append((Document(page_content=content, metadata=metadata), 0.0))
+            except Exception:
+                pass
 
     # 2. Check for document filenames (e.g. EDU-126.docx, report.pdf, data.xlsx)
     found_files = _DOC_FILENAME_REGEX.findall(raw_prompt) + _DOC_FILENAME_REGEX.findall(clean_query)
     for fname in dict.fromkeys(found_files):
-        try:
-            res = chroma.get(where={"source_file": fname})
-            if res and res.get("ids"):
-                for idx, doc_id in enumerate(res["ids"]):
-                    if doc_id not in seen_ids:
-                        seen_ids.add(doc_id)
-                        content = res["documents"][idx] if res.get("documents") else ""
-                        metadata = res["metadatas"][idx] if res.get("metadatas") else {}
-                        matches.append((Document(page_content=content, metadata=metadata), 0.0))
-        except Exception:
-            pass
+        for shard in shards:
+            try:
+                res = shard.get(where={"source_file": fname})
+                if res and res.get("ids"):
+                    for idx, doc_id in enumerate(res["ids"]):
+                        if doc_id not in seen_ids:
+                            seen_ids.add(doc_id)
+                            content = res["documents"][idx] if res.get("documents") else ""
+                            metadata = res["metadatas"][idx] if res.get("metadatas") else {}
+                            matches.append((Document(page_content=content, metadata=metadata), 0.0))
+            except Exception:
+                pass
 
     # 3. Check for ID slugs (e.g. EDU-126 -> EDU-FW-EDU-126-S01-001)
     if not matches:
@@ -442,14 +580,15 @@ def find_explicit_document_matches(raw_prompt: str, clean_query: str, chroma: Ch
                         or slug_clean in r.get("source_file", "").upper()
                     ]
                     if matched_ids:
-                        res = chroma.get(ids=matched_ids[:5])
-                        if res and res.get("ids"):
-                            for idx, doc_id in enumerate(res["ids"]):
-                                if doc_id not in seen_ids:
-                                    seen_ids.add(doc_id)
-                                    content = res["documents"][idx] if res.get("documents") else ""
-                                    metadata = res["metadatas"][idx] if res.get("metadatas") else {}
-                                    matches.append((Document(page_content=content, metadata=metadata), 0.0))
+                        for shard in shards:
+                            res = shard.get(ids=matched_ids[:5])
+                            if res and res.get("ids"):
+                                for idx, doc_id in enumerate(res["ids"]):
+                                    if doc_id not in seen_ids:
+                                        seen_ids.add(doc_id)
+                                        content = res["documents"][idx] if res.get("documents") else ""
+                                        metadata = res["metadatas"][idx] if res.get("metadatas") else {}
+                                        matches.append((Document(page_content=content, metadata=metadata), 0.0))
             except Exception:
                 pass
 
@@ -470,9 +609,98 @@ def is_open_webui_utility_task(text: str) -> bool:
         or t.startswith("### Task:\nGenerate 1-3 tags")
         or t.startswith("### Task:\nGenerate search queries")
         or t.startswith("### Task:\nGenerate an image prompt")
+        or t.startswith("### Task:\nSuggest 3-5 relevant follow-up questions")
         or "Generate a concise title summarizing the chat history" in t
         or "Analyze the chat history to determine the necessity of generating search queries" in t
     )
+
+def is_follow_up_utility_task(text: str) -> bool:
+    """Detects Open WebUI's follow-up generation utility task prompt."""
+    t = text.strip()
+    return (
+        t.startswith("### Task:\nSuggest 3-5 relevant follow-up questions")
+        or ("follow_ups" in t and "### Task:" in t and "<chat_history>" in t)
+    )
+
+def handle_follow_up_utility_task(prompt_text: str, user_session: Dict[str, Any], model_id: str = "educore-enterprise-all") -> str:
+    """
+    Intercepts Open WebUI's follow-up generation utility task and returns
+    RBAC-safe contextual follow-ups in the JSON format expected by Open WebUI:
+    { "follow_ups": ["Question 1?", "Question 2?", "Question 3?"] }
+
+    This avoids sending the task to the LLM (which takes 20-30s and frequently
+    fails JSON schema validation) and instead uses generate_contextual_followups
+    for sub-millisecond, context-tailored, clearance-bounded suggestions.
+    """
+    import json as _json
+
+    # Extract chat history from <chat_history>...</chat_history> block
+    chat_history = []
+    last_user_query = ""
+    last_assistant_response = ""
+    history_match = re.search(r'<chat_history>(.*?)</chat_history>', prompt_text, re.DOTALL)
+    if history_match:
+        history_text = history_match.group(1).strip()
+        # Parse "User: ..." and "Assistant: ..." pairs from the chat history
+        current_role = None
+        current_content = []
+        for line in history_text.split('\n'):
+            line_stripped = line.strip()
+            if line_stripped.startswith('User:'):
+                if current_role and current_content:
+                    content = '\n'.join(current_content).strip()
+                    chat_history.append({"role": current_role, "content": content})
+                    if current_role == "user":
+                        last_user_query = content
+                    elif current_role == "assistant":
+                        last_assistant_response = content
+                current_role = "user"
+                current_content = [line_stripped[5:].strip()]
+            elif line_stripped.startswith('Assistant:'):
+                if current_role and current_content:
+                    content = '\n'.join(current_content).strip()
+                    chat_history.append({"role": current_role, "content": content})
+                    if current_role == "user":
+                        last_user_query = content
+                    elif current_role == "assistant":
+                        last_assistant_response = content
+                current_role = "assistant"
+                current_content = [line_stripped[10:].strip()]
+            elif current_role:
+                current_content.append(line_stripped)
+
+        # Flush last accumulated message
+        if current_role and current_content:
+            content = '\n'.join(current_content).strip()
+            chat_history.append({"role": current_role, "content": content})
+            if current_role == "user":
+                last_user_query = content
+            elif current_role == "assistant":
+                last_assistant_response = content
+
+    # Generate contextual follow-ups using the RBAC-safe engine
+    suggestions = []
+    if generate_contextual_followups and last_user_query:
+        try:
+            suggestions = generate_contextual_followups(
+                query=last_user_query,
+                response_text=last_assistant_response,
+                retrieved_docs=[],
+                user_session=user_session,
+                chat_history=chat_history[:-2] if len(chat_history) >= 2 else [],
+                model_id=model_id
+            )
+        except Exception:
+            suggestions = []
+
+    if not suggestions:
+        suggestions = [
+            "Can you tell me more about that?",
+            "What are the key details I should know?",
+            "How does this relate to my current work?"
+        ]
+
+    return _json.dumps({"follow_ups": suggestions[:5]})
 
 # ==============================================================================
 # OFFICIAL EDUCORE CAMPUS REGISTRY (MULTI-TENANCY DIRECTORY)
@@ -1013,8 +1241,9 @@ def clean_chat_history(chat_history: Optional[List[Dict[str, str]]], max_turns: 
             c_text = extract_clean_user_prompt(raw_content)
             cleaned_messages.append(HumanMessage(content=c_text))
         elif role == "assistant":
-            # 1. Strip telemetry footers
+            # 1. Strip telemetry footers and previous suggestion blocks
             content = re.sub(r'---\s*\n⚡\s*\*\*Educore Performance Telemetry:\*\*[\s\S]*$', '', raw_content).strip()
+            content = re.sub(r'---\s*\n💡\s*\*\*Suggested Follow-up Questions:\*\*[\s\S]*$', '', content).strip()
             # 2. Strip legacy "User: ... \n Assistant: ..." echoes
             content = re.sub(r'^(?:User|Assistant|Human|AI):\s*', '', content, flags=re.MULTILINE).strip()
             # 3. Strip any [DOCUMENT CONTENT START] ... [DOCUMENT CONTENT END]
@@ -1027,6 +1256,13 @@ def clean_chat_history(chat_history: Optional[List[Dict[str, str]]], max_turns: 
             cleaned_messages.append(AIMessage(content=content))
 
     return cleaned_messages
+
+def format_followups_markdown(suggestions: Optional[List[str]]) -> str:
+    """Renders contextual suggested follow-up questions as a clean markdown block."""
+    if not suggestions:
+        return ""
+    items = "\n".join([f"{i+1}. {s}" for i, s in enumerate(suggestions[:4])])
+    return f"\n\n---\n💡 **Suggested Follow-up Questions:**\n{items}"
 
 def execute_rag(
     query: str,
@@ -1046,14 +1282,32 @@ def execute_rag(
     immediate_resp = EducoreFrameworkEngine.inspect_input(raw_prompt, user_session, model_id=model_id)
     if immediate_resp:
         is_greeting = bool(handle_conversational_greeting(clean_query or raw_prompt, user_session, model_id=model_id))
+        suggested_followups = []
+        if is_greeting and generate_contextual_followups:
+            try:
+                suggested_followups = generate_contextual_followups(
+                    query=effective_query,
+                    response_text=immediate_resp,
+                    retrieved_docs=[],
+                    user_session=user_session,
+                    chat_history=chat_history,
+                    model_id=model_id
+                )
+            except Exception:
+                suggested_followups = []
+
+        # Follow-ups are served via Open WebUI's native follow-up mechanism (chat:message:follow_ups),
+        # NOT appended to the assistant's message content.
+        content_for_metrics = immediate_resp
         latency_ms = (time.time() - t0) * 1000
         gen_duration_s = max(latency_ms / 1000.0, 0.001)
-        token_count = TPSCounter.count_tokens(immediate_resp)
+        token_count = TPSCounter.count_tokens(content_for_metrics)
         tps = TPSCounter.calculate_tps(token_count, gen_duration_s)
-        telemetry_footer = TELEMETRY.format_telemetry_footer(immediate_resp, gen_duration_s, token_count=token_count)
-        full_resp = immediate_resp + telemetry_footer
+        telemetry_footer = TELEMETRY.format_telemetry_footer(content_for_metrics, gen_duration_s, token_count=token_count)
+        full_resp = content_for_metrics + telemetry_footer
         audit_tag = "CONVERSATIONAL_GREETING" if is_greeting else "GUARDRAIL_INTERCEPT"
         log_audit(user_session, effective_query, [], full_resp, latency_ms, audit_tag)
+
         return {
             "response": full_resp,
             "raw_response": immediate_resp,
@@ -1063,28 +1317,42 @@ def execute_rag(
             "tokens": token_count,
             "tps": tps,
             "watch_telemetry": TELEMETRY.get_watch_telemetry(),
-            "guardrail_triggered": not is_greeting
+            "guardrail_triggered": not is_greeting,
+            "suggested_followups": suggested_followups
         }
 
     # 2. Retrieve Documents from Governed Chroma Store using effective query
-    with _CHROMA_LOCK:
-        chroma = get_chroma_db()
+    user_clearance = str(user_session.get("clearance") or user_session.get("role") or "public").strip().lower()
+    with _CHROMA_SHARD_LOCK:
+        authorized_shards = get_authorized_shards(user_clearance)
 
-        # 2a. Deterministic exact ID, filename, or slug lookup (bypasses vector distance)
-        explicit_matches = find_explicit_document_matches(raw_prompt, clean_query, chroma)
+        # 2a. Deterministic exact ID, filename, or slug lookup (bypasses vector distance) restricted to authorized shards
+        explicit_matches = find_explicit_document_matches(raw_prompt, clean_query, authorized_shards)
 
         # Context retention: If no explicit match in current prompt, check recent chat turns
         if not explicit_matches and chat_history:
             for t in reversed(chat_history[-4:]):
                 c = t.get("content", "")
-                h_matches = find_explicit_document_matches(c, extract_clean_user_prompt(c), chroma)
+                h_matches = find_explicit_document_matches(c, extract_clean_user_prompt(c), authorized_shards)
                 if h_matches:
                     explicit_matches = h_matches
                     break
 
-        # 2b. Semantic similarity search with enhanced retrieval depth (k=15)
+        # 2b. Semantic similarity search across authorized shards ONLY
         # Prevents retrieval starvation when candidate pool contains mixed-sensitivity documents
-        docs_with_scores = chroma.similarity_search_with_score(effective_query, k=15)
+        # and physically ensures higher-tier embeddings are NEVER queried for lower clearance users
+        docs_with_scores = []
+        seen_ids = set()
+        for shard in authorized_shards:
+            try:
+                for d, s in shard.similarity_search_with_score(effective_query, k=15):
+                    did = d.metadata.get("id")
+                    if did not in seen_ids:
+                        seen_ids.add(did)
+                        docs_with_scores.append((d, s))
+            except Exception:
+                pass
+        docs_with_scores.sort(key=lambda x: x[1])
 
         # Prepend explicit matches if any, deduplicating against semantic matches
         if explicit_matches:
@@ -1100,8 +1368,19 @@ def execute_rag(
         prev_user_queries = [extract_clean_user_prompt(t.get("content", "")) for t in chat_history if t.get("role") == "user"]
         if prev_user_queries:
             combined_q = f"{prev_user_queries[-1]} {effective_query}"
-            with _CHROMA_LOCK:
-                fallback_scores = chroma.similarity_search_with_score(combined_q, k=15)
+            with _CHROMA_SHARD_LOCK:
+                fallback_scores = []
+                seen_fallback_ids = set()
+                for shard in authorized_shards:
+                    try:
+                        for d, s in shard.similarity_search_with_score(combined_q, k=15):
+                            did = d.metadata.get("id")
+                            if did not in seen_fallback_ids:
+                                seen_fallback_ids.add(did)
+                                fallback_scores.append((d, s))
+                    except Exception:
+                        pass
+                fallback_scores.sort(key=lambda x: x[1])
             authorized_docs = EducoreFrameworkEngine.filter_authorized_documents(fallback_scores, user_session)[:k]
 
     # Format Chat History as native LangChain message objects
@@ -1155,14 +1434,36 @@ def execute_rag(
 
     # 5. Egress Guardrails, PII Masking & Statutory Verification
     final_output = EducoreFrameworkEngine.inspect_output(raw_output, user_session, authorized_docs)
-    token_count = TPSCounter.count_tokens(final_output)
+    gen_duration_s = max(time.time() - t_gen_start, 0.001)
+
+    suggested_followups = []
+    if generate_contextual_followups:
+        try:
+            suggested_followups = generate_contextual_followups(
+                query=effective_query,
+                response_text=final_output,
+                retrieved_docs=authorized_docs,
+                user_session=user_session,
+                chat_history=chat_history,
+                model_id=model_id
+            )
+        except Exception:
+            suggested_followups = []
+
+    # Follow-ups are served via Open WebUI's native follow-up mechanism (chat:message:follow_ups),
+    # NOT appended to the assistant's message content.
+    content_for_telemetry = final_output
+    token_count = TPSCounter.count_tokens(content_for_telemetry)
     tps = TPSCounter.calculate_tps(token_count, gen_duration_s)
-    telemetry_footer = TELEMETRY.format_telemetry_footer(final_output, gen_duration_s, token_count=token_count)
-    final_response_with_telemetry = final_output + telemetry_footer
+    telemetry_footer = TELEMETRY.format_telemetry_footer(content_for_telemetry, gen_duration_s, token_count=token_count)
+    final_response_with_telemetry = content_for_telemetry + telemetry_footer
     latency_ms = (time.time() - t0) * 1000
 
     # 6. Immutable ISO 42001 Audit Ledger Logging
-    log_audit(user_session, effective_query, authorized_docs, final_response_with_telemetry, latency_ms, "PERMITTED_RAG" if authorized_docs else "CONVERSATIONAL_RESTRICTED")
+    _shard_names = [s._collection.name for s in authorized_shards] if authorized_shards else []
+    log_audit(user_session, effective_query, authorized_docs, final_response_with_telemetry, latency_ms,
+              "PERMITTED_RAG" if authorized_docs else "CONVERSATIONAL_RESTRICTED",
+              queried_shard_names=_shard_names)
 
     return {
         "response": final_response_with_telemetry,
@@ -1182,7 +1483,8 @@ def execute_rag(
         "tokens": token_count,
         "tps": tps,
         "watch_telemetry": TELEMETRY.get_watch_telemetry(),
-        "guardrail_triggered": False
+        "guardrail_triggered": False,
+        "suggested_followups": suggested_followups
     }
 
 def execute_rag_stream(
@@ -1203,34 +1505,65 @@ def execute_rag_stream(
     immediate_resp = EducoreFrameworkEngine.inspect_input(raw_prompt, user_session, model_id=model_id)
     if immediate_resp:
         is_greeting = bool(handle_conversational_greeting(clean_query or raw_prompt, user_session, model_id=model_id))
+        suggested_followups = []
+        if is_greeting and generate_contextual_followups:
+            try:
+                suggested_followups = generate_contextual_followups(
+                    query=effective_query,
+                    response_text=immediate_resp,
+                    retrieved_docs=[],
+                    user_session=user_session,
+                    chat_history=chat_history,
+                    model_id=model_id
+                )
+            except Exception:
+                suggested_followups = []
+
+        # Follow-ups are served via Open WebUI's native follow-up mechanism (chat:message:follow_ups),
+        # NOT appended to the streamed assistant message content.
+        content_for_metrics = immediate_resp
         latency_ms = (time.time() - t0) * 1000
         gen_duration_s = max(latency_ms / 1000.0, 0.001)
-        token_count = TPSCounter.count_tokens(immediate_resp)
-        telemetry_footer = TELEMETRY.format_telemetry_footer(immediate_resp, gen_duration_s, token_count=token_count)
-        full_resp = immediate_resp + telemetry_footer
+        token_count = TPSCounter.count_tokens(content_for_metrics)
+        telemetry_footer = TELEMETRY.format_telemetry_footer(content_for_metrics, gen_duration_s, token_count=token_count)
+        full_resp = content_for_metrics + telemetry_footer
         audit_tag = "CONVERSATIONAL_GREETING" if is_greeting else "GUARDRAIL_INTERCEPT"
         log_audit(user_session, effective_query, [], full_resp, latency_ms, audit_tag)
         yield full_resp
         return
 
     # 2. Retrieve Documents from Governed Chroma Store using effective query
-    with _CHROMA_LOCK:
-        chroma = get_chroma_db()
+    user_clearance = str(user_session.get("clearance") or user_session.get("role") or "public").strip().lower()
+    with _CHROMA_SHARD_LOCK:
+        authorized_shards = get_authorized_shards(user_clearance)
 
-        # 2a. Deterministic exact ID, filename, or slug lookup (bypasses vector distance)
-        explicit_matches = find_explicit_document_matches(raw_prompt, clean_query, chroma)
+        # 2a. Deterministic exact ID, filename, or slug lookup (bypasses vector distance) restricted to authorized shards
+        explicit_matches = find_explicit_document_matches(raw_prompt, clean_query, authorized_shards)
 
         # Context retention: If no explicit match in current prompt, check recent chat turns
         if not explicit_matches and chat_history:
             for t in reversed(chat_history[-4:]):
                 c = t.get("content", "")
-                h_matches = find_explicit_document_matches(c, extract_clean_user_prompt(c), chroma)
+                h_matches = find_explicit_document_matches(c, extract_clean_user_prompt(c), authorized_shards)
                 if h_matches:
                     explicit_matches = h_matches
                     break
 
-        # 2b. Semantic similarity search
-        docs_with_scores = chroma.similarity_search_with_score(effective_query, k=10)
+        # 2b. Semantic similarity search across authorized shards ONLY
+        # Prevents retrieval starvation when candidate pool contains mixed-sensitivity documents
+        # and physically ensures higher-tier embeddings are NEVER queried for lower clearance users
+        docs_with_scores = []
+        seen_ids = set()
+        for shard in authorized_shards:
+            try:
+                for d, s in shard.similarity_search_with_score(effective_query, k=10):
+                    did = d.metadata.get("id")
+                    if did not in seen_ids:
+                        seen_ids.add(did)
+                        docs_with_scores.append((d, s))
+            except Exception:
+                pass
+        docs_with_scores.sort(key=lambda x: x[1])
 
         # Prepend explicit matches if any, deduplicating against semantic matches
         if explicit_matches:
@@ -1246,8 +1579,19 @@ def execute_rag_stream(
         prev_user_queries = [extract_clean_user_prompt(t.get("content", "")) for t in chat_history if t.get("role") == "user"]
         if prev_user_queries:
             combined_q = f"{prev_user_queries[-1]} {effective_query}"
-            with _CHROMA_LOCK:
-                fallback_scores = chroma.similarity_search_with_score(combined_q, k=10)
+            with _CHROMA_SHARD_LOCK:
+                fallback_scores = []
+                seen_fallback_ids = set()
+                for shard in authorized_shards:
+                    try:
+                        for d, s in shard.similarity_search_with_score(combined_q, k=10):
+                            did = d.metadata.get("id")
+                            if did not in seen_fallback_ids:
+                                seen_fallback_ids.add(did)
+                                fallback_scores.append((d, s))
+                    except Exception:
+                        pass
+                fallback_scores.sort(key=lambda x: x[1])
             authorized_docs = EducoreFrameworkEngine.filter_authorized_documents(fallback_scores, user_session)[:k]
 
     # Format Chat History as native LangChain message objects
@@ -1331,29 +1675,57 @@ def execute_rag_stream(
         accumulated_chunks.append(notice)
         yield notice
 
-    # 6. Performance Telemetry Footer (TPS Counter & Watched Files Latency)
+    # 6. Contextual Follow-Up Suggestions
+    suggested_followups = []
+    if generate_contextual_followups:
+        try:
+            suggested_followups = generate_contextual_followups(
+                query=effective_query,
+                response_text="".join(accumulated_chunks),
+                retrieved_docs=authorized_docs,
+                user_session=user_session,
+                chat_history=chat_history,
+                model_id=model_id
+            )
+        except Exception:
+            suggested_followups = []
+
+    # Follow-ups are served via Open WebUI's native follow-up mechanism (chat:message:follow_ups),
+    # NOT yielded into the streamed assistant message content.
+
+    # 7. Performance Telemetry Footer (TPS Counter & Watched Files Latency)
     full_content = "".join(accumulated_chunks)
     token_count = TPSCounter.count_tokens(full_content)
     telemetry_footer = TELEMETRY.format_telemetry_footer(full_content, gen_duration_s, token_count=token_count)
     accumulated_chunks.append(telemetry_footer)
     yield telemetry_footer
 
-    # 7. Egress Sanitization & Audit Logging
+    # 8. Egress Sanitization & Audit Logging
     final_output = EducoreFrameworkEngine.inspect_output("".join(accumulated_chunks), user_session, authorized_docs)
     latency_ms = (time.time() - t0) * 1000
+    _stream_shard_names = [s._collection.name for s in authorized_shards] if authorized_shards else []
     log_audit(
         user_session,
         effective_query,
         authorized_docs,
         final_output,
         latency_ms,
-        "PERMITTED_RAG" if authorized_docs else "CONVERSATIONAL_RESTRICTED"
+        "PERMITTED_RAG" if authorized_docs else "CONVERSATIONAL_RESTRICTED",
+        queried_shard_names=_stream_shard_names
     )
 
 # ==============================================================================
 # 4. ISO 42001 AUDIT LEDGER (CLAUSE 7.5 & ANNEX A.6.2.8)
 # ==============================================================================
-def log_audit(user_session: Dict[str, Any], query: str, docs: List[Any], response: str, latency_ms: float, decision: str):
+def log_audit(
+    user_session: Dict[str, Any],
+    query: str,
+    docs: List[Any],
+    response: str,
+    latency_ms: float,
+    decision: str,
+    queried_shard_names: Optional[List[str]] = None
+):
     username = (
         user_session.get("username")
         or user_session.get("user")
@@ -1392,10 +1764,19 @@ def log_audit(user_session: Dict[str, Any], query: str, docs: List[Any], respons
         },
         "query": query,
         "rbac_decision": decision,
+        "physical_gate": {
+            "queried_shards": queried_shard_names or [],
+            "shard_isolation_enforced": True,
+            "unauthorized_shards_blocked": [
+                s for s in CLEARANCE_SHARDS
+                if queried_shard_names and f"educore_shard_{s}" not in queried_shard_names
+            ]
+        },
         "retrieved_chunk_ids": [getattr(d, "metadata", {}).get("id", str(d)) for d in docs],
         "purview_containers_accessed": list(set(getattr(d, "metadata", {}).get("purview_label", "Unknown") for d in docs)),
         "response_length": len(response),
-        "latency_ms": round(latency_ms, 2)
+        "latency_ms": round(latency_ms, 2),
+        "compliance": "ISO/IEC 42001:2023 Clause 7.5 & Annex A.6.2.8 | Zambian Data Protection Act No. 3 of 2021"
     }
     target_log_path = get_audit_log_path()
     try:
@@ -2144,6 +2525,7 @@ class EducoreOpenAIHandler(BaseHTTPRequestHandler):
             self.end_headers()
             state = _SYNC_SERVICE.load_state()
             chroma = get_chroma_db()
+            shard_counts = {c: get_chroma_shard(c)._collection.count() for c in CLEARANCE_SHARDS}
             resp = {
                 "status": "online",
                 "supported_formats": sorted(SUPPORTED_EXTENSIONS),
@@ -2152,6 +2534,7 @@ class EducoreOpenAIHandler(BaseHTTPRequestHandler):
                 "last_sync_time": state.get("last_sync_time", 0),
                 "total_state_chunks": state.get("total_chunks", 0),
                 "total_vector_count": chroma._collection.count(),
+                "shard_vector_counts": shard_counts,
                 "tracked_files": state.get("files", {}),
                 "telemetry": TELEMETRY.get_watch_telemetry()
             }
@@ -2173,7 +2556,55 @@ class EducoreOpenAIHandler(BaseHTTPRequestHandler):
                                 entries.append(json.loads(line.strip()))
                             except Exception:
                                 pass
-            self.wfile.write(json.dumps(entries[-25:], indent=2).encode("utf-8"))
+            self.wfile.write(json.dumps(entries[-25:], indent=2).encode(\"utf-8\"))
+
+        elif path == "/api/framework/quarantine":
+            # List quarantined files with metadata — restricted to staff+ clearance
+            auth_header = self.headers.get("Authorization", "")
+            req_clearance = "public"
+            if auth_header.startswith("Bearer "):
+                token = auth_header[7:]
+                for _uid, _us in EDUCORE_USERS.items():
+                    if _us.get("api_key") == token or _us.get("token") == token or _uid == token:
+                        req_clearance = _us.get("clearance", "public")
+                        break
+            from framework_sync_service import CLEARANCE_RANK
+            if CLEARANCE_RANK.get(req_clearance, 0) < CLEARANCE_RANK.get("staff", 2):
+                self.send_response(403)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.send_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": "Forbidden", "detail": "staff clearance or above required"}).encode("utf-8"))
+                return
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_cors_headers()
+            self.end_headers()
+            q_dir = os.environ.get("EDUCORE_QUARANTINE_DIR", os.path.join(BASE_DIR, "data", "quarantine"))
+            quarantine_log = os.path.join(q_dir, "quarantine_audit.jsonl")
+            q_entries = []
+            if os.path.exists(quarantine_log):
+                with open(quarantine_log, "r", encoding="utf-8") as qf:
+                    for line in qf:
+                        if line.strip():
+                            try:
+                                q_entries.append(json.loads(line.strip()))
+                            except Exception:
+                                pass
+            # Enrich with on-disk presence check
+            live_files = set()
+            if os.path.isdir(q_dir):
+                live_files = {f for f in os.listdir(q_dir) if not f.endswith(".jsonl")}
+            for entry in q_entries:
+                fname = entry.get("filename", "")
+                entry["still_quarantined"] = any(fname in lf or lf.startswith(fname.split(".")[0]) for lf in live_files)
+            resp = {
+                "quarantine_dir": q_dir,
+                "total_events": len(q_entries),
+                "live_file_count": len(live_files),
+                "events": sorted(q_entries, key=lambda x: x.get("timestamp", ""), reverse=True)[:50]
+            }
+            self.wfile.write(json.dumps(resp, indent=2, ensure_ascii=False).encode("utf-8"))
 
         else:
             self.send_response(404)
@@ -2257,12 +2688,17 @@ class EducoreOpenAIHandler(BaseHTTPRequestHandler):
                         pass
 
                 if is_open_webui_utility_task(query):
-                    try:
-                        for chunk in llm.stream(query):
-                            txt = getattr(chunk, "content", str(chunk))
-                            send_chunk(txt)
-                    except Exception:
-                        send_chunk('{ "title": "Educore AI Chat" }')
+                    if is_follow_up_utility_task(query):
+                        # Fast-path: return RBAC-safe contextual follow-ups (sub-millisecond, zero LLM overhead)
+                        resp_text = handle_follow_up_utility_task(query, user_session, model_id)
+                        send_chunk(resp_text)
+                    else:
+                        try:
+                            for chunk in llm.stream(query):
+                                txt = getattr(chunk, "content", str(chunk))
+                                send_chunk(txt)
+                        except Exception:
+                            send_chunk('{ "title": "Educore AI Chat" }')
                 else:
                     try:
                         for chunk_text in execute_rag_stream(query, user_session, history_turns, model_id=model_id):
@@ -2301,11 +2737,15 @@ class EducoreOpenAIHandler(BaseHTTPRequestHandler):
 
             else:
                 if is_open_webui_utility_task(query):
-                    try:
-                        task_out = llm.invoke(query)
-                        resp_text = getattr(task_out, "content", str(task_out))
-                    except Exception:
-                        resp_text = '{ "title": "Educore AI Chat" }'
+                    if is_follow_up_utility_task(query):
+                        # Fast-path: return RBAC-safe contextual follow-ups (sub-millisecond, zero LLM overhead)
+                        resp_text = handle_follow_up_utility_task(query, user_session, model_id)
+                    else:
+                        try:
+                            task_out = llm.invoke(query)
+                            resp_text = getattr(task_out, "content", str(task_out))
+                        except Exception:
+                            resp_text = '{ "title": "Educore AI Chat" }'
                     rag_result = {"retrieved_docs": [], "latency_ms": 10.0}
                 else:
                     try:
@@ -2355,7 +2795,8 @@ class EducoreOpenAIHandler(BaseHTTPRequestHandler):
                         "generation_time_s": rag_result.get("generation_time_s", 0),
                         "tps": rag_result.get("tps", 0.0),
                         "watched_files": rag_result.get("watch_telemetry", TELEMETRY.get_watch_telemetry()),
-                        "user_profile": user_session
+                        "user_profile": user_session,
+                        "suggested_followups": rag_result.get("suggested_followups", [])
                     }
                 }
                 self.wfile.write(json.dumps(resp_obj, ensure_ascii=False).encode("utf-8"))

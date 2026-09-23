@@ -231,8 +231,19 @@
       ],
       "chunk_count": 52,
       "last_synced": 1790082079.5304542
+    },
+    "public.docx": {
+      "hash": "994e0f70711ecdd899689f31e36a1aa00ba1e047635d717e236c1e9478bb24c7",
+      "mtime": 1790153873.780887,
+      "chunk_ids": [
+        "EDU-FW-PUBLIC-S01-001"
+      ],
+      "chunk_count": 1,
+      "last_synced": 1790156451.9867256,
+      "clearance": "public",
+      "folder_clearance": "public"
     }
   },
-  "last_sync_time": 1790082079.5418117,
-  "total_chunks": 144
+  "last_sync_time": 1790156452.029263,
+  "total_chunks": 145
 }

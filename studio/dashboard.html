@@ -1411,7 +1411,7 @@ Notes: Student bereavement reported by guardian Alice Chanda (0966889900).</text
           });
           if (res.ok) {
             const data = await res.json();
-            loginSuccess(data.user, CURRENT_SESSION_TOKEN, data.history || []);
+            loginSuccess(data.user, CURRENT_SESSION_TOKEN, data.history || [], data.suggested_questions || []);
             return;
           }
         } catch (e) { }
@@ -1471,7 +1471,7 @@ Notes: Student bereavement reported by guardian Alice Chanda (0966889900).</text
       }
     }
 
-    function loginSuccess(user, token, history) {
+    function loginSuccess(user, token, history, suggestedQuestions = null) {
       CURRENT_USER = user;
       document.getElementById('view-login').style.display = 'none';
       document.getElementById('view-app').style.display = 'block';
@@ -1511,18 +1511,32 @@ Notes: Student bereavement reported by guardian Alice Chanda (0966889900).</text
         </button>
       `).join('');
 
-      // Build Preset Query Pills
-      const chipsCont = document.getElementById('chat-prompt-chips');
-      const prompts = PRESET_PROMPTS[user.clearance] || PRESET_PROMPTS["public"];
-      chipsCont.innerHTML = prompts.map(p => `
-        <div class="chip" onclick="applyChatPrompt('${p.replace(/'/g, "\\'")}')">${p}</div>
-      `).join('');
+      // Build Preset Query Pills or Contextual Follow-ups
+      const defaultPrompts = PRESET_PROMPTS[user.clearance] || PRESET_PROMPTS["public"];
+      if (suggestedQuestions && suggestedQuestions.length > 0) {
+        renderPromptChips(suggestedQuestions, "Suggested Follow-ups:");
+      } else {
+        renderPromptChips(defaultPrompts, "Suggested Prompts:");
+      }
 
       // Render Chat History
       renderChatHistory(history);
 
       // Select First Tool
       switchToolTab(user.tools[0].id);
+    }
+
+    function renderPromptChips(prompts, labelText = "Suggested Follow-ups:") {
+      const chipsCont = document.getElementById('chat-prompt-chips');
+      if (!chipsCont) return;
+      if (!prompts || prompts.length === 0) {
+        chipsCont.innerHTML = '';
+        return;
+      }
+      const labelHtml = labelText ? `<div style="width: 100%; font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); margin-bottom: 4px;">${labelText}</div>` : '';
+      chipsCont.innerHTML = labelHtml + prompts.map(p => `
+        <div class="chip" onclick="applyChatPrompt('${p.replace(/'/g, "\\'")}')">${p}</div>
+      `).join('');
     }
 
     function switchToolTab(toolId) {
@@ -1709,6 +1723,11 @@ Notes: Student bereavement reported by guardian Alice Chanda (0966889900).</text
             </div>
           `).join('');
         }
+
+        // Dynamically update prompt pills tailored to conversational context
+        if (data.suggested_questions && data.suggested_questions.length > 0) {
+          renderPromptChips(data.suggested_questions, "Suggested Follow-ups:");
+        }
       } catch (err) {
         const typingEl = document.getElementById(typingId);
         if (typingEl) typingEl.remove();
@@ -1727,6 +1746,8 @@ Notes: Student bereavement reported by guardian Alice Chanda (0966889900).</text
         headers: { 'Authorization': `Bearer ${CURRENT_SESSION_TOKEN}` }
       });
       renderChatHistory([]);
+      const prompts = CURRENT_USER && PRESET_PROMPTS[CURRENT_USER.clearance] ? PRESET_PROMPTS[CURRENT_USER.clearance] : PRESET_PROMPTS["public"];
+      renderPromptChips(prompts, "Suggested Prompts:");
     }
 
     function copyDirectText(btn, encodedText) {

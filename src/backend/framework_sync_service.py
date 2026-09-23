@@ -4,10 +4,12 @@
 # Compliance: ISO/IEC 42001:2023 | Zambian Data Protection Act No. 3 of 2021
 # ==============================================================================
 import os
+import sys
 import re
 import json
 import hashlib
 import time
+import shutil
 from typing import Dict, Any, List, Tuple, Optional, Union
 import docx
 from document_readers import read_document, SUPPORTED_EXTENSIONS, get_format_prefix
@@ -46,6 +48,176 @@ _candidate_state_paths = [
     os.path.join(BASE_DIR, "production_setup", "corpus_sync_state.json")
 ]
 STATE_PATH = next((p for p in _candidate_state_paths if os.path.exists(p)), _candidate_state_paths[0])
+
+DEFAULT_QUARANTINE_DIR = os.environ.get(
+    "EDUCORE_QUARANTINE_DIR",
+    os.path.join(BASE_DIR, "data", "quarantine")
+)
+
+def get_audit_log_path() -> str:
+    """Resolves active audit log path with support for env override and test isolation."""
+    env_path = os.environ.get("EDUCORE_AUDIT_LOG_PATH") or os.environ.get("AIMS_RAG_AUDIT_LOG_PATH")
+    if env_path:
+        return os.path.abspath(env_path)
+
+    is_test_env = (
+        os.environ.get("EDUCORE_TEST_MODE") == "1"
+        or "pytest" in sys.modules
+        or "unittest" in sys.modules
+        or "PYTEST_CURRENT_TEST" in os.environ
+        or any(arg.endswith("pytest") or "test" in os.path.basename(arg).lower() for arg in sys.argv)
+    )
+    if is_test_env:
+        return os.path.join(BASE_DIR, "data", "logs", "test_aims_rag_audit.jsonl")
+
+    _candidate_audit_paths = [
+        os.path.join(BASE_DIR, "data", "logs", "aims_rag_audit.jsonl"),
+        os.path.join(BASE_DIR, "aims_rag_audit.jsonl")
+    ]
+    return next((p for p in _candidate_audit_paths if os.path.exists(p)), _candidate_audit_paths[0])
+
+# ==============================================================================
+# PHYSICAL GATES: CLEARANCE RANKS & PARTITIONED VAULT MAPPINGS
+# ==============================================================================
+CLEARANCE_RANK: Dict[str, int] = {
+    "public": 1,
+    "student": 1,
+    "staff": 2,
+    "faculty": 2,
+    "counselor": 3,
+    "pastoral": 3,
+    "finance": 4,
+    "devops": 4,
+    "it": 4,
+    "admin": 5,
+    "executive": 5
+}
+
+VAULT_FOLDER_MAP: Dict[str, str] = {
+    "vault_public": "public",
+    "public": "public",
+    "04_public": "public",
+    "vault_staff": "staff",
+    "staff": "staff",
+    "00_hub_master": "staff",
+    "01_spokes_policies": "staff",
+    "02_spokes_audit": "staff",
+    "03_spokes_audit_tech": "staff",
+    "vault_pastoral": "counselor",
+    "pastoral": "counselor",
+    "counselor": "counselor",
+    "vault_finance": "finance",
+    "finance": "finance",
+    "bursar": "finance",
+    "vault_devops": "devops",
+    "devops": "devops",
+    "it": "devops",
+    "vault_admin": "admin",
+    "admin": "admin",
+    "governance": "admin"
+}
+
+def resolve_folder_clearance(folder: str, rel_path: str = "") -> str:
+    """
+    Resolves the maximum authorized clearance for a given folder or relative path.
+    If the folder/path matches a known vault or spoke directory, returns its mapped clearance.
+    Otherwise defaults to 'public' for zero-trust least-privilege.
+    """
+    f_clean = str(folder or "").strip().lower()
+    p_clean = str(rel_path or "").strip().lower()
+
+    if f_clean in VAULT_FOLDER_MAP:
+        return VAULT_FOLDER_MAP[f_clean]
+
+    for seg in re.split(r'[\\/]', p_clean):
+        seg_lower = seg.strip().lower()
+        if seg_lower in VAULT_FOLDER_MAP:
+            return VAULT_FOLDER_MAP[seg_lower]
+
+    if folder in FOLDER_METADATA_MAP:
+        return FOLDER_METADATA_MAP[folder].get("clearance", "staff")
+
+    return "public"
+
+def is_clearance_mismatch(detected_clearance: str, folder_clearance: str, folder: str) -> Tuple[bool, str]:
+    """
+    Checks if a document's detected clearance exceeds the authorized folder clearance.
+    Returns (is_mismatch, reason).
+    """
+    detected_rank = CLEARANCE_RANK.get(str(detected_clearance).lower(), 1)
+    folder_rank = CLEARANCE_RANK.get(str(folder_clearance).lower(), 1)
+
+    strict_root = os.environ.get("EDUCORE_STRICT_QUARANTINE", "0").lower() in ("1", "true", "yes")
+    if str(folder).lower() in ("root", "") and not strict_root:
+        return False, ""
+
+    if detected_rank > folder_rank:
+        reason = (
+            f"Clearance Spillage Violation: Document sensitivity '{str(detected_clearance).upper()}' "
+            f"(Rank {detected_rank}) exceeds folder clearance boundary '{str(folder_clearance).upper()}' (Rank {folder_rank})."
+        )
+        return True, reason
+
+    return False, ""
+
+def eject_to_quarantine(
+    file_path: str,
+    detected_clearance: str,
+    folder_clearance: str,
+    reason: str,
+    quarantine_dir: str = DEFAULT_QUARANTINE_DIR,
+    audit_log_path: Optional[str] = None
+) -> Dict[str, Any]:
+    """
+    Physically ejects a misclassified or sensitive spillage file out of the watched
+    folder into the isolated quarantine vault, generating a quarantine metadata descriptor
+    and immutable ISO 42001 compliance audit trail before vector indexing.
+    """
+    os.makedirs(quarantine_dir, exist_ok=True)
+    filename = os.path.basename(file_path)
+    timestamp_str = time.strftime("%Y%m%d_%H%M%S", time.gmtime())
+    quarantine_filename = f"{timestamp_str}_{filename}"
+    target_path = os.path.join(quarantine_dir, quarantine_filename)
+
+    file_hash = compute_file_sha256(file_path) if os.path.exists(file_path) else "unknown"
+
+    # Move file physically out of the watched directory
+    shutil.move(file_path, target_path)
+
+    # Write quarantine metadata descriptor
+    meta_path = target_path + ".quarantine_meta.json"
+    meta_data = {
+        "event": "PRE_INGESTION_QUARANTINE_EJECTION",
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "original_file": file_path,
+        "quarantined_file": target_path,
+        "filename": filename,
+        "sha256_hash": file_hash,
+        "detected_clearance": detected_clearance,
+        "folder_clearance": folder_clearance,
+        "violation_reason": reason,
+        "compliance": "ISO/IEC 42001:2023 Clause 8.2 & Annex A.8"
+    }
+    try:
+        with open(meta_path, "w", encoding="utf-8") as f:
+            json.dump(meta_data, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        sys.stderr.write(f"[WARN] Failed to write quarantine metadata: {e}\n")
+
+    # Record telemetry
+    TELEMETRY.record_quarantine_event(meta_data)
+
+    # Append immutable ISO 42001 compliance audit log
+    target_log = audit_log_path or get_audit_log_path()
+    try:
+        os.makedirs(os.path.dirname(target_log), exist_ok=True)
+        with open(target_log, "a", encoding="utf-8") as f:
+            f.write(json.dumps(meta_data, ensure_ascii=False) + "\n")
+    except Exception as e:
+        sys.stderr.write(f"[WARN] Failed to write quarantine audit log: {e}\n")
+
+    print(f"[Quarantine Gate] EJECTED '{filename}' to '{target_path}' (Detected: {str(detected_clearance).upper()} vs Folder: {str(folder_clearance).upper()})")
+    return meta_data
 
 def resolve_watch_dirs(custom_dirs: Optional[Union[str, List[str]]] = None) -> List[str]:
     """
@@ -428,8 +600,8 @@ class FrameworkSyncService:
     def scan_framework_files(self) -> Dict[str, Dict[str, Any]]:
         """
         Discovers all supported document files (.docx, .pdf, .xlsx, .xls) across
-        all configured watch directories, ignoring temporary/lock files.
-        Returns a map of relative_path -> {full_path, hash, mtime, folder, filename, watch_dir}.
+        all configured watch directories, ignoring temporary/lock files and quarantine vaults.
+        Returns a map of relative_path -> {full_path, hash, mtime, folder, filename, folder_clearance, watch_dir}.
         """
         results = {}
         multiple_dirs = len(self.watch_dirs) > 1
@@ -449,13 +621,20 @@ class FrameworkSyncService:
                     if fname.startswith("~$") or fname.startswith("."):
                         continue  # Ignore MS Office temporary locks
 
+                    # Physical Gate: Ignore isolated quarantine directories and metadata files
+                    if any(part.lower() in ("quarantine", "_quarantine") for part in re.split(r'[\\/]', root)):
+                        continue
+                    if "_quarantine" in fname.lower() or fname.endswith(".quarantine_meta.json"):
+                        continue
+
                     full_path = os.path.join(root, fname)
                     sub_rel = os.path.relpath(full_path, w_dir).replace("\\", "/")
                     rel_path = f"{dir_prefix}/{sub_rel}".lstrip("/") if dir_prefix else sub_rel
                     
-                    # Determine containing folder
+                    # Determine containing folder and folder clearance
                     parts = sub_rel.split("/")
                     folder = parts[0] if len(parts) > 1 else "ROOT"
+                    folder_clearance = resolve_folder_clearance(folder, rel_path)
 
                     try:
                         file_hash = compute_file_sha256(full_path)
@@ -466,6 +645,7 @@ class FrameworkSyncService:
                             "hash": file_hash,
                             "mtime": mtime,
                             "folder": folder,
+                            "folder_clearance": folder_clearance,
                             "filename": fname,
                             "watch_dir": w_dir
                         }
@@ -474,23 +654,16 @@ class FrameworkSyncService:
 
         return results
 
-    def parse_file_to_records(self, file_info: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """
-        Parses a document file into structured corpus records with Purview & RBAC metadata.
-        Supports all formats registered in the document_readers module.
-        """
+    def _convert_sections_to_records(
+        self,
+        file_info: Dict[str, Any],
+        clean_title: str,
+        sections: List[Dict[str, Any]],
+        meta: Dict[str, Any]
+    ) -> List[Dict[str, Any]]:
         full_path = file_info["full_path"]
-        folder = file_info["folder"]
         rel_path = file_info["rel_path"]
-
-        clean_title, sections = read_document(full_path)
-
-        # Content-aware Purview sensitivity and RBAC metadata classification
-        meta = classify_document_content(file_info["filename"], clean_title, sections, folder)
-
-        # Format-aware chunk ID prefix for traceability
         format_prefix = get_format_prefix(full_path)
-        # Strip any known extension for the slug
         fname_base = file_info["filename"]
         for ext in SUPPORTED_EXTENSIONS:
             if fname_base.lower().endswith(ext):
@@ -500,7 +673,6 @@ class FrameworkSyncService:
         doc_prefix = f"{format_prefix}-{doc_slug[:20]}"
 
         records = []
-
         sec_idx = 1
         for sec in sections:
             heading = sec.get("heading", "")
@@ -521,11 +693,22 @@ class FrameworkSyncService:
                     "classification": meta.get("classification", "INTERNAL"),
                     "purview_label": meta.get("purview_label", "Internal - Educational"),
                     "allowed_roles": meta.get("allowed_roles", ["staff", "admin"]),
+                    "target_shard": str(meta.get("clearance", "staff")).lower(),
                     "source_file": rel_path
                 })
             sec_idx += 1
 
         return records
+
+    def parse_file_to_records(self, file_info: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Parses a document file into structured corpus records with Purview & RBAC metadata
+        and target clearance shard tagging.
+        Supports all formats registered in the document_readers module.
+        """
+        clean_title, sections = read_document(file_info["full_path"])
+        meta = classify_document_content(file_info["filename"], clean_title, sections, file_info["folder"])
+        return self._convert_sections_to_records(file_info, clean_title, sections, meta)
 
     def detect_changes(self, force: bool = False) -> Dict[str, Any]:
         """
@@ -569,7 +752,8 @@ class FrameworkSyncService:
 
     def generate_incremental_update(self, force: bool = False) -> Dict[str, Any]:
         """
-        Calculates the delta (new/modified records and deleted chunk IDs)
+        Calculates the delta (new/modified records and deleted chunk IDs),
+        enforces the Pre-Ingestion Quarantine Gate against clearance spillage,
         and updates the persistent sync state and enterprise_data.json.
         """
         t0 = time.time()
@@ -581,6 +765,7 @@ class FrameworkSyncService:
                 "records_to_upsert": [],
                 "ids_to_delete": [],
                 "updated_files": [],
+                "quarantined_files": [],
                 "duration_ms": round((time.time() - t0) * 1000, 2)
             }
 
@@ -604,13 +789,40 @@ class FrameworkSyncService:
             old_chunk_ids = known_files.get(rel_path, {}).get("chunk_ids", [])
             ids_to_delete.extend(old_chunk_ids)
 
-        # Parse added & modified files
+        # Parse added & modified files with Pre-Ingestion Quarantine Gate
         t_parse_start = time.time()
+        quarantined_files = []
+        parsed_files = []
+
         for rel_path in updated_files:
             c_info = current_files[rel_path]
-            file_records = self.parse_file_to_records(c_info)
+            clean_title, sections = read_document(c_info["full_path"])
+            meta = classify_document_content(c_info["filename"], clean_title, sections, c_info["folder"])
+            detected_clearance = str(meta.get("clearance", "public")).lower()
+            folder_clearance = str(c_info.get("folder_clearance") or resolve_folder_clearance(c_info["folder"], rel_path)).lower()
+
+            # Physical Gate Check: Stop condition if document sensitivity exceeds folder clearance
+            is_mismatch, mismatch_reason = is_clearance_mismatch(detected_clearance, folder_clearance, c_info["folder"])
+            quarantine_enabled = os.environ.get("EDUCORE_QUARANTINE_ENABLED", "1").lower() not in ("0", "false", "no")
+
+            if is_mismatch and quarantine_enabled:
+                q_meta = eject_to_quarantine(
+                    file_path=c_info["full_path"],
+                    detected_clearance=detected_clearance,
+                    folder_clearance=folder_clearance,
+                    reason=mismatch_reason
+                )
+                quarantined_files.append(q_meta)
+                # Purge old chunk IDs if previously indexed
+                if rel_path in known_files:
+                    ids_to_delete.extend(known_files[rel_path].get("chunk_ids", []))
+                    del known_files[rel_path]
+                continue
+
+            file_records = self._convert_sections_to_records(c_info, clean_title, sections, meta)
             print(f"[Parser] Extracted {len(file_records)} chunk(s) from '{rel_path}' (SHA-256: {c_info['hash'][:10]}...)")
             records_to_upsert.extend(file_records)
+            parsed_files.append(rel_path)
 
             # Record new chunk IDs in state
             known_files[rel_path] = {
@@ -618,12 +830,14 @@ class FrameworkSyncService:
                 "mtime": c_info["mtime"],
                 "chunk_ids": [r["id"] for r in file_records],
                 "chunk_count": len(file_records),
-                "last_synced": time.time()
+                "last_synced": time.time(),
+                "clearance": detected_clearance,
+                "folder_clearance": folder_clearance
             }
 
-        parse_duration_ms = round((time.time() - t_parse_start) * 1000, 2) if updated_files else 0.0
-        if updated_files:
-            TELEMETRY.record_batch_parse(updated_files, parse_duration_ms, len(records_to_upsert))
+        parse_duration_ms = round((time.time() - t_parse_start) * 1000, 2) if parsed_files else 0.0
+        if parsed_files:
+            TELEMETRY.record_batch_parse(parsed_files, parse_duration_ms, len(records_to_upsert))
 
         # Deduplicate ids_to_delete vs records_to_upsert
         upsert_ids = {r["id"] for r in records_to_upsert}
@@ -640,11 +854,13 @@ class FrameworkSyncService:
         self.save_state(state)
 
         duration = round((time.time() - t0) * 1000, 2)
+        has_actual_changes = bool(records_to_upsert or final_delete_ids or quarantined_files or diff["deleted_files"])
         return {
-            "changed": True,
+            "changed": has_actual_changes,
             "records_to_upsert": records_to_upsert,
             "ids_to_delete": final_delete_ids,
-            "updated_files": updated_files,
+            "updated_files": parsed_files,
+            "quarantined_files": quarantined_files,
             "deleted_files": diff["deleted_files"],
             "total_chunks": total_chunks,
             "parse_duration_ms": parse_duration_ms,

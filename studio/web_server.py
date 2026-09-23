@@ -44,7 +44,8 @@ from production_rag import (
     llm,
     EDUCORE_CAMPUSES,
     get_allowed_campuses,
-    get_audit_log_path
+    get_audit_log_path,
+    generate_contextual_followups
 )
 from langchain_core.output_parsers import StrOutputParser
 
@@ -1056,7 +1057,7 @@ Notes: Student bereavement reported by guardian Alice Chanda (0966889900).</text
           });
           if (res.ok) {
             const data = await res.json();
-            loginSuccess(data.user, CURRENT_SESSION_TOKEN, data.history || []);
+            loginSuccess(data.user, CURRENT_SESSION_TOKEN, data.history || [], data.suggested_questions || []);
             return;
           }
         } catch (e) { }
@@ -1105,7 +1106,7 @@ Notes: Student bereavement reported by guardian Alice Chanda (0966889900).</text
       }
     }
 
-    function loginSuccess(user, token, history) {
+    function loginSuccess(user, token, history, suggestedQuestions = null) {
       CURRENT_USER = user;
       document.getElementById('view-login').style.display = 'none';
       document.getElementById('view-app').style.display = 'block';
@@ -1128,18 +1129,32 @@ Notes: Student bereavement reported by guardian Alice Chanda (0966889900).</text
         </button>
       `).join('');
 
-      // Render preset prompt chips for this role
-      const chipsCont = document.getElementById('chat-prompt-chips');
-      const prompts = PRESET_PROMPTS[user.clearance] || PRESET_PROMPTS["public"];
-      chipsCont.innerHTML = prompts.map(p => `
-        <div class="chip" onclick="applyChatPrompt('${p.replace(/'/g, "\\'")}')">${p}</div>
-      `).join('');
+      // Render prompt chips (use contextual follow-ups if resuming history, else role presets)
+      const defaultPrompts = PRESET_PROMPTS[user.clearance] || PRESET_PROMPTS["public"];
+      if (suggestedQuestions && suggestedQuestions.length > 0) {
+        renderPromptChips(suggestedQuestions, "Suggested Follow-ups:");
+      } else {
+        renderPromptChips(defaultPrompts, "Suggested Prompts:");
+      }
 
       // Render chat history
       renderChatHistory(history);
 
       // Show default first tool
       switchToolTab(user.tools[0].id);
+    }
+
+    function renderPromptChips(prompts, labelText = "Suggested Follow-ups:") {
+      const chipsCont = document.getElementById('chat-prompt-chips');
+      if (!chipsCont) return;
+      if (!prompts || prompts.length === 0) {
+        chipsCont.innerHTML = '';
+        return;
+      }
+      const labelHtml = labelText ? `<div style="width: 100%; font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); margin-bottom: 4px;">${labelText}</div>` : '';
+      chipsCont.innerHTML = labelHtml + prompts.map(p => `
+        <div class="chip" onclick="applyChatPrompt('${p.replace(/'/g, "\\'")}')">${p}</div>
+      `).join('');
     }
 
     function switchToolTab(toolId) {
@@ -1280,6 +1295,11 @@ Notes: Student bereavement reported by guardian Alice Chanda (0966889900).</text
             </div>
           `).join('');
         }
+
+        // Update prompt chips tailored to conversational context
+        if (data.suggested_questions && data.suggested_questions.length > 0) {
+          renderPromptChips(data.suggested_questions, "Suggested Follow-ups:");
+        }
       } catch (err) {
         document.getElementById(typingId).remove();
         cont.innerHTML += `
@@ -1297,6 +1317,8 @@ Notes: Student bereavement reported by guardian Alice Chanda (0966889900).</text
         headers: { 'Authorization': `Bearer ${CURRENT_SESSION_TOKEN}` }
       });
       renderChatHistory([]);
+      const prompts = CURRENT_USER && PRESET_PROMPTS[CURRENT_USER.clearance] ? PRESET_PROMPTS[CURRENT_USER.clearance] : PRESET_PROMPTS["public"];
+      renderPromptChips(prompts, "Suggested Prompts:");
     }
 
     // ==========================================
@@ -1486,13 +1508,28 @@ class RAGStudioHTTPHandler(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(json.dumps({"error": "Unauthorized"}).encode("utf-8"))
                 return
+            suggested_qs = []
+            if session.get("history"):
+                last_turn = session["history"][-1]
+                last_user = next((t["content"] for t in reversed(session["history"]) if t.get("role") == "user"), "")
+                try:
+                    suggested_qs = generate_contextual_followups(
+                        query=last_user,
+                        response_text=last_turn.get("content", ""),
+                        retrieved_docs=[],
+                        user_session=session["user"],
+                        chat_history=session["history"][:-1]
+                    )
+                except Exception:
+                    suggested_qs = []
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
             self._send_cors_headers()
             self.end_headers()
             self.wfile.write(json.dumps({
                 "user": session["user"],
-                "history": session["history"]
+                "history": session["history"],
+                "suggested_questions": suggested_qs
             }).encode("utf-8"))
 
         elif parsed.path == "/api/audit":
@@ -1810,6 +1847,14 @@ class RAGStudioHTTPHandler(BaseHTTPRequestHandler):
                 else:
                     rbac_status = "CONVERSATIONAL"
 
+                suggested_followups = generate_contextual_followups(
+                    query=query,
+                    response_text=response_text,
+                    retrieved_docs=retrieved_docs,
+                    user_session=user,
+                    chat_history=history
+                )
+
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json")
                 self._send_cors_headers()
@@ -1819,7 +1864,8 @@ class RAGStudioHTTPHandler(BaseHTTPRequestHandler):
                     "retrieved_chunks": chunks,
                     "latency_ms": latency_ms,
                     "rbac_decision": rbac_status,
-                    "chat_history": history
+                    "chat_history": history,
+                    "suggested_questions": suggested_followups
                 }).encode("utf-8"))
             except Exception as e:
                 self.send_response(500)
