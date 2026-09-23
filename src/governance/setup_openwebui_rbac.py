@@ -207,7 +207,7 @@ MODELS_DEF = [
     {
         "id": "educore-socratic-student",
         "name": "Educore Socratic Tutor (Tier C - Student)",
-        "description": "Student Socratic tutor enforcing diagnostic hints, cognitive bypass prevention, and Adelaide declarations.",
+        "description": "Student Socratic tutor enforcing diagnostic hints and cognitive bypass prevention.",
         "allowed_groups": ["group-students-001", "group-execadmin-006"],
         "suggestion_prompts": [
             {

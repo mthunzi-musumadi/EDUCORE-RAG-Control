@@ -93,7 +93,7 @@ os.makedirs(os.path.dirname(AUDIT_LOG_PATH), exist_ok=True)
 # ==============================================================================
 import threading
 from langchain_core.documents import Document
-from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
+from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, SystemMessage
 from langchain_chroma import Chroma
 from langchain_ollama import OllamaEmbeddings, ChatOllama
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -944,18 +944,39 @@ class EducoreFrameworkEngine:
             )
 
         # Guardrail Stu-01: Socratic Diagnostic Hint Enforcement (Cognitive Bypass Prevention)
-        if clearance == "public" or user_session.get("role") == "student":
-            direct_answer_pattern = re.search(r'\b(give\s+me\s+the\s+answer\w*|solve\s+this\s+completely|write\s+my\s+entire\s+essay|do\s+my\s+homework)', lower_q)
-            if direct_answer_pattern:
-                return (
-                    "💡 **Educore Socratic Learning Assistant (Guardrail Stu-01 & Cognitive Bypass Prevention)**\n\n"
-                    "Under the Educore Academic Integrity Policy, I cannot provide direct exam answers or complete take-home assignments for you.\n\n"
-                    "**Diagnostic Guiding Hint:**\n"
-                    "1. What is the primary concept or formula involved in this problem? (e.g. For quadratic equations $ax^2+bx+c=0$, identify $a$, $b$, and $c$).\n"
-                    "2. What is the first step you have attempted so far?\n\n"
-                    "Share your initial working, and I will guide you through the reasoning step-by-step!\n\n"
-                    "> 📋 *Adelaide Model Reminder: All student coursework requires a signed Declaration of Intellectual Ownership confirming sole authorship.*"
-                )
+        is_socratic_target = (
+            model_id == "educore-socratic-student"
+            or clearance in ("public", "student")
+            or user_session.get("role") == "student"
+        )
+        if is_socratic_target and not is_policy_inquiry:
+            # 1. Check if user is asking to verify/confirm their OWN answer or working.
+            # If so, pass through to LLM for validation so the model can confirm correct answers!
+            is_explicit_demand = bool(re.search(
+                r'\b(what\s+is|what\'s|tell\s+me|give\s+me|show\s+me|find)\s+(the\s+answer|the\s+solution)\b',
+                lower_q
+            ))
+            is_confirmation = (
+                not is_explicit_demand
+                and bool(re.search(
+                    r'(\b(?:is\s+(?:the\s+answer|it)\s*(?:=|is)?\s*[\d/a-zA-Z\.\-]+)|\b(?:is\s+(?:x|y|z)\s*=\s*[\d/a-zA-Z\.\-]+)|\b(?:did\s+i\s+get|i\s+got|i\s+think\s+(?:it|the\s+answer|x|y)\s+is)\b|\b(?:correct\?|right\?|is\s+that\s+correct|is\s+this\s+right)\b|\b(?:check\s+my\s+(?:answer|work|working|solution|steps))\b|\b(?:here\s+is\s+my\s+(?:work|working|solution))\b|\b(?:am\s+i\s+(?:right|correct))\b|=\s*\-?\d+[\d/.]*\s*\?|\b(?:is\s+it|is\s+\d+[\d/.]*)\b.*\?)',
+                    lower_q
+                ))
+            )
+            if not is_confirmation:
+                is_cheat_demand = bool(re.search(
+                    r'\b(give\s+me\s+the\s+answer\w*|i\s+want\s+the\s+answer\w*|solve\s+this\s+completely|write\s+my\s+(?:entire\s+)?essay|do\s+my\s+(?:entire\s+)?homework|complete\s+my\s+assignment\s+for\s+me)\b',
+                    lower_q
+                ))
+                if is_cheat_demand:
+                    return (
+                        "💡 **Educore Socratic Learning Assistant (Guardrail Stu-01 & Cognitive Bypass Prevention)**\n\n"
+                        "Under the Educore Academic Integrity Policy, I guide your learning through diagnostic hints rather than solving problems or doing coursework for you.\n\n"
+                        "**Diagnostic Guiding Hint:**\n"
+                        "1. What is the primary concept, rule, or formula involved in this problem?\n"
+                        "2. What is the first step you have attempted so far?\n\n"
+                        "Share your initial working or what you think the answer might be, and I will check your reasoning step-by-step!"
+                    )
 
         return None
 
@@ -1019,10 +1040,16 @@ class EducoreFrameworkEngine:
         return authorized
 
     @staticmethod
-    def inspect_output(response: str, user_session: Dict[str, Any], retrieved_docs: List[Document]) -> str:
+    def inspect_output(
+        response: str,
+        user_session: Dict[str, Any],
+        retrieved_docs: List[Document],
+        model_id: str = "educore-enterprise-all",
+        query: str = ""
+    ) -> str:
         """
         Applies Egress Filtering, PII Redaction, Neutralization of Injection Payloads,
-        and Departmental Compliance Notices (Fin-01, Edu-02, Stu-02).
+        Departmental Compliance Notices (Fin-01, Edu-02, Stu-02), and Socratic Egress Shield (Stu-01).
         """
         output = response
 
@@ -1056,7 +1083,39 @@ class EducoreFrameworkEngine:
         for pat in _INJECTION_BYPASS_PATTERNS:
             output = pat.sub("[DEFENSIVE_FILTER_TRIGGERED: ADVERSARIAL_PAYLOAD_NEUTRALIZED]", output)
 
-        # 3. Guardrail Fin-01: Dual-Key Manual Audit Notice on Financial Output
+        # 4. Guardrail Stu-01: Socratic Egress Leak Shield (Cognitive Bypass Defense-in-Depth)
+        is_socratic = (
+            model_id == "educore-socratic-student"
+            or user_session.get("clearance") in ("public", "student")
+            or user_session.get("role") == "student"
+        )
+        if is_socratic and query:
+            lower_q = query.lower()
+            is_confirmation = bool(re.search(
+                r'(\b(?:is\s+(?:the\s+answer|it)\s*(?:=|is)?\s*[\d/a-zA-Z\.\-]+)|\b(?:is\s+(?:x|y|z)\s*=\s*[\d/a-zA-Z\.\-]+)|\b(?:did\s+i\s+get|i\s+got|i\s+think\s+(?:it|the\s+answer|x|y)\s+is)\b|\b(?:correct\?|right\?|is\s+that\s+correct|is\s+this\s+right)\b|\b(?:check\s+my\s+(?:answer|work|working|solution|steps))\b|\b(?:here\s+is\s+my\s+(?:work|working|solution))\b|\b(?:am\s+i\s+(?:right|correct))\b|=\s*\-?\d+[\d/.]*\s*\?|\b(?:is\s+it|is\s+\d+[\d/.]*)\b.*\?)',
+                lower_q
+            ))
+            if not is_confirmation:
+                output = re.sub(
+                    r'(?:\n+)?(?:\d+\.\s*)?\*\*(?:Solve\s+for\s+[a-zA-Z]|Final\s+(?:Answer|Step)|Solution)\*\*:?[\s\S]*?(?=\n\n[A-Z]|\Z)',
+                    '',
+                    output,
+                    flags=re.IGNORECASE
+                ).strip()
+                output = re.sub(
+                    r'(?:\n+)?(?:So|Therefore|Thus|Hence|Finally|Simplifying\s+this\s+gives(?:\s+us)?),?\s*(?:the\s+solution\s+is\s*)?(?:[a-zA-Z]\s*=\s*[\d/\.\-]+|the\s+answer\s+is\s*[\d/\.\-]+)[^\n]*',
+                    '',
+                    output,
+                    flags=re.IGNORECASE
+                ).strip()
+                output = re.sub(
+                    r'(?:\n+)?(?:The\s+final\s+answer\s+is|This\s+gives\s+us|We\s+find\s+that)\s+[a-zA-Z]?\s*=?\s*[\d/\.\-]+[^\n]*',
+                    '',
+                    output,
+                    flags=re.IGNORECASE
+                ).strip()
+
+        # 5. Guardrail Fin-01: Dual-Key Manual Audit Notice on Financial Output
         has_finance_content = any(doc.metadata.get("category") == "finance" for doc in retrieved_docs)
         mentions_currency = bool(re.search(r'\b(zmw|kwacha|budget|expenditure|bursary|k\d+)\b', output, re.IGNORECASE))
         if has_finance_content or mentions_currency:
@@ -1065,7 +1124,7 @@ class EducoreFrameworkEngine:
                 "for all AI-assisted financial figures, currency amounts, and balance sheet calculations before ledger posting.*"
             )
 
-        # 4. Guardrail Edu-02: Cambridge & Zambian Syllabus Alignment Verification
+        # 6. Guardrail Edu-02: Cambridge & Zambian Syllabus Alignment Verification
         has_curriculum = any(doc.metadata.get("category") == "curriculum" for doc in retrieved_docs)
         if has_curriculum and user_session.get("clearance") in ["staff", "admin"]:
             output += (
@@ -1192,6 +1251,43 @@ You operate under the Educore AI Governance Framework (EDU-AIMS-HBK-v1.0 & EDU-A
 
 Respond concisely, professionally, and authoritatively in GitHub-flavored markdown. Format lists and tables cleanly."""
 
+SYSTEM_PROMPT_SOCRATIC_STUDENT = r"""You are the official Educore Socratic Learning Assistant for Educore Services Limited (ISO/IEC 42001 certified).
+
+[STRICT SOCRATIC PEDAGOGICAL DIRECTIVES - ONE STEP AT A TIME]:
+1. NEVER SOLVE THE STUDENT'S TARGET PROBLEM: You are strictly forbidden from showing multiple steps or revealing the final answer/solution for the student's specific problem (e.g. if the student asks to solve \(3x + 12 = 24\), never state "x = 4" or calculate the steps for \(3x + 12 = 24\)).
+2. ONE STEP AT A TIME: When guiding the student through their own problem, focus on only the immediate step or concept. Never perform the student's arithmetic for them.
+3. RELEVANT ILLUSTRATIVE EXAMPLES ARE ENCOURAGED: When a student asks for an example, or when explaining an abstract concept (like inverse operations or balancing), you are encouraged to provide a clear, worked illustrative example using DIFFERENT numbers or a parallel scenario (e.g., using \(2y + 6 = 14\) to demonstrate solving linear equations). Always connect the example back to the student's problem and prompt them to try their own step.
+4. ALWAYS PROMPT THE STUDENT: Conclude your response with a focused question asking the student to apply the concept or take the immediate step on their own problem.
+5. CONFIRMATION ONLY WHEN STUDENT ANSWERS: You may only confirm an answer if the student explicitly gave their own proposed answer or working to check (e.g. "I got x = 4, is that right?", "Is x = 4?").
+
+[EXAMPLE 1 - Initial Problem]:
+Student: Solve for x: 3x + 12 = 24
+Tutor: To solve \(3x + 12 = 24\), our first goal is to isolate the \(3x\) term by eliminating the \(+ 12\). What inverse operation can you do to both sides to cancel out 12?
+
+[EXAMPLE 2 - Providing a Relevant Example]:
+Student: Can you give me an example of how this works?
+Tutor: Absolutely! Let's look at a similar equation: \(2y + 6 = 14\).
+1. First, we undo the addition by subtracting 6 from both sides: \(2y = 8\).
+2. Next, we undo the multiplication by dividing both sides by 2: \(y = 4\).
+Notice how we undo each operation step-by-step. Now looking back at your equation, \(3x + 12 = 24\), what is the first operation you should undo?
+
+[EXAMPLE 3 - Conceptual Follow-up]:
+Student: Can you tell me more about that?
+Tutor: In algebra, equations must stay balanced. The opposite of adding 12 is subtracting 12. If you subtract 12 from both sides of \(3x + 12 = 24\), what does the equation become?
+
+[EXAMPLE 4 - Student Step]:
+Student: 3x = 12
+Tutor: Spot on! Now you have \(3x = 12\). Since 3 is multiplied by x, what operation will isolate x?
+
+[EXAMPLE 5 - Answer Confirmation]:
+Student: Is x = 4?
+Tutor: Excellent work! That is correct, \(x = 4\). You solved it step-by-step!
+
+[RETRIEVED AUTHORIZED INSTITUTIONAL CONTEXT]:
+{context}
+
+Respond encouragingly as the Socratic tutor in GitHub-flavored markdown."""
+
 def format_context_xml(docs: List[Document], max_chars: int = 4000) -> str:
     """
     Formats authorized documents into secure XML context tags.
@@ -1254,6 +1350,9 @@ def clean_chat_history(chat_history: Optional[List[Dict[str, str]]], max_turns: 
             if len(content) > 350:
                 content = content[:350] + "..."
             cleaned_messages.append(AIMessage(content=content))
+        elif role == "system":
+            # Retain system-level directives injected by Open WebUI / governance filters
+            cleaned_messages.append(SystemMessage(content=raw_content))
 
     return cleaned_messages
 
@@ -1397,8 +1496,14 @@ def execute_rag(
     role_directive = resolve_role_directive(user_session, model_id)
     active_model_label = resolve_active_model_name(model_id, user_session)
 
+    active_sys_prompt = (
+        SYSTEM_PROMPT_SOCRATIC_STUDENT
+        if model_id == "educore-socratic-student"
+        else SYSTEM_PROMPT_TEMPLATE
+    )
+
     prompt = ChatPromptTemplate.from_messages([
-        ("system", SYSTEM_PROMPT_TEMPLATE),
+        ("system", active_sys_prompt),
         MessagesPlaceholder(variable_name="chat_history"),
         ("human", "{query}")
     ])
@@ -1433,7 +1538,9 @@ def execute_rag(
     gen_duration_s = max(time.time() - t_gen_start, 0.001)
 
     # 5. Egress Guardrails, PII Masking & Statutory Verification
-    final_output = EducoreFrameworkEngine.inspect_output(raw_output, user_session, authorized_docs)
+    final_output = EducoreFrameworkEngine.inspect_output(
+        raw_output, user_session, authorized_docs, model_id=model_id, query=effective_query
+    )
     gen_duration_s = max(time.time() - t_gen_start, 0.001)
 
     suggested_followups = []
@@ -1608,8 +1715,14 @@ def execute_rag_stream(
     role_directive = resolve_role_directive(user_session, model_id)
     active_model_label = resolve_active_model_name(model_id, user_session)
 
+    active_sys_prompt = (
+        SYSTEM_PROMPT_SOCRATIC_STUDENT
+        if model_id == "educore-socratic-student"
+        else SYSTEM_PROMPT_TEMPLATE
+    )
+
     prompt = ChatPromptTemplate.from_messages([
-        ("system", SYSTEM_PROMPT_TEMPLATE),
+        ("system", active_sys_prompt),
         MessagesPlaceholder(variable_name="chat_history"),
         ("human", "{query}")
     ])
@@ -1629,11 +1742,21 @@ def execute_rag_stream(
     accumulated_chunks: List[str] = []
     try:
         chain = prompt | llm | StrOutputParser()
-        for chunk in chain.stream(prompt_args):
-            chunk_str = chunk if isinstance(chunk, str) else getattr(chunk, "content", str(chunk))
-            if chunk_str:
-                accumulated_chunks.append(chunk_str)
-                yield chunk_str
+        if model_id == "educore-socratic-student":
+            # For Socratic student mode, invoke and inspect egress before yielding
+            # to guarantee that no premature solutions or terminal answer lines reach the frontend.
+            raw_output = chain.invoke(prompt_args)
+            sanitized_text = EducoreFrameworkEngine.inspect_output(
+                raw_output, user_session, authorized_docs, model_id=model_id, query=effective_query
+            )
+            accumulated_chunks.append(sanitized_text)
+            yield sanitized_text
+        else:
+            for chunk in chain.stream(prompt_args):
+                chunk_str = chunk if isinstance(chunk, str) else getattr(chunk, "content", str(chunk))
+                if chunk_str:
+                    accumulated_chunks.append(chunk_str)
+                    yield chunk_str
     except Exception as e:
         # Graceful fallback when local Ollama is busy or initializing
         if uploaded_context:
@@ -1701,7 +1824,9 @@ def execute_rag_stream(
     yield telemetry_footer
 
     # 8. Egress Sanitization & Audit Logging
-    final_output = EducoreFrameworkEngine.inspect_output("".join(accumulated_chunks), user_session, authorized_docs)
+    final_output = EducoreFrameworkEngine.inspect_output(
+        "".join(accumulated_chunks), user_session, authorized_docs, model_id=model_id, query=effective_query
+    )
     latency_ms = (time.time() - t0) * 1000
     _stream_shard_names = [s._collection.name for s in authorized_shards] if authorized_shards else []
     log_audit(
@@ -1895,7 +2020,7 @@ OPEN_WEBUI_MODELS = [
         "created": int(time.time()),
         "owned_by": "educore-services",
         "name": "Educore Socratic Tutor (Tier C - Student)",
-        "description": "Student Socratic tutor enforcing diagnostic hints, cognitive bypass prevention, and Adelaide declarations."
+        "description": "Student Socratic tutor enforcing diagnostic hints and cognitive bypass prevention."
     },
     {
         "id": "educore-faculty-academic",

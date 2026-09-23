@@ -94,7 +94,6 @@ class TestEducoreGovernanceFramework(unittest.TestCase):
         self.assertIsNotNone(resp)
         self.assertIn("Socratic Learning Assistant", resp)
         self.assertIn("Diagnostic Guiding Hint", resp)
-        self.assertIn("Adelaide Model Reminder", resp)
 
     # -------------------------------------------------------------------------
     # 2. PURVIEW CONTAINERS & MULTI-TENANT RBAC

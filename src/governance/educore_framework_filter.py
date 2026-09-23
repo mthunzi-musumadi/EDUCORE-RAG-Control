@@ -307,12 +307,38 @@ class Filter:
                 )
 
         # 5. Guardrail Stu-01: Socratic Diagnostic Hint Intercept
-        if self.valves.enforce_socratic_student and (user_clearance == "public" or user_role == "student"):
-            if re.search(r'\b(give\s+me\s+the\s+answer|solve\s+this\s+completely|write\s+my\s+entire\s+essay|do\s+my\s+homework)\b', lower_q):
+        is_socratic_target = (
+            self.valves.enforce_socratic_student
+            and (
+                "educore-socratic-student" in str(model_id).lower()
+                or user_clearance in ("public", "student")
+                or user_role == "student"
+            )
+        )
+        if is_socratic_target and not is_policy_inquiry:
+            is_explicit_demand = bool(re.search(
+                r'\b(what\s+is|what\'s|tell\s+me|give\s+me|show\s+me|find)\s+(the\s+answer|the\s+solution)\b',
+                lower_q
+            ))
+            is_confirmation = (
+                not is_explicit_demand
+                and bool(re.search(
+                    r'(\b(?:is\s+(?:the\s+answer|it)\s*(?:=|is)?\s*[\d/a-zA-Z\.\-]+)|\b(?:is\s+(?:x|y|z)\s*=\s*[\d/a-zA-Z\.\-]+)|\b(?:did\s+i\s+get|i\s+got|i\s+think\s+(?:it|the\s+answer|x|y)\s+is)\b|\b(?:correct\?|right\?|is\s+that\s+correct|is\s+this\s+right)\b|\b(?:check\s+my\s+(?:answer|work|working|solution|steps))\b|\b(?:here\s+is\s+my\s+(?:work|working|solution))\b|\b(?:am\s+i\s+(?:right|correct))\b|=\s*\-?\d+[\d/.]*\s*\?|\b(?:is\s+it|is\s+\d+[\d/.]*)\b.*\?)',
+                    lower_q
+                ))
+            )
+            if not is_confirmation and (
+                re.search(r'\b(give\s+me\s+the\s+answer\w*|i\s+want\s+the\s+answer\w*|what\s+is\s+the\s+answer\w*|solve\s+this\s+completely|write\s+my\s+entire\s+essay|do\s+my\s+homework)\b', lower_q)
+                or re.search(r'(\d*\s*[a-zA-Z]\s*[\+\-\*\/]\s*\d+\s*=\s*\d+|\d+\s*=\s*\d*\s*[a-zA-Z])', lower_q)
+                or re.search(r'\b(solve|calculate|compute|work\s+out|evaluate|simplify)\b.*\b(\d+\s*[\+\-\*\/\^]\s*\d+|[a-zA-Z]\s*[\+\-\*\/]\s*\d+|\bvalue\s+of\b|\bequation\b|\bexpression\b|\bformula\b)', lower_q)
+                or re.search(r'\b(what\s+is|help\s+me\s+solve|calculate)\s+\d+\s*[\+\-\*\/]\s*\d+', lower_q)
+            ):
                 socratic_instruction = (
-                    "\n\n[MANDATORY SOCRATIC GUARDRAIL STU-01]: The student user is asking for direct exam answers or complete assignment completion. "
-                    "DO NOT provide the final answer. Provide ONLY step-by-step diagnostic guiding hints and ask clarifying questions. "
-                    "Remind the student of the Adelaide Declaration of Intellectual Ownership."
+                    "\n\n[MANDATORY SOCRATIC GUARDRAIL STU-01]: The user is asking for direct exam/problem answers or complete assignment completion. "
+                    "DO NOT provide the final answer or completed steps for the user's specific problem. "
+                    "Provide step-by-step diagnostic guiding hints and guiding questions. "
+                    "You are encouraged to provide clear illustrative examples using different numbers or parallel scenarios to demonstrate the concept. "
+                    "If the student provides their own proposed answer to check, confirm if it is correct and explain why."
                 )
                 if messages and messages[0].get("role") == "system":
                     messages[0]["content"] += socratic_instruction
