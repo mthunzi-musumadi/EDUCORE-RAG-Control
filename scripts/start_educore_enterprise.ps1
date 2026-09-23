@@ -3,12 +3,29 @@
 # Strict ISO/IEC 42001:2023 & Zambian Data Protection Act No. 3 Governance
 # ==============================================================================
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$RootDir = Split-Path -Parent $ScriptDir
 
 Write-Host "==============================================================================" -ForegroundColor Cyan
 Write-Host "  STARTING EDUCORE SERVICES ENTERPRISE RAG PLATFORM" -ForegroundColor White
 Write-Host "  Dual-Track Governance: Enterprise Operations & Academic Transformation" -ForegroundColor Gray
 Write-Host "  Frontend: Open WebUI | Backend: ISO 42001 Governed OpenAI API" -ForegroundColor Gray
 Write-Host "==============================================================================" -ForegroundColor Cyan
+
+# 0. Pre-Flight Cleanup: Clear legacy remote DB variables & release ports 8000 / 3000
+Write-Host "[PRE-FLIGHT] Resetting environment and releasing ports..." -ForegroundColor Cyan
+Remove-Item env:DATABASE_URL -ErrorAction SilentlyContinue
+Remove-Item env:WEBUI_SECRET_KEY -ErrorAction SilentlyContinue
+
+$LingeringConns = Get-NetTCPConnection -LocalPort 8000, 3000 -ErrorAction SilentlyContinue
+if ($LingeringConns) {
+    Write-Host "  Stopping previous instances on ports 8000 / 3000..." -ForegroundColor Yellow
+    $LingeringConns | ForEach-Object {
+        if ($_.OwningProcess -gt 0) {
+            Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue
+        }
+    }
+    Start-Sleep -Seconds 1
+}
 
 # 1. Open WebUI & Ollama Environment Configurations (Optimized for Intel Core i3-10100T 4C/8T 35W)
 $env:OPENAI_API_BASE_URL = "http://127.0.0.1:8000/v1"
@@ -35,7 +52,6 @@ $env:TRANSFORMERS_OFFLINE = "1"
 $env:DATA_DIR = "$RootDir\data\openwebui"
 
 # 2. Pre-Flight Provisioning: Ensure Branding, UI Governance & Laws of UX CSS are deployed
-$RootDir = Split-Path -Parent $ScriptDir
 $BackendPython = Join-Path $RootDir "framework_control\Scripts\python.exe"
 $BrandingScript = Join-Path $RootDir "src\governance\apply_educore_logos.py"
 Write-Host "[0/2] Deploying Educore Branding & Laws of UX CSS fixes..." -ForegroundColor Cyan
