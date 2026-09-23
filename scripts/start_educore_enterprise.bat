@@ -35,10 +35,13 @@ set RAG_EMBEDDING_MODEL=nomic-embed-text
 set RAG_OLLAMA_BASE_URL=http://127.0.0.1:11434
 set HF_HUB_OFFLINE=1
 set TRANSFORMERS_OFFLINE=1
+set DATA_DIR=%ROOT_DIR%\data\openwebui
 
-REM 2. Pre-Flight Provisioning: Ensure Branding, UI Governance & Laws of UX CSS are deployed
-echo [0/2] Deploying Educore Branding ^& Laws of UX CSS fixes...
+REM 2. Pre-Flight Provisioning: Ensure Branding, RBAC, Governance Filter & Laws of UX CSS are deployed
+echo [0/3] Deploying Educore Branding ^& Laws of UX CSS fixes...
 "%ROOT_DIR%\framework_control\Scripts\python.exe" "%ROOT_DIR%\src\governance\apply_educore_logos.py" --base-dir "%ROOT_DIR%"
+echo [0b/3] Synchronizing Open WebUI RBAC, Models ^& Governance Filter...
+"%ROOT_DIR%\framework_control\Scripts\python.exe" "%ROOT_DIR%\src\governance\setup_openwebui_rbac.py" --base-dir "%ROOT_DIR%"
 
 REM 3. Start Educore Governance RAG Server in Background
 echo [1/2] Launching Educore Enterprise RAG Governance Server (Port 8000)...

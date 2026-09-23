@@ -56,51 +56,89 @@ def resolve_base_dir() -> str:
     return os.path.abspath(os.path.join(script_dir, "..", ".."))
 
 
-def resolve_webui_db_path(base_dir: str) -> str:
+def resolve_webui_db_paths(base_dir: str) -> list:
+    """
+    Returns all valid Open WebUI webui.db database paths to synchronize.
+    Prioritizes the production path (base_dir/data/openwebui/webui.db) and DATA_DIR.
+    """
+    candidates = []
+
+    # 1. Explicit CLI argument
+    for i, arg in enumerate(sys.argv[1:], start=1):
+        if arg in ("--db-path", "--webui-db") and i < len(sys.argv) - 1:
+            candidates.append(os.path.abspath(sys.argv[i + 1]))
+        elif arg.startswith("--db-path="):
+            candidates.append(os.path.abspath(arg.split("=", 1)[1]))
+
+    # 2. Environment variables
     for env_var in ("WEBUI_DB_PATH",):
         val = os.environ.get(env_var)
         if val and os.path.exists(val):
-            return os.path.abspath(val)
+            candidates.append(os.path.abspath(val))
 
     for env_var in ("DATA_DIR", "WEBUI_DATA_DIR"):
         val = os.environ.get(env_var)
         if val:
             candidate = os.path.join(val, "webui.db")
             if os.path.exists(candidate):
-                return os.path.abspath(candidate)
+                candidates.append(os.path.abspath(candidate))
 
+    # 3. Standard production and development project paths (data/openwebui/webui.db first)
+    candidates.extend([
+        os.path.join(base_dir, "data", "openwebui", "webui.db"),
+        os.path.join(os.getcwd(), "data", "openwebui", "webui.db"),
+        os.path.join(base_dir, "data", "webui.db"),
+        os.path.join(os.getcwd(), "data", "webui.db"),
+    ])
+
+    # 4. Virtual environment & installed open_webui paths
     try:
         import open_webui
         ow_pkg_dir = os.path.dirname(os.path.abspath(open_webui.__file__))
-        candidate = os.path.join(ow_pkg_dir, "data", "webui.db")
-        if os.path.exists(candidate):
-            return os.path.abspath(candidate)
+        candidates.append(os.path.join(ow_pkg_dir, "data", "webui.db"))
     except Exception:
         pass
 
-    candidates = [
+    candidates.extend([
         os.path.join(base_dir, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
-        os.path.join(base_dir, "data", "webui.db"),
         os.path.join(sys.prefix, "Lib", "site-packages", "open_webui", "data", "webui.db"),
         os.path.join(sys.prefix, "data", "webui.db"),
         os.path.join(os.getcwd(), ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
-        os.path.join(os.getcwd(), "data", "webui.db"),
         os.path.expanduser("~/.open-webui/data/webui.db"),
         os.path.expanduser("~/.open-webui/webui.db"),
-    ]
+    ])
+
+    found = []
+    seen = set()
     for c in candidates:
         if c and os.path.exists(c):
-            return os.path.abspath(c)
+            norm = os.path.abspath(c)
+            if norm not in seen:
+                seen.add(norm)
+                found.append(norm)
 
-    return os.path.abspath(os.path.join(base_dir, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"))
+    if not found:
+        found.append(os.path.abspath(os.path.join(base_dir, "data", "openwebui", "webui.db")))
+
+    return found
+
+
+def resolve_webui_db_path(base_dir: str) -> str:
+    return resolve_webui_db_paths(base_dir)[0]
 
 
 BASE_DIR = resolve_base_dir()
-WEBUI_DB_PATH = resolve_webui_db_path(BASE_DIR)
-FILTER_SCRIPT_PATH = os.path.join(BASE_DIR, "educore_framework_filter.py")
+WEBUI_DB_PATHS = resolve_webui_db_paths(BASE_DIR)
+WEBUI_DB_PATH = WEBUI_DB_PATHS[0]
+
+FILTER_SCRIPT_PATH = os.path.join(BASE_DIR, "src", "governance", "educore_framework_filter.py")
 if not os.path.exists(FILTER_SCRIPT_PATH):
     # Fallback search for filter script
-    if os.path.exists(os.path.join(os.getcwd(), "educore_framework_filter.py")):
+    if os.path.exists(os.path.join(BASE_DIR, "educore_framework_filter.py")):
+        FILTER_SCRIPT_PATH = os.path.abspath(os.path.join(BASE_DIR, "educore_framework_filter.py"))
+    elif os.path.exists(os.path.join(os.getcwd(), "src", "governance", "educore_framework_filter.py")):
+        FILTER_SCRIPT_PATH = os.path.abspath(os.path.join(os.getcwd(), "src", "governance", "educore_framework_filter.py"))
+    elif os.path.exists(os.path.join(os.getcwd(), "educore_framework_filter.py")):
         FILTER_SCRIPT_PATH = os.path.abspath(os.path.join(os.getcwd(), "educore_framework_filter.py"))
     elif os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "educore_framework_filter.py")):
         FILTER_SCRIPT_PATH = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "educore_framework_filter.py"))
@@ -312,8 +350,8 @@ MODELS_DEF = [
     },
     {
         "id": "educore-enterprise-all",
-        "name": "Educore Enterprise RAG (Universal / Staff Adaptive)",
-        "description": "Adaptive enterprise model governed by ISO 42001 and Purview container controls for institutional staff.",
+        "name": "Educore Enterprise RAG (Universal / Adaptive)",
+        "description": "Adaptive enterprise model governed by ISO 42001 and Purview container controls for all institutional roles.",
         "allowed_groups": [
             "group-students-001",
             "group-faculty-002",
@@ -350,13 +388,13 @@ USER_MAPPINGS = {
     "financialcoordinator@educoreservices.com": "group-finance-004"
 }
 
-def provision_openwebui_rbac():
-    if not os.path.exists(WEBUI_DB_PATH):
-        print(f"Error: Open WebUI database not found at {WEBUI_DB_PATH}")
-        sys.exit(1)
+def provision_database(db_path: str):
+    if not os.path.exists(db_path):
+        print(f"Warning: Open WebUI database not found at {db_path}")
+        return False
 
-    print(f"[1/5] Connecting to Open WebUI database: {WEBUI_DB_PATH}")
-    con = sqlite3.connect(WEBUI_DB_PATH)
+    print(f"\n--- [Connecting to Open WebUI database: {db_path}] ---")
+    con = sqlite3.connect(db_path)
     cur = con.cursor()
 
     # Get admin user ID
@@ -367,7 +405,7 @@ def provision_openwebui_rbac():
     now = int(time.time())
 
     # 1. Provision Groups
-    print("[2/5] Synchronizing Organizational Role Groups...")
+    print("  [1/5] Synchronizing Organizational Role Groups...")
     for g in GROUPS_DEF:
         cur.execute('SELECT id FROM "group" WHERE id = ? OR name = ?', (g["id"], g["name"]))
         existing = cur.fetchone()
@@ -382,10 +420,10 @@ def provision_openwebui_rbac():
                 'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
                 (g["id"], admin_id, g["name"], g["description"], json.dumps({"config": {"share": "private"}}), None, None, now, now)
             )
-        print(f"  ✓ Group: {g['name']}")
+        print(f"    ✓ Group: {g['name']}")
 
     # 2. Assign Users to Groups
-    print("[3/5] Assigning User Accounts to Respective Role Groups...")
+    print("  [2/5] Assigning User Accounts to Respective Role Groups...")
     for email, target_group_id in USER_MAPPINGS.items():
         cur.execute("SELECT id, name FROM user WHERE lower(email) = ?", (email.lower(),))
         user_row = cur.fetchone()
@@ -409,10 +447,10 @@ def provision_openwebui_rbac():
                 "INSERT INTO group_member (id, group_id, user_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
                 (member_id, target_group_id, u_id, now, now)
             )
-        print(f"  ✓ User {u_name} ({email}) -> Linked to {target_group_id}")
+        print(f"    ✓ User {u_name} ({email}) -> Linked to {target_group_id}")
 
     # 3. Synchronize Models & Access Grants
-    print("[4/5] Synchronizing AI Models and Group Access Controls...")
+    print("  [3/5] Synchronizing AI Models and Group Access Controls...")
     for m in MODELS_DEF:
         cur.execute("SELECT id FROM model WHERE id = ?", (m["id"],))
         existing_m = cur.fetchone()
@@ -448,7 +486,7 @@ def provision_openwebui_rbac():
                 (grant_id, m["id"], grp_id, now)
             )
 
-        print(f"  ✓ Model: {m['id']} -> Restricted to {len(m['allowed_groups'])} Group(s)")
+        print(f"    ✓ Model: {m['id']} -> Restricted to {len(m['allowed_groups'])} Group(s)")
 
     # 3b. Hide Raw Backend / Ollama Models (llama3.2, nomic-embed-text)
     raw_models_to_hide = [
@@ -478,10 +516,10 @@ def provision_openwebui_rbac():
             )
         # Ensure no access grants exist for raw models
         cur.execute("DELETE FROM access_grant WHERE resource_type = 'model' AND resource_id = ?", (raw_id,))
-    print(f"  ✓ Raw Ollama models hidden ({', '.join(raw_models_to_hide)})")
+    print(f"    ✓ Raw Ollama models hidden ({', '.join(raw_models_to_hide)})")
 
     # 4. Register Governance Filter in Open WebUI Functions
-    print("[5/5] Registering Educore AI Framework Governance Filter & Admin Valves...")
+    print("  [4/5] Registering Educore AI Framework Governance Filter & Admin Valves...")
     filter_content = ""
     if os.path.exists(FILTER_SCRIPT_PATH):
         with open(FILTER_SCRIPT_PATH, "r", encoding="utf-8") as f:
@@ -526,7 +564,7 @@ def provision_openwebui_rbac():
             "VALUES (?, ?, ?, 'filter', ?, ?, ?, 1, 1, ?, ?)",
             (func_id, admin_id, func_name, filter_content, json.dumps(meta_info), json.dumps(default_valves), now, now)
         )
-    print(f"  ✓ Function '{func_name}' registered as Global Active Filter.")
+    print(f"    ✓ Function '{func_name}' registered as Global Active Filter.")
 
     # 5. Disable Direct Ollama Provider & Update Default Prompt Suggestions
     cur.execute("SELECT key FROM config WHERE key = 'ollama.enable'")
@@ -534,14 +572,14 @@ def provision_openwebui_rbac():
         cur.execute("UPDATE config SET value = 'false', updated_at = ? WHERE key = 'ollama.enable'", (now,))
     else:
         cur.execute("INSERT INTO config (key, value, updated_at) VALUES ('ollama.enable', 'false', ?)", (now,))
-    print("  ✓ Open WebUI direct Ollama provider disabled (exposing only governed Educore models).")
+    print("    ✓ Open WebUI direct Ollama provider disabled (exposing only governed Educore models).")
 
     cur.execute("SELECT key FROM config WHERE key = 'ui.prompt_suggestions'")
     if cur.fetchone():
         cur.execute("UPDATE config SET value = ?, updated_at = ? WHERE key = 'ui.prompt_suggestions'", (json.dumps(DEFAULT_PROMPT_SUGGESTIONS), now))
     else:
         cur.execute("INSERT INTO config (key, value, updated_at) VALUES ('ui.prompt_suggestions', ?, ?)", (json.dumps(DEFAULT_PROMPT_SUGGESTIONS), now))
-    print("  ✓ Open WebUI default prompt suggestions updated with Educore institutional prompts.")
+    print("    ✓ Open WebUI default prompt suggestions updated with Educore institutional prompts.")
 
     con.commit()
     con.close()
@@ -556,11 +594,21 @@ def provision_openwebui_rbac():
             apply_branding = None
 
     if apply_branding:
-        print("\n  [Synchronizing Educore Branding & Laws of UX CSS...]")
-        apply_branding(base_dir=BASE_DIR, db_path=WEBUI_DB_PATH)
+        print(f"    [Synchronizing Educore Branding & Laws of UX CSS to {db_path}...]")
+        apply_branding(base_dir=BASE_DIR, db_path=db_path)
+
+    return True
+
+
+def provision_openwebui_rbac(target_db_paths: list = None):
+    paths = target_db_paths or WEBUI_DB_PATHS
+    print(f"Synchronizing Open WebUI RBAC across {len(paths)} database(s)...")
+    for p in paths:
+        provision_database(p)
 
     print("\n==============================================================================")
     print("  OPEN WEBUI RBAC & CLEARANCE PROVISIONING COMPLETE!")
+    print(f"  - Synchronized across: {', '.join(paths)}")
     print("  - 6 Organizational Role Groups Active")
     print("  - 7 Governed Educore Models Configured with Access Control Lists")
     print("  - Raw Ollama Models (llama3.2, nomic-embed-text) Hidden from Dropdown")

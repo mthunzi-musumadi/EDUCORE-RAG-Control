@@ -253,7 +253,18 @@ def resolve_webui_db_path(base_dir: str) -> str:
             if os.path.exists(candidate):
                 return os.path.abspath(candidate)
 
-    # 3. Via open_webui package
+    # 3. Standard production and development project paths (data/openwebui/webui.db first)
+    fast_candidates = [
+        os.path.join(base_dir, "data", "openwebui", "webui.db"),
+        os.path.join(os.getcwd(), "data", "openwebui", "webui.db"),
+        os.path.join(base_dir, "data", "webui.db"),
+        os.path.join(os.getcwd(), "data", "webui.db"),
+    ]
+    for c in fast_candidates:
+        if c and os.path.exists(c):
+            return os.path.abspath(c)
+
+    # 4. Via open_webui package
     try:
         import open_webui
         ow_pkg_dir = os.path.dirname(os.path.abspath(open_webui.__file__))
@@ -263,13 +274,15 @@ def resolve_webui_db_path(base_dir: str) -> str:
     except Exception:
         pass
 
-    # 4. Candidates in base_dir, sys.prefix, cwd, and ~/.open-webui
+    # 5. Candidates in base_dir, sys.prefix, cwd, and ~/.open-webui
     candidates = [
         os.path.join(base_dir, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
+        os.path.join(base_dir, "data", "openwebui", "webui.db"),
         os.path.join(base_dir, "data", "webui.db"),
         os.path.join(sys.prefix, "Lib", "site-packages", "open_webui", "data", "webui.db"),
         os.path.join(sys.prefix, "data", "webui.db"),
         os.path.join(os.getcwd(), ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
+        os.path.join(os.getcwd(), "data", "openwebui", "webui.db"),
         os.path.join(os.getcwd(), "data", "webui.db"),
         os.path.expanduser("~/.open-webui/data/webui.db"),
         os.path.expanduser("~/.open-webui/webui.db"),
@@ -285,7 +298,7 @@ def resolve_webui_db_path(base_dir: str) -> str:
         if c and os.path.exists(c):
             return os.path.abspath(c)
 
-    return os.path.abspath(os.path.join(base_dir, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"))
+    return os.path.abspath(os.path.join(base_dir, "data", "openwebui", "webui.db"))
 
 
 BASE_DIR = resolve_base_dir()

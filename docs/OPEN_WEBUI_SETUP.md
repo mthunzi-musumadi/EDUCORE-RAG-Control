@@ -37,8 +37,7 @@ flowchart LR
 When accessing Open WebUI (`http://localhost:8080`), select any of the 7 pre-configured Educore models from the model dropdown:
 
 | Model ID in Open WebUI | Target User | Clearance Level | Governing Scope & Guardrails |
-| :--- | :--- | :--- | :--- |
-| **`educore-enterprise-all`** | All Institutional Staff | Adaptive | Universal enterprise model; dynamically adapts to authenticated clearance and Purview boundaries. |
+| **`educore-enterprise-all`** | All Institutional Roles (Students, Faculty, Staff, Admins) | Adaptive (Public+) | Universal enterprise model; dynamically adapts to authenticated clearance and Purview boundaries. |
 | **`educore-socratic-student`** | Students & Learners | `Tier C` (Public) | **Socratic Diagnostic Hints Only** (Guardrail Stu-01). Prohibits homework answer dumping; includes Adelaide model sole-authorship pledge. |
 | **`educore-faculty-academic`** | Teaching Faculty & Curriculum Leads | `Tier B` (Staff) | Cambridge IGCSE Math 0580 syllabus, lesson planning, rubric design, Edu-03 student PII depersonalization. Automated grading strictly blocked (Edu-01). |
 | **`educore-pastoral-counselor`** | Campus Pastoral Counselors | `Tier A` (Confidential) | Authorized review of confidential student welfare cases (e.g. Case #402). Egress PII shield masks Zambian phone numbers and NRCs. |
@@ -139,7 +138,7 @@ flowchart TD
 
 | Open WebUI Group | Target Institutional Persona | Clearance Tier | Permitted Purview Containers | Permitted Models | Enforced Guardrails |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **`Students`** | Students & Learners | `Tier C` (Public) | Public / Educational | `educore-socratic-student` | **Stu-01**: Socratic hints only; homework answer dumping blocked. Adelaide pledge required. |
+| **`Students`** | Students & Learners | `Tier C` (Public) | Public / Educational | `educore-socratic-student`<br>`educore-enterprise-all` | **Stu-01**: Socratic hints only; homework answer dumping blocked. Adelaide pledge required. |
 | **`Faculty`** | Teaching Faculty & HODs | `Tier B` (Staff) | Public / Educational<br>Internal - Educational | `educore-faculty-academic`<br>`educore-enterprise-all` | **Edu-01**: Summative grading ban.<br>**Edu-02**: Cambridge 0580 syllabus verification.<br>**Edu-03**: Student PII de-id. |
 | **`Pastoral Counselors`** | Campus Pastoral Care | `Tier A` (Pastoral) | Public / Educational<br>Internal - Educational<br>Confidential - Welfare | `educore-pastoral-counselor`<br>`educore-enterprise-all` | Confidential safeguarding case review (e.g. Case #402). Egress phone and Zambian NRC shield. |
 | **`Finance & Bursary`** | Bursars & Accountants | `Tier A` (Finance) | Public / Educational<br>Internal - Educational<br>Confidential - Finance | `educore-finance-audit`<br>`educore-enterprise-all` | **Fin-01**: Dual-Key manual audit notice appended to all financial calculations. FQM subsidies masked. |

@@ -92,35 +92,38 @@ class Filter:
             os.path.join(os.environ.get("DATA_DIR", ""), "webui.db") if os.environ.get("DATA_DIR") else None,
         ]
 
-        # 1. Check open_webui package location if loaded
+        # 1. Check current working directory and common repository paths (data/openwebui first)
+        cwd = os.getcwd()
+        candidate_paths.extend([
+            os.path.join(cwd, "data", "openwebui", "webui.db"),
+            os.path.join(cwd, "data", "webui.db"),
+            os.path.join(cwd, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
+        ])
+
+        # 2. Check relative to environment variable or this file
+        base_dir_env = os.environ.get("BASE_DIR") or os.environ.get("EDUCORE_BASE_DIR")
+        if base_dir_env:
+            candidate_paths.extend([
+                os.path.join(base_dir_env, "data", "openwebui", "webui.db"),
+                os.path.join(base_dir_env, "data", "webui.db"),
+                os.path.join(base_dir_env, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
+            ])
+
+        try:
+            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            candidate_paths.extend([
+                os.path.join(base_dir, "data", "openwebui", "webui.db"),
+                os.path.join(base_dir, "data", "webui.db"),
+                os.path.join(base_dir, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
+            ])
+        except Exception:
+            pass
+
+        # 3. Check open_webui package location if loaded
         try:
             import open_webui
             ow_dir = os.path.dirname(open_webui.__file__)
             candidate_paths.append(os.path.join(ow_dir, "data", "webui.db"))
-        except Exception:
-            pass
-
-        # 2. Check current working directory and common repository paths
-        cwd = os.getcwd()
-        candidate_paths.extend([
-            os.path.join(cwd, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
-            os.path.join(cwd, "data", "webui.db"),
-        ])
-
-        # 3. Check relative to environment variable or this file
-        base_dir_env = os.environ.get("BASE_DIR") or os.environ.get("EDUCORE_BASE_DIR")
-        if base_dir_env:
-            candidate_paths.extend([
-                os.path.join(base_dir_env, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
-                os.path.join(base_dir_env, "data", "webui.db"),
-            ])
-
-        try:
-            base_dir = os.path.dirname(os.path.abspath(__file__))
-            candidate_paths.extend([
-                os.path.join(base_dir, ".openwebui_env", "Lib", "site-packages", "open_webui", "data", "webui.db"),
-                os.path.join(base_dir, "data", "webui.db"),
-            ])
         except Exception:
             pass
 

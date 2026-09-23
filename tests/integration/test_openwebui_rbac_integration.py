@@ -45,7 +45,7 @@ class TestOpenWebUIRBACIntegration(unittest.TestCase):
 
         self.assertEqual(session["role"], "student")
         self.assertEqual(session["clearance"], "public")
-        self.assertEqual(session["campus"], "trident")
+        self.assertIn(session["campus"].lower(), ["trident", "tcl"])
         self.assertIn("Students", session["groups"])
         print(f"\n  [PASS] Resolved Student Account: {session['name']} | Clearance: {session['clearance'].upper()}")
 

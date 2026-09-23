@@ -51,11 +51,14 @@ $env:HF_HUB_OFFLINE = "1"
 $env:TRANSFORMERS_OFFLINE = "1"
 $env:DATA_DIR = "$RootDir\data\openwebui"
 
-# 2. Pre-Flight Provisioning: Ensure Branding, UI Governance & Laws of UX CSS are deployed
+# 2. Pre-Flight Provisioning: Ensure Branding, RBAC, Governance Filter & Laws of UX CSS are deployed
 $BackendPython = Join-Path $RootDir "framework_control\Scripts\python.exe"
 $BrandingScript = Join-Path $RootDir "src\governance\apply_educore_logos.py"
-Write-Host "[0/2] Deploying Educore Branding & Laws of UX CSS fixes..." -ForegroundColor Cyan
+$RbacScript = Join-Path $RootDir "src\governance\setup_openwebui_rbac.py"
+Write-Host "[0/3] Deploying Educore Branding & Laws of UX CSS fixes..." -ForegroundColor Cyan
 & "$BackendPython" "$BrandingScript" --base-dir "$RootDir"
+Write-Host "[0b/3] Synchronizing Open WebUI RBAC, Models & Governance Filter..." -ForegroundColor Cyan
+& "$BackendPython" "$RbacScript" --base-dir "$RootDir"
 
 # 3. Launch Backend
 Write-Host "[1/2] Launching Educore Enterprise RAG Governance Server (Port 8000)..." -ForegroundColor Yellow
