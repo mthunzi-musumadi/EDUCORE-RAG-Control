@@ -56,7 +56,7 @@ class TestTPSTelemetry(unittest.TestCase):
 
         # Format footer and verify it contains both generation TPS and watched files metrics
         footer = TELEMETRY.format_telemetry_footer("Assistant response here.", generation_seconds=1.5)
-        self.assertIn("⚡ **Educore Performance Telemetry:**", footer)
+        self.assertIn(" **Performance Telemetry:**", footer)
         self.assertIn("Response Generation:", footer)
         self.assertIn("TPS", footer)
         self.assertIn("tiktoken", footer)
@@ -74,7 +74,7 @@ class TestTPSTelemetry(unittest.TestCase):
         response_text = result["response"]
 
         # Telemetry footer must appear in response
-        self.assertIn("⚡ **Educore Performance Telemetry:**", response_text)
+        self.assertIn("**Performance Telemetry:**", response_text)
         self.assertIn("Response Generation:", response_text)
         self.assertIn("TPS", response_text)
         self.assertIn("Newly Watched Files:", response_text)
@@ -94,14 +94,14 @@ class TestTPSTelemetry(unittest.TestCase):
         chunks = list(execute_rag_stream(query, user))
 
         full_streamed = "".join(chunks)
-        self.assertIn("⚡ **Educore Performance Telemetry:**", full_streamed)
+        self.assertIn(" **Performance Telemetry:**", full_streamed)
         self.assertIn("Response Generation:", full_streamed)
         self.assertIn("TPS", full_streamed)
         self.assertIn("Newly Watched Files:", full_streamed)
 
         # The last chunk should contain the telemetry footer
         last_chunk = chunks[-1]
-        self.assertIn("Educore Performance Telemetry", last_chunk)
+        self.assertIn("Performance Telemetry", last_chunk)
 
     def test_guardrail_intercept_includes_telemetry(self):
         """Tests that immediate guardrail intercepts also display timing and TPS."""
@@ -110,7 +110,7 @@ class TestTPSTelemetry(unittest.TestCase):
         result = execute_rag(cheat_query, user)
 
         self.assertTrue(result.get("guardrail_triggered"))
-        self.assertIn("⚡ **Educore Performance Telemetry:**", result["response"])
+        self.assertIn("**Performance Telemetry:**", result["response"])
         self.assertIn("TPS", result["response"])
 
 

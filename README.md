@@ -139,7 +139,7 @@ pip install -r requirements.txt
 This project uses local model inference through Ollama. Before running the app, ensure Ollama is installed and running locally.
 
 ```bash
-ollama pull llama3.2:1b
+ollama pull qwen2.5:1.5b
 ollama pull nomic-embed-text
 ```
 

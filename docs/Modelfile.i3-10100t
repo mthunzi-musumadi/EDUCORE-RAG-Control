@@ -1,5 +1,5 @@
 # Optimized Modelfile for Intel Core i3-10100T (4 Cores / 8 Threads, 35W TDP, 6MB L3 Cache)
-FROM llama3.2:1b
+FROM qwen2.5:1.5b
 
 # CPU Core Thread Alignment: Matches 4 physical cores to prevent SMT hyperthread cache thrashing
 PARAMETER num_thread 4

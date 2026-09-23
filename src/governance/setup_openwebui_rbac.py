@@ -490,7 +490,7 @@ def provision_database(db_path: str):
 
     # 3b. Hide Raw Backend / Ollama Models (llama3.2, nomic-embed-text)
     raw_models_to_hide = [
-        "llama3.2:1b",
+        "qwen2.5:1.5b",
         "llama3.2:latest",
         "llama3.2",
         "nomic-embed-text:latest",

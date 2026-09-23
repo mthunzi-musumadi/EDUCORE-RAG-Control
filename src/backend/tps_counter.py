@@ -168,7 +168,7 @@ class TelemetryTracker:
 
         footer = (
             "\n\n---\n"
-            "⚡ **Educore Performance Telemetry:**\n"
+            " **Performance Telemetry:**\n"
             f"- **Response Generation:** **{generation_seconds:.2f}s** | **{tokens} tokens** | **{tps:.1f} TPS** (via `tiktoken`)\n"
             f"{watch_line}"
         )

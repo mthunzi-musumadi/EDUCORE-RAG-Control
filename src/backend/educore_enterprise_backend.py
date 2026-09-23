@@ -1077,7 +1077,7 @@ class EducoreFrameworkEngine:
 
 # Hardware-tuned runtime parameters for Intel Core i7-10610U (4 Cores / 8 Threads, 8MB L3 Cache)
 llm = ChatOllama(
-    model="llama3.2:1b",
+    model="qwen2.5:1.5b",
     temperature=0.1,
     num_thread=6,         # Physical + SMT balance tuned for i7-10610U (empirically highest eval rate)
     num_ctx=2048,         # Keeps KV cache footprint compact
@@ -1196,7 +1196,7 @@ def format_context_xml(docs: List[Document], max_chars: int = 4000) -> str:
     """
     Formats authorized documents into secure XML context tags.
     Enforces a strict token/character budget to protect the 2,048-token context window
-    of local LLM runtime (llama3.2:1b) and prevent context displacement.
+    of local LLM runtime (qwen2.5:1.5b) and prevent context displacement.
     """
     if not docs:
         return "<context_data>\n  <status>No authorized institutional records retrieved for this query.</status>\n</context_data>"
@@ -1242,8 +1242,8 @@ def clean_chat_history(chat_history: Optional[List[Dict[str, str]]], max_turns: 
             cleaned_messages.append(HumanMessage(content=c_text))
         elif role == "assistant":
             # 1. Strip telemetry footers and previous suggestion blocks
-            content = re.sub(r'---\s*\n⚡\s*\*\*Educore Performance Telemetry:\*\*[\s\S]*$', '', raw_content).strip()
-            content = re.sub(r'---\s*\n💡\s*\*\*Suggested Follow-up Questions:\*\*[\s\S]*$', '', content).strip()
+            content = re.sub(r'---\s*\n\s*\*\*Performance Telemetry:\*\*[\s\S]*$', '', raw_content).strip()
+            content = re.sub(r'---\s*\n\s*\*\*Suggested Follow-up Questions:\*\*[\s\S]*$', '', content).strip()
             # 2. Strip legacy "User: ... \n Assistant: ..." echoes
             content = re.sub(r'^(?:User|Assistant|Human|AI):\s*', '', content, flags=re.MULTILINE).strip()
             # 3. Strip any [DOCUMENT CONTENT START] ... [DOCUMENT CONTENT END]
@@ -2556,7 +2556,7 @@ class EducoreOpenAIHandler(BaseHTTPRequestHandler):
                                 entries.append(json.loads(line.strip()))
                             except Exception:
                                 pass
-            self.wfile.write(json.dumps(entries[-25:], indent=2).encode(\"utf-8\"))
+            self.wfile.write(json.dumps(entries[-25:], indent=2).encode("utf-8"))
 
         elif path == "/api/framework/quarantine":
             # List quarantined files with metadata — restricted to staff+ clearance
