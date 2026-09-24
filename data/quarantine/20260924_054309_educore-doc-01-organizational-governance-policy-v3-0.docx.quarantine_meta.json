@@ -1,0 +1,12 @@
+{
+  "event": "PRE_INGESTION_QUARANTINE_EJECTION",
+  "timestamp": "2026-09-24T05:43:09Z",
+  "original_file": "C:\\Projects\\EDUCORE-RAG-Control\\EDUCORE_AI_FRAMEWORK\\01_SPOKES_POLICIES\\educore-doc-01-organizational-governance-policy-v3-0.docx",
+  "quarantined_file": "C:\\Projects\\EDUCORE-RAG-Control\\data\\quarantine\\20260924_054309_educore-doc-01-organizational-governance-policy-v3-0.docx",
+  "filename": "educore-doc-01-organizational-governance-policy-v3-0.docx",
+  "sha256_hash": "c35e7d816a57e4babd51e76dd11b3b1564b6c5bf8dfb6e4d82f903518ea55158",
+  "detected_clearance": "admin",
+  "folder_clearance": "staff",
+  "violation_reason": "Clearance Spillage Violation: Document sensitivity 'ADMIN' (Rank 5) exceeds folder clearance boundary 'STAFF' (Rank 2).",
+  "compliance": "ISO/IEC 42001:2023 Clause 8.2 & Annex A.8"
+}

@@ -37,27 +37,22 @@ set HF_HUB_OFFLINE=1
 set TRANSFORMERS_OFFLINE=1
 set DATA_DIR=%ROOT_DIR%\data\openwebui
 
-REM 2. Pre-Flight Provisioning: Ensure Branding, RBAC, Governance Filter & Laws of UX CSS are deployed
-echo [0/3] Deploying Educore Branding ^& Laws of UX CSS fixes...
-"%ROOT_DIR%\framework_control\Scripts\python.exe" "%ROOT_DIR%\src\governance\apply_educore_logos.py" --base-dir "%ROOT_DIR%"
-echo [0b/3] Synchronizing Open WebUI RBAC, Models ^& Governance Filter...
-"%ROOT_DIR%\framework_control\Scripts\python.exe" "%ROOT_DIR%\src\governance\setup_openwebui_rbac.py" --base-dir "%ROOT_DIR%"
-
-REM 3. Start Educore Governance RAG Server in Background
+REM 2. Start Educore Governance RAG Server in Background
 echo [1/2] Launching Educore Enterprise RAG Governance Server (Port 8000)...
 start "Educore Governance Server" "%ROOT_DIR%\framework_control\Scripts\python.exe" "%ROOT_DIR%\src\backend\educore_enterprise_backend.py" 8000
 
 REM Wait 3 seconds for backend to bind port
 timeout /t 3 /nobreak >nul
 
-REM 3. Start Open WebUI Frontend
-echo [2/2] Launching Open WebUI Frontend (Port 3000)...
-start "Open WebUI" "%ROOT_DIR%\.openwebui_env\Scripts\open-webui.exe" serve --port 3000
+REM 3. Start Decoupled Educore Enterprise Frontend (Route B)
+echo [2/2] Launching Educore Enterprise Frontend (Port 3000)...
+start "Educore Enterprise Frontend" "%ROOT_DIR%\framework_control\Scripts\python.exe" "%ROOT_DIR%\serve_frontend.py" 3000
 
 echo ==============================================================================
-echo   EduCore Enterprise Platform Online!
-echo   - Backend API: http://127.0.0.1:8000/v1
-echo   - Open WebUI:  http://127.0.0.1:3000
-echo   - Audit Log:   %ROOT_DIR%\data\logs\aims_rag_audit.jsonl
+echo   EduCore Enterprise Platform Online (Route B Decoupled Architecture)!
+echo   - Frontend UI:  http://localhost:3000
+echo   - Backend API:  http://127.0.0.1:8000/v1
+echo   - Audit Ledger: http://127.0.0.1:8000/api/audit
+echo   - Audit File:   %ROOT_DIR%\aims_rag_audit.jsonl
 echo ==============================================================================
 pause

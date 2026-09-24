@@ -298,538 +298,884 @@
     ]
   },
   {
-    "id": "EDU-FW-EDUCORE-AI-FRAMEWORK-S01-001",
-    "title": "Educore Ai Framework Implementation Handbook V2 0: Educore Ai Framework Implementation Handbook V2 0 (Part 1)",
-    "content": "EDUCORE AI FRAMEWORK IMPLEMENTATION HANDBOOK V2 0:\nEducore AI Framework Implementation Handbook\nMaster Operating Authority, AIMS Architecture, LTCES Decision Filters & Technical Topology | Version 2.0\n1. Central Governance Charter & Modular Hub & Spokes Model\nThis Handbook serves as the master operating authority for the Educore AI Governance Framework. Operating under a modular Hub and Spokes architecture, central governance sets overarching strategy, data protection boundaries, security standards, and AIMS compliance, while individual spokes (Policy, Action Plan, Discovery Audit, Cognitive Bypass Checklist) govern domain-specific execution across Sentinel Kabitaka, Trident College, Frontier, and the Educore Teacher Academies.\n2. Microsoft Cloud, Identity & Purview Security Topology\nEducore's technical architecture leverages a Microsoft-first cloud stack: Microsoft Entra ID (Azure AD) Single Sign-On (SSO) for identity and role-based access control (RBAC); Microsoft Purview Information Protection for data loss prevention (DLP); Azure OpenAI Services for enterprise model endpoints; and Azure AI Search for secure, SharePoint-indexed Retrieval-Augmented Generation (RAG). All enterprise tenants operate under strict zero data retention contracts.\n3. Progressive Agent Autonomy Spectrum & AI Agent Register\nTo manage AI agents effectively, Educore establishes an explicit 4-level Progressive Agent Autonomy Spectrum:\nLevel 1 (Read Only): Agent queries documents and synthesizes summaries; zero system modification rights.",
+    "id": "EDU-PDF-0652-W25-MS-21-S01-001",
+    "title": "0652 W25 Ms 21: 0652 W25 Ms 21 - Page 1",
+    "content": "0652 W25 MS 21 - PAGE 1:\nThis document consists of 3 printed pages.\n© Cambridge University Press & Assessment 2025 [Turn over\nCambridge IGCSE™",
     "campus": "all",
     "clearance": "staff",
-    "category": "governance",
-    "classification": "INTERNAL - AIMS HANDBOOK",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "00_HUB_MASTER/educore-ai-framework-implementation-handbook-v2-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_ms_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-AI-FRAMEWORK-S01-002",
-    "title": "Educore Ai Framework Implementation Handbook V2 0: Educore Ai Framework Implementation Handbook V2 0 (Part 2)",
-    "content": "EDUCORE AI FRAMEWORK IMPLEMENTATION HANDBOOK V2 0:\nLevel 1 (Read Only): Agent queries documents and synthesizes summaries; zero system modification rights.\nLevel 2 (Recommend): Agent generates recommendations or draft options for human approval; zero direct execution.\nLevel 3 (Assist): Agent executes pre-approved sub-tasks under direct human supervision.\nLevel 4 (Act - Autonomous): Agent executes system actions independently. Restricted to low-risk administrative workflows following Steering Committee sign-off.\nAll deployed AI agents must be logged in the Central AI Agent Register, detailing agent name, business owner, technical scope, autonomy level, and risk tier.\n4. ISO/IEC 42001:2023 AIMS Control Framework & 6-Step AIIA SOP\nEducore aligns its Artificial Intelligence Management System (AIMS) with ISO/IEC 42001:2023 across 38 Annex A controls. Before any high-risk AI tool is deployed, it must complete the 6-Step AI Impact Assessment (AIIA) Workflow: (1) System Scoping & Intent; (2) Data & Privacy Impact Analysis; (3) Algorithmic Risk Identification; (4) Non-Software Guardrail Mapping; (5) Stakeholder Impact Review; and (6) Steering Committee Authorization.\n5. Trident LTCES Evaluation & 7-Question Business Case Review\nEvery proposed AI tool must pass the Trident LTCES Framework (Learning Purpose, Teacher Empowerment, Community Alignment, Ethical Safety, Sustainability) and the 7-Question Business Case Test to verify ROI, technical feasibility, and alignment before entering pilot testing.\n6. Statutory Alignment & Regulatory Frameworks",
+    "id": "EDU-PDF-0652-W25-MS-21-S02-001",
+    "title": "0652 W25 Ms 21: 0652 W25 Ms 21 - PHYSICAL SCIENCE 0652/21",
+    "content": "0652 W25 MS 21 - PHYSICAL SCIENCE 0652/21:\nPaper 2 Extended Multiple Choice October/November 2025",
     "campus": "all",
     "clearance": "staff",
-    "category": "governance",
-    "classification": "INTERNAL - AIMS HANDBOOK",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "00_HUB_MASTER/educore-ai-framework-implementation-handbook-v2-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_ms_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-AI-FRAMEWORK-S01-003",
-    "title": "Educore Ai Framework Implementation Handbook V2 0: Educore Ai Framework Implementation Handbook V2 0 (Part 3)",
-    "content": "EDUCORE AI FRAMEWORK IMPLEMENTATION HANDBOOK V2 0:\n6. Statutory Alignment & Regulatory Frameworks\nThe framework satisfies international and national legal standards, including the Zambian Data Protection Act (No. 3 of 2021) for statutory data controller obligations, EU AI Act risk categorizations (Annex III high-risk compliance and Article 5 prohibited red lines), OECD AI Principles, NIST AI RMF, and the Council of Europe Framework Convention on Artificial Intelligence.",
+    "id": "EDU-PDF-0652-W25-MS-21-S03-001",
+    "title": "0652 W25 Ms 21: 0652 W25 Ms 21 - MARK SCHEME",
+    "content": "0652 W25 MS 21 - MARK SCHEME:\nMaximum Mark: 40\nPublished\nThis mark scheme is published as an aid to teachers and candidates, to indicate the requirements of the\nexamination.\nMark schemes should be read in conjunction with the question paper and the Principal Examiner Report for\nTeachers.\nCambridge International will not enter into discussions about these mark schemes.\nCambridge International is publishing the mark schemes for the October/November 2025 series for most\nCambridge IGCSE, Cambridge International A and AS Level components, and some Cambridge O Level\ncomponents.",
     "campus": "all",
     "clearance": "staff",
-    "category": "governance",
-    "classification": "INTERNAL - AIMS HANDBOOK",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "00_HUB_MASTER/educore-ai-framework-implementation-handbook-v2-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_ms_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-001",
-    "title": "Educore Doc 01 Organizational Governance Policy V3 0: EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY (Part 1)",
-    "content": "EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY:\nDOC-01: Daily Operational Rules, Departmental Guardrails & Decision Filters (v3.0)\n1. Authority, Scope & Decision Screening Frameworks\nThis policy establishes the official operational rules governing Artificial Intelligence deployment across Educore Services Limited. It operates under a Dual-Track Governance Architecture to balance corporate operational security with pedagogical excellence:\nTrack 1: Enterprise Business Operations — Governs Finance, Procurement, IT Infrastructure, HR, Legal, Facilities, and Corporate Operations. Focuses strictly on data security, financial calculation accuracy, vendor contract vetting, PII protection under the Zambian Data Protection Act (No. 3 of 2021), and statutory legal compliance.\nTrack 2: Academic & Pedagogical Learning — Governs Teaching Faculty, Curriculum Leads, Academy Instructors, and Students. Focuses on process-based learning, human-in-the-loop verification, Adelaide-style intellectual ownership declarations, and 4-Level Assessment Use Modes.\n1.1 The Trident LTCES Pre-Pilot Decision Filter\nBefore any new AI software, tool, or workflow is submitted for pilot testing or departmental adoption, it must pass the 5-dimension LTCES evaluation framework:\n• L – Learning Impact: Does the tool directly enhance educational quality, student engagement, or a defined learning outcome?\n• T – Teacher & Staff Empowerment: Does it empower teaching and administrative staff, reduce friction, and save workload without creating technological dependency?",
+    "id": "EDU-PDF-0652-W25-MS-21-S04-001",
+    "title": "0652 W25 Ms 21: 0652 W25 Ms 21 - Page 2",
+    "content": "0652 W25 MS 21 - PAGE 2:\n0652/21 Cambridge IGCSE – Mark Scheme",
     "campus": "all",
     "clearance": "staff",
-    "category": "policy",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "01_SPOKES_POLICIES/educore-doc-01-organizational-governance-policy-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_ms_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-002",
-    "title": "Educore Doc 01 Organizational Governance Policy V3 0: EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY (Part 2)",
-    "content": "EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY:\n• T – Teacher & Staff Empowerment: Does it empower teaching and administrative staff, reduce friction, and save workload without creating technological dependency?\n• C – Community & Cultural Alignment: Does it align with community culture, preserve trust, and safeguard stakeholder wellbeing across all campus sites?\n• E – Ethical & Privacy Safety: Is the tool safe, transparent, non-discriminatory, age-appropriate, and fully compliant with data privacy laws?\n• S – Sustainable Infrastructure: Is the solution technically feasible, financially viable (TCO evaluated), supportable long-term, and cloud-secure?\n1.2 The 7-Question Executive Business Case Test\nEvery departmental AI initiative requiring budget allocation or software integration must satisfy the Board Draft 7-Question Test: (1) What specific operational problem is being solved? (2) What is the expected measurable benefit? (3) Is implementation operationally feasible? (4) Can privacy risks be controlled? (5) What is the Total Cost of Ownership (TCO)? (6) Would a non-AI solution be more effective? (7) How will success be evaluated?\n2. Organization-Wide AI Software Classification Registry\nAll software utilized across Educore Services is categorized into three strict operational tiers. Usage of unsanctioned tools constitutes a security breach.\n3. Departmental Use-Cases, Failure Edge Cases & Non-Software Guardrails",
+    "id": "EDU-PDF-0652-W25-MS-21-S05-001",
+    "title": "0652 W25 Ms 21: 0652 W25 Ms 21 - PUBLISHED",
+    "content": "0652 W25 MS 21 - PUBLISHED:\nOctober/November",
     "campus": "all",
     "clearance": "staff",
-    "category": "policy",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "01_SPOKES_POLICIES/educore-doc-01-organizational-governance-policy-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_ms_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-003",
-    "title": "Educore Doc 01 Organizational Governance Policy V3 0: EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY (Part 3)",
-    "content": "EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY:\n3. Departmental Use-Cases, Failure Edge Cases & Non-Software Guardrails\nSoftware DLP rules can be bypassed by mobile 4G hotspots. Therefore, Educore enforces mandatory Functional Non-Software Guardrails—procedural rules, dual-key human audits, and process redesigns that mitigate risk regardless of technical setup across all 8 operational domains:\n3.1 Finance, Accounting & Bursar Operations\n• Permitted Workflows: Routine spreadsheet formatting, financial variance analysis, and memo summarization using M365 Copilot Finance.\n• Failure Edge Scenario: AI models hallucinating formula syntax or rounding numbers, introducing errors into student fee arrear ledgers, cash flow forecasts, or subsidy allocations.\n• Strictly Prohibited Use Cases: Inputting unencrypted payroll registers, student NRC numbers, or banking details; executing automated journal entries without manual audit; inputting confidential commercial agreements tied to mining partners (FQM); delegating hardship/bursary relief evaluations to AI scoring models.\n✔ Guardrail Fin-01 (Dual-Key Manual Audit): Independent human manual verification required for all AI-assisted financial calculations and balance sheet entries before ledger posting.\n✔ Guardrail Fin-02 (PII & Commercial Masking): Mandatory depersonalization of all student NRC numbers, names, and FQM mining partner subsidy data prior to AI prompt submission.",
+    "id": "EDU-PDF-0652-W25-MS-21-S06-001",
+    "title": "0652 W25 Ms 21: 0652 W25 Ms 21 - 2025",
+    "content": "0652 W25 MS 21 - 2025:\n© Cambridge University Press & Assessment 2025 Page 2 of 3\nQuestion Answer Marks",
     "campus": "all",
     "clearance": "staff",
-    "category": "policy",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "01_SPOKES_POLICIES/educore-doc-01-organizational-governance-policy-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_ms_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-004",
-    "title": "Educore Doc 01 Organizational Governance Policy V3 0: EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY (Part 4)",
-    "content": "EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY:\n✔ Guardrail Fin-02 (PII & Commercial Masking): Mandatory depersonalization of all student NRC numbers, names, and FQM mining partner subsidy data prior to AI prompt submission.\n✔ Guardrail Fin-03 (Hardship Committee Rule): Financial hardship or bursary decisions cannot rely on AI scoring and require unanimous human committee sign-off.\n3.2 Procurement & Supply Chain Management\n• Permitted Workflows: Summarizing vendor contracts, drafting RFP templates, and performing market research across educational suppliers.\n• Failure Edge Scenario: Procuring third-party SaaS applications containing hidden 'Trojan' AI features that ingest company data for public LLM retraining, or leaking tender pricing.\n• Strictly Prohibited Use Cases: Inputting unreleased vendor tender bids, sealed RFPs, or pricing matrices; procuring AI-enabled software without Pre-Procurement Vendor Addendum review; executing contracts without Legal Counsel inspection; inputting target negotiation playbooks into prompts.\n✔ Guardrail Pro-01 (Pre-Procurement Vendor Addendum): Mandatory vendor sign-off certifying zero data retention, zero model retraining, and IP indemnification before software purchase.\n✔ Guardrail Pro-02 (Air-Gapped Tender Reviews): Sealed tender bids, competitive pricing, and supplier proposals must be evaluated on offline, air-gapped spreadsheets.\n✔ Guardrail Pro-03 (Legal Counsel Contract Sign-off): Legal Counsel must inspect all AI-assisted procurement contracts for IP liability before execution.",
+    "id": "EDU-PDF-0652-W25-MS-21-S07-001",
+    "title": "0652 W25 Ms 21: 0652 W25 Ms 21 - Page 3",
+    "content": "0652 W25 MS 21 - PAGE 3:\n0652/21 Cambridge IGCSE – Mark Scheme",
     "campus": "all",
     "clearance": "staff",
-    "category": "policy",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "01_SPOKES_POLICIES/educore-doc-01-organizational-governance-policy-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_ms_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-005",
-    "title": "Educore Doc 01 Organizational Governance Policy V3 0: EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY (Part 5)",
-    "content": "EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY:\n✔ Guardrail Pro-03 (Legal Counsel Contract Sign-off): Legal Counsel must inspect all AI-assisted procurement contracts for IP liability before execution.\n3.3 IT Infrastructure, Systems & Software Development\n• Permitted Workflows: Boilerplate code generation, shell script debugging, and network documentation via GitHub Copilot Enterprise.\n• Failure Edge Scenario: Accidental insertion of database connection strings, API keys, passwords, or internal server IP addresses into AI prompts, or deploying buggy AI code.\n• Strictly Prohibited Use Cases: Hardcoding database connection strings, API keys, passwords, or IP addresses into prompts; executing AI scripts in production without staging sandbox testing; bypassing automated git secret scanning; deploying autonomous agents capable of altering network permissions without review.\n✔ Guardrail IT-01 (Pre-Commit Secret Scanning): Automated git pre-commit hooks and local secret-scanning pipelines to block prompts containing API keys or credentials.\n✔ Guardrail IT-02 (Mandatory SAST & Peer Review): All AI-generated scripts require automated security testing and Senior Engineer peer review sign-off before production release.\n✔ Guardrail IT-03 (48-Hour Staging Sandbox Isolation): AI-generated network or system scripts must undergo 48 hours of testing in isolated staging sandboxes before live execution.\n3.4 HR & Personnel Management",
+    "id": "EDU-PDF-0652-W25-MS-21-S08-001",
+    "title": "0652 W25 Ms 21: 0652 W25 Ms 21 - PUBLISHED",
+    "content": "0652 W25 MS 21 - PUBLISHED:\nOctober/November",
     "campus": "all",
     "clearance": "staff",
-    "category": "policy",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "01_SPOKES_POLICIES/educore-doc-01-organizational-governance-policy-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_ms_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-006",
-    "title": "Educore Doc 01 Organizational Governance Policy V3 0: EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY (Part 6)",
-    "content": "EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY:\n3.4 HR & Personnel Management\n• Permitted Workflows: Drafting job descriptions, anonymizing employee survey responses, and structuring staff professional development modules.\n• Failure Edge Scenario: Algorithmic bias in candidate CV screening leading to unfair rejection, employee privacy violations, or statutory liability under Zambian Law.\n• Strictly Prohibited Use Cases: Using AI for automated applicant shortlisting, candidate ranking, or rejection; inputting unencrypted staff disciplinary records, medical notes, or grievance files; generating annual appraisals based solely on AI feedback; deploying tools without a statutory Zambian DPIA.\n✔ Guardrail HR-01 (Ban on Automated Candidate Rejection): Absolute prohibition on automated candidate rejection; human HR officers must conduct all shortlisting and performance appraisals.\n✔ Guardrail HR-02 (Statutory Zambian DPIA Compliance): Mandatory Data Protection Impact Assessment (DPIA) for all HR data processing systems under Act No. 3 of 2021.\n✔ Guardrail HR-03 (Appraisal Observation Evidence Logs): Annual employee appraisals must reflect direct human supervisor observation logs, not AI-summarized feedback.\n3.5 Legal, Compliance & Executive Administration\n• Permitted Workflows: Contract clause extraction, regulatory tracking, and formatting executive board briefing materials.",
+    "id": "EDU-PDF-0652-W25-MS-21-S09-001",
+    "title": "0652 W25 Ms 21: 0652 W25 Ms 21 - 2025",
+    "content": "0652 W25 MS 21 - 2025:\n© Cambridge University Press & Assessment 2025 Page 3 of 3\nQuestion Answer Marks",
     "campus": "all",
     "clearance": "staff",
-    "category": "policy",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "01_SPOKES_POLICIES/educore-doc-01-organizational-governance-policy-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_ms_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-007",
-    "title": "Educore Doc 01 Organizational Governance Policy V3 0: EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY (Part 7)",
-    "content": "EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY:\n• Permitted Workflows: Contract clause extraction, regulatory tracking, and formatting executive board briefing materials.\n• Failure Edge Scenario: AI hallucinating false Zambian statutory acts, legal precedents, or court rulings, or delegating executive governance decisions to predictive AI models.\n• Strictly Prohibited Use Cases: Citing AI-generated statutory provisions or court rulings without manual verification; delegating executive governance decisions or capital allocations to AI models; uploading privileged attorney-client legal opinions; publishing binding policy amendments generated by AI without sign-off.\n✔ Guardrail Leg-01 (Statutory Legal Verification): Legal Counsel must verify all AI-extracted legal references against official Republic of Zambia statutory books.\n✔ Guardrail Leg-02 (Executive Non-Delegable Accountability): Board risk decisions and institutional policies cannot be delegated to AI models under ISO 42001 Clause 5.1.\n3.6 Academic Faculty & Classroom Educators\n• Permitted Workflows: Azure-hosted lesson planning, rubric criteria design, and formatting differentiated reading materials.\n• Failure Edge Scenario: AI generating incorrect academic facts in student handouts or automated grading tools mis-scoring summative exams.",
+    "id": "EDU-PDF-0652-W25-QP-21-S01-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 1",
+    "content": "0652 W25 QP 21 - PAGE 1:\nThis document has 20 pages. Any blank pages are indicated.",
     "campus": "all",
     "clearance": "staff",
-    "category": "policy",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "01_SPOKES_POLICIES/educore-doc-01-organizational-governance-policy-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-008",
-    "title": "Educore Doc 01 Organizational Governance Policy V3 0: EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY (Part 8)",
-    "content": "EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY:\n• Failure Edge Scenario: AI generating incorrect academic facts in student handouts or automated grading tools mis-scoring summative exams.\n• Strictly Prohibited Use Cases: Using automated AI tools to grade, score, or mark summative exams or report cards; uploading student academic records, Special Educational Needs (SEN), or pastoral files; distributing unverified AI teaching handouts without Cambridge/Zambian syllabus checks; tracking student emotional states.\n✔ Guardrail Edu-01 (Prohibition of Automated Summative Grading): Summative exam scoring and final report card marks must be assigned by human educators.\n✔ Guardrail Edu-02 (Human-in-the-Loop Syllabus Verification): Faculty must verify all AI-generated teaching resources against official Cambridge and Zambian syllabi.\n✔ Guardrail Edu-03 (Student Depersonalization Rule): Educators must strip all student names, IDs, and pastoral notes before using AI for lesson differentiation.\n3.7 Students & Learners (Tier C)\n• Permitted Workflows: Interactive study guidance via Azure Socratic RAG tutors (Math/Physics) providing step-by-step diagnostic hints without direct answers.\n• Failure Edge Scenario: Cognitive bypass (students generating complete essays or fake prompt logs using AI) or using 4G mobile hotspots to bypass campus firewalls.",
+    "id": "EDU-PDF-0652-W25-QP-21-S02-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - IB25 11_0652_21/RP",
+    "content": "0652 W25 QP 21 - IB25 11_0652_21/RP:\n© UCLES 2025 [Turn over\n*8578704285\n*\nCambridge IGCSE™",
     "campus": "all",
     "clearance": "staff",
-    "category": "policy",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "01_SPOKES_POLICIES/educore-doc-01-organizational-governance-policy-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-009",
-    "title": "Educore Doc 01 Organizational Governance Policy V3 0: EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY (Part 9)",
-    "content": "EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY:\n• Failure Edge Scenario: Cognitive bypass (students generating complete essays or fake prompt logs using AI) or using 4G mobile hotspots to bypass campus firewalls.\n• Strictly Prohibited Use Cases: Generating complete essays, lab reports, or coursework solutions (cognitive bypass); using 4G/5G mobile hotspots or VPNs to access prohibited consumer LLMs on campus; submitting AI output as unassisted personal work; free-riding in group project assignments using AI.\nThe 4-Level Assessment Use Modes (Trident Framework)\nTo protect academic integrity while building student AI literacy (Ask -> Analyse -> Verify -> Improve -> Create), all coursework assignments across Sentinel Kabitaka, Trident College, and Frontier must display an explicit Assessment Mode Label:\n• Level 1: Prohibited — AI usage is completely prohibited. 100% human unassisted effort required (in-class synoptic writes, timed exams).\n• Level 2: Limited — AI permitted solely for initial brainstorming, topic exploration, or outline structuring. Raw text generation banned.\n• Level 3: Supported — AI permitted for editing draft text, checking grammar, formatting code, and receiving feedback. Final text must be student-authored.\n• Level 4: Integrated — AI collaboration is an explicit, assessed component of the learning task (e.g., prompt engineering, critically auditing AI output).\n3.8 Facilities, Physical Security & Logistics",
+    "id": "EDU-PDF-0652-W25-QP-21-S03-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - PHYSICAL SCIENCE 0652/21",
+    "content": "0652 W25 QP 21 - PHYSICAL SCIENCE 0652/21:\nPaper 2 Multiple Choice (Extended) October/November 2025\n45 minutes\nYou must answer on the multiple choice answer sheet.\nYou will need: Multiple choice answer sheet\nSoft clean eraser\nSoft pencil (type B or HB is recommended)",
     "campus": "all",
     "clearance": "staff",
-    "category": "policy",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "01_SPOKES_POLICIES/educore-doc-01-organizational-governance-policy-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-010",
-    "title": "Educore Doc 01 Organizational Governance Policy V3 0: EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY (Part 10)",
-    "content": "EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY:\n3.8 Facilities, Physical Security & Logistics\n• Permitted Workflows: Campus maintenance route optimization, energy tracking, and containerized IT helpdesk ticket triage.\n• Failure Edge Scenario: Deploying facial recognition or emotion tracking at campus entry gates, or AI bots auto-closing critical physical safety hazard tickets.\n• Strictly Prohibited Use Cases: Deploying facial recognition or emotion tracking at campus entry gates or classrooms; allowing AI bots to auto-close or downgrade critical physical safety hazard tickets; uploading CCTV footage containing student faces; autonomously modifying perimeter access hours.\n✔ Guardrail Fac-01 (EU AI Act Emotion/Facial Ban): Strict prohibition on facial recognition or emotion tracking at school gates or workplaces under EU AI Act Article 5.\n✔ Guardrail Fac-02 (Immediate Human Emergency Dispatch): Physical safety, electrical hazard, or security tickets automatically bypass AI triage and dispatch human responders instantly.\n4. Microsoft Purview Data Containers & Statutory Red Lines\nAll SharePoint Online document libraries and OneDrive stores are mapped to four Microsoft Purview sensitivity containers:\n1. Confidential - Admin / Finance: Restricted to central operations, HR, and finance. Governed by M365 Copilot Enterprise.\n2. Restricted - IT / Systems: Restricted to IT engineers. Governed by GitHub Copilot Enterprise with pre-commit secret scanning.",
+    "id": "EDU-PDF-0652-W25-QP-21-S04-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - INSTRUCTIONS",
+    "content": "0652 W25 QP 21 - INSTRUCTIONS:\n There are forty questions on this paper. Answer all questions.\n For each question there are four possible answers A, B, C and D. Choose the one you consider correct\nand record your choice in soft pencil on the multiple choice answer sheet.\n Follow the instructions on the multiple choice answer sheet.\n Write in soft pencil.\n Write your name, centre number and candidate number on the multiple choice answer sheet in the\nspaces provided unless this has been done for you.\n Do not use correction fluid.\n Do not write on any bar codes.\n You may use a calculator.",
     "campus": "all",
     "clearance": "staff",
-    "category": "policy",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "01_SPOKES_POLICIES/educore-doc-01-organizational-governance-policy-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-011",
-    "title": "Educore Doc 01 Organizational Governance Policy V3 0: EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY (Part 11)",
-    "content": "EDUCORE SERVICES ORGANIZATIONAL AI GOVERNANCE POLICY:\n2. Restricted - IT / Systems: Restricted to IT engineers. Governed by GitHub Copilot Enterprise with pre-commit secret scanning.\n3. Internal - Educational: Accessible to teaching faculty for curriculum design and lesson formatting.\n4. Public / Educational: Approved for student learning portals and public textbook/syllabus indices.",
+    "id": "EDU-PDF-0652-W25-QP-21-S05-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - INFORMATION",
+    "content": "0652 W25 QP 21 - INFORMATION:\n The total mark for this paper is 40.\n Each correct answer will score one mark.\n Any rough working should be done on this question paper.\n The Periodic Table is printed in the question paper.",
     "campus": "all",
     "clearance": "staff",
-    "category": "policy",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "01_SPOKES_POLICIES/educore-doc-01-organizational-governance-policy-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-01-ORGAN-S02-001",
-    "title": "Educore Doc 01 Organizational Governance Policy V3 0: Educore Doc 01 Organizational Governance Policy V3 0 - Table 1",
-    "content": "EDUCORE DOC 01 ORGANIZATIONAL GOVERNANCE POLICY V3 0 - TABLE 1:\nTABLE DATA:\nAT-A-GLANCE OPERATIONAL SUMMARY (LOOKUP TIME < 10 SECONDS) • Primary Objective: Establish immediate, enforceable operational boundaries, software tool classifications, departmental Dos & Don'ts, and decision filters across all Educore units. • Scope: All Central Administration staff, Trident College, Sentinel Kabitaka, Frontier, Teacher Academies, Educators, and Students. • The Golden Rule: AI must make Educore staff and students more capable, not less important. Never input unencrypted student PII, Zambian NRC numbers, payroll, or confidential mining partner agreements (FQM) into unapproved public AI tools. • Approved Software: Microsoft 365 Copilot Enterprise, Azure OpenAI Services, M365 Copilot Finance (Authenticated via Entra ID SSO). • Prohibited Software: Unsanctioned consumer LLMs (ChatGPT Free/Plus, Gemini Free, Claude Personal, DeepL Free) are STRICTLY BANNED for company work. • Incident Contact: ai-governance@educore.ac.zm (24-Hour Acknowledgment SLA).",
+    "id": "EDU-PDF-0652-W25-QP-21-S06-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 2",
+    "content": "0652 W25 QP 21 - PAGE 2:\n2",
     "campus": "all",
     "clearance": "staff",
-    "category": "policy",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "01_SPOKES_POLICIES/educore-doc-01-organizational-governance-policy-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-01-ORGAN-S03-001",
-    "title": "Educore Doc 01 Organizational Governance Policy V3 0: Educore Doc 01 Organizational Governance Policy V3 0 - Table 2",
-    "content": "EDUCORE DOC 01 ORGANIZATIONAL GOVERNANCE POLICY V3 0 - TABLE 2:\nTABLE DATA:\nClassification Tier | Approved Software Platforms | Operational Boundaries & Access Rules\nTier 1: Authorized Enterprise AI | Microsoft 365 Copilot Enterprise, Azure OpenAI Services, Azure AI Search (SharePoint RAG), M365 Copilot Finance. | FULL AUTHORIZATION. Operates under Enterprise Data Protection agreements with ZERO model retraining on Educore records. Authenticated strictly via Entra ID SSO.\nTier 2: Conditionally Permitted SSO | Grammarly Business Enterprise, Canva AI Enterprise, Zoom AI Companion Enterprise. | CONDITIONAL AUTHORIZATION. Permitted exclusively using official Educore M365 SSO logins. Strictly prohibited using personal email logins or for processing unencrypted student PII.\nTier 3: Strictly Prohibited Consumer LLMs | Unsanctioned Public LLMs (ChatGPT Free/Plus personal, Gemini Free personal, Claude Personal, DeepL Free, Midjourney). | STRICTLY BANNED. Absolutely prohibited for inputting any Educore work data, financial ledgers, payroll, student PII, HR notes, or proprietary code. Zero tolerance.",
+    "id": "EDU-PDF-0652-W25-QP-21-S07-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - © UCLES 2025 0652/21/O/N/25",
+    "content": "0652 W25 QP 21 - © UCLES 2025 0652/21/O/N/25:\n1 Which statement explains why oxygen, O2, diffuses faster than ozone, O3?\nA Oxygen has a lower molecular mass than ozone.\nB Oxygen has a higher molecular mass than ozone.\nC The atoms in oxygen have a higher mass than the atoms in ozone.\nD The atoms in oxygen have a lower mass than the atoms in ozone.\n2 Mixture X contains two different substances, Y and Z.\nMixture X is separated by paper chromatography.\nThe resulting chromatogram is shown.\nsolvent front\nbaseline\nX\nZ\nY\nP\nQ\nR\nWhich formula shows how the Rf value of Z is calculated?\nA\nQ\nP B\nP\nQ C\nR\nQ D\nQ\nR\n3 Which method is used to separate two liquids that have different boiling points?\nA crystallisation\nB filtration\nC fractional distillation\nD paper chromatography",
     "campus": "all",
     "clearance": "staff",
-    "category": "policy",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "01_SPOKES_POLICIES/educore-doc-01-organizational-governance-policy-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-02-IMPLE-S01-001",
-    "title": "Educore Doc 02 Implementation Action Plan V3 0: EDUCORE SERVICES AI IMPLEMENTATION ACTION PLAN (Part 1)",
-    "content": "EDUCORE SERVICES AI IMPLEMENTATION ACTION PLAN:\nDOC-02: 180-Day Execution Schedule, Day 31 Cutover & 3-Year Horizon (v3.0)\n1. Executive Strategy & 180-Day Implementation Phasing\nThe implementation plan bridges immediate technical risk containment with long-term organizational transformation. The 180-day schedule is partitioned into 5 distinct phases:\nPhase 1: Pre-Rollout Discovery Audit & Cutover Staging (Days 1–30)\nFocuses on technical discovery, Purview SharePoint scoping, expense audits, deploying the 10-Question Survey, and compiling the ISO 42001 Asset Register. During Days 28–30, the Steering Committee reviews audit findings, verifies Entra ID SSO integration, and approves Purview container boundaries.\nDay 31 Milestone: Enterprise Tenant Cutover Switch\nOn Day 31, Educore executes the network-wide cutover to the pre-funded enterprise tenants (Microsoft 365 Copilot Enterprise and Azure OpenAI Services). All staff and faculty transition directly to SSO-authenticated tools with zero model retraining, immediately eliminating shadow IT risks.\nPhase 2: Statutory Zambian DPIA & Policy Codification (Days 31–60)\nExecutes the statutory Data Protection Impact Assessment (DPIA) under the Zambian Data Protection Act (No. 3 of 2021) for HR and Finance systems. Formally codifies the Statement of Applicability (SoA) and 6-Step AIIA SOP.\nPhase 3: Enterprise Pilots & Governance Intake SLA (Days 61–90)",
-    "campus": "all",
-    "clearance": "admin",
-    "category": "policy",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Confidential - Admin / Finance",
-    "allowed_roles": [
-      "admin"
-    ],
-    "source_file": "01_SPOKES_POLICIES/educore-doc-02-implementation-action-plan-v3-0.docx"
-  },
-  {
-    "id": "EDU-FW-EDUCORE-DOC-02-IMPLE-S01-002",
-    "title": "Educore Doc 02 Implementation Action Plan V3 0: EDUCORE SERVICES AI IMPLEMENTATION ACTION PLAN (Part 2)",
-    "content": "EDUCORE SERVICES AI IMPLEMENTATION ACTION PLAN:\nPhase 3: Enterprise Pilots & Governance Intake SLA (Days 61–90)\nLaunches controlled M365 Copilot pilots for Finance/Ops and Azure lesson tools for faculty. Operationalizes ai-governance@educore.ac.zm with a 24-hour intake SLA and conducts tailored literacy workshops.\nPhase 4: Azure Socratic RAG Tutors & Assessment Modes (Days 91–120)\nDeploys cloud-hosted Azure Socratic RAG tutors for students, embeds the 4 Assessment Use Modes across all school syllabi, and distributes the Parent Safety Disclosure Pack.\nPhase 5: Accredited ISO 42001 Internal & External Audits (Days 121–180)\nConducts a whole-organization ISO 42001 internal audit, top-management review, and Stage 1 & Stage 2 external certification audits by an accredited Certification Body (BSI / Schellman).\n2. Master RACI Deliverables Matrix\nAccountability across the 180-day rollout is governed by the RACI matrix below (Responsible, Accountable, Consulted, Informed):\n3. Extended 3-Year Strategic Growth Horizon (2026–2029)\nFollowing the 180-day initial rollout, Educore transitions into a 3-year strategic growth horizon (Trident Model) to achieve institutional AI maturity:\n• Phase I: Foundation (Aug–Dec 2026) — Governance setup, pre-rollout discovery, baseline infrastructure, Day 31 tenant cutover, staff pilots, and ISO 42001 certification.\n• Phase II: Controlled Testing & Build (Jan–Jun 2027) — Controlled departmental testing, Azure Socratic RAG knowledge assistants, staff literacy modules, and LTCES pre-pilot screening.",
-    "campus": "all",
-    "clearance": "admin",
-    "category": "policy",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Confidential - Admin / Finance",
-    "allowed_roles": [
-      "admin"
-    ],
-    "source_file": "01_SPOKES_POLICIES/educore-doc-02-implementation-action-plan-v3-0.docx"
-  },
-  {
-    "id": "EDU-FW-EDUCORE-DOC-02-IMPLE-S01-003",
-    "title": "Educore Doc 02 Implementation Action Plan V3 0: EDUCORE SERVICES AI IMPLEMENTATION ACTION PLAN (Part 3)",
-    "content": "EDUCORE SERVICES AI IMPLEMENTATION ACTION PLAN:\n• Phase II: Controlled Testing & Build (Jan–Jun 2027) — Controlled departmental testing, Azure Socratic RAG knowledge assistants, staff literacy modules, and LTCES pre-pilot screening.\n• Phase III: Curriculum & Workflow Integration (Aug 2027–Jun 2028) — Scaling successful workflows across all school subjects, embedding 4 Assessment Use Modes, and establishing departmental AI champions.\n• Phase IV: AI-Enabled Educore Ecosystem (Aug 2028–Jun 2029) — Fully embedded, unobtrusive AI operating model, annual portfolio optimization, and continuous ISO 42001 surveillance audits.",
-    "campus": "all",
-    "clearance": "admin",
-    "category": "policy",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Confidential - Admin / Finance",
-    "allowed_roles": [
-      "admin"
-    ],
-    "source_file": "01_SPOKES_POLICIES/educore-doc-02-implementation-action-plan-v3-0.docx"
-  },
-  {
-    "id": "EDU-FW-EDUCORE-DOC-02-IMPLE-S02-001",
-    "title": "Educore Doc 02 Implementation Action Plan V3 0: Educore Doc 02 Implementation Action Plan V3 0 - Table 1",
-    "content": "EDUCORE DOC 02 IMPLEMENTATION ACTION PLAN V3 0 - TABLE 1:\nTABLE DATA:\nAT-A-GLANCE EXECUTION SUMMARY • Primary Objective: Guide the phased rollout of the Educore AI Governance Framework across 180 days, execute the Day 31 Enterprise Tenant Cutover, and set the 3-Year Strategic Growth Horizon (2026–2029). • Key Milestone: Day 31 Enterprise Tenant Cutover switches all staff to pre-funded M365 Copilot Enterprise and Azure OpenAI tenants, closing statutory data leakage risks under the Zambian Data Protection Act. • Target Certification: ISO/IEC 42001:2023 AIMS accredited certification by Day 180 (audited by BSI / Schellman). • Steering Committee Contact: ai-governance@educore.ac.zm.",
-    "campus": "all",
-    "clearance": "admin",
-    "category": "policy",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Confidential - Admin / Finance",
-    "allowed_roles": [
-      "admin"
-    ],
-    "source_file": "01_SPOKES_POLICIES/educore-doc-02-implementation-action-plan-v3-0.docx"
-  },
-  {
-    "id": "EDU-FW-EDUCORE-DOC-02-IMPLE-S03-001",
-    "title": "Educore Doc 02 Implementation Action Plan V3 0: Educore Doc 02 Implementation Action Plan V3 0 - Table 2",
-    "content": "EDUCORE DOC 02 IMPLEMENTATION ACTION PLAN V3 0 - TABLE 2:\nTABLE DATA:\nPhase & Key Deliverable | Steering Comm | IT / DevOps | Finance / HR | Campus Heads / Faculty\nPhase 1: Pre-Rollout Discovery & PII Scans | Accountable | Responsible | Consulted | Informed\nDay 31: Enterprise Tenant Cutover Switch | Accountable | Responsible | Informed | Informed\nPhase 2: Statutory Zambian DPIA & SoA | Accountable | Consulted | Responsible | Informed\nPhase 3: M365 Copilot & Azure Pilots | Accountable | Responsible | Responsible | Consulted\nPhase 4: Socratic RAG & Assessment Modes | Accountable | Consulted | Informed | Responsible\nPhase 5: ISO 42001 External Certification Audit | Accountable | Responsible | Responsible | Responsible",
-    "campus": "all",
-    "clearance": "admin",
-    "category": "policy",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Confidential - Admin / Finance",
-    "allowed_roles": [
-      "admin"
-    ],
-    "source_file": "01_SPOKES_POLICIES/educore-doc-02-implementation-action-plan-v3-0.docx"
-  },
-  {
-    "id": "EDU-FW-EDUCORE-DOC-03-PRE-R-S01-001",
-    "title": "Educore Doc 03 Pre Rollout Discovery Survey V3 0: EDUCORE SERVICES PRE-ROLLOUT AI AUDIT & DISCOVERY SURVEY (Part 1)",
-    "content": "EDUCORE SERVICES PRE-ROLLOUT AI AUDIT & DISCOVERY SURVEY:\nDOC-03: Technical Discovery, 10-Question Survey & ISO 42001 Asset Schema (v3.0)\n1. 3-Vector Pre-Rollout Discovery Audit Methodology\nTo establish an accurate pre-policy risk baseline during Phase 1 (Days 1–30), IT Infrastructure and Compliance leads execute a 3-vector discovery methodology:\nVector 1: Technical Network & CASB Firewall Log Scans — IT security analyzes 90 days of DNS logs, CASB traffic, and proxy gateway data across all campus networks to identify active connections to public LLMs (OpenAI, Anthropic, Midjourney) and unauthorized EdTech platforms.\nVector 2: Purview SharePoint PII Content Scans — Automated Purview crawlers scan SharePoint Online and OneDrive libraries for unencrypted sensitive data, matching Zambian National Registration Card (NRC) regex patterns (\\b\\d{6}/\\d{2}/\\d{1}\\b), credit card strings, payroll ledgers, and student health files.\nVector 3: SaaS Expense & Financial Procurement Log Audits — Finance inspects corporate credit card logs, departmental expense claims, and IT procurement records for hidden SaaS subscriptions containing embedded AI capabilities.\n2. Tailored 10-Question Departmental Survey Instrument\nThe following survey is deployed across all administrative department leads, campus principals, HODs, and technical staff during Phase 1:\nQ1: Current Tool Usage: Which AI tools, browser extensions, or platforms (e.g., ChatGPT, Grammarly, Canva, Copilot) do you or your team currently use for work or teaching tasks?",
+    "id": "EDU-PDF-0652-W25-QP-21-S08-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 3",
+    "content": "0652 W25 QP 21 - PAGE 3:\n3\n© UCLES 2025 0652/21/O/N/25 [Turn over\n4 When sodium reacts with water, hydrogen gas is released and aqueous sodium hydroxide is\nformed.\nThe aqueous sodium hydroxide is a ......1...... .\nThe sodium hydroxide is the ......2...... and water is the ......3...... .\nWhich words complete gaps 1, 2 and 3?",
     "campus": "all",
     "clearance": "staff",
-    "category": "audit",
-    "classification": "INTERNAL - AUDIT INSTRUMENT",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "02_SPOKES_AUDIT/educore-doc-03-pre-rollout-discovery-survey-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-03-PRE-R-S01-002",
-    "title": "Educore Doc 03 Pre Rollout Discovery Survey V3 0: EDUCORE SERVICES PRE-ROLLOUT AI AUDIT & DISCOVERY SURVEY (Part 2)",
-    "content": "EDUCORE SERVICES PRE-ROLLOUT AI AUDIT & DISCOVERY SURVEY:\nQ1: Current Tool Usage: Which AI tools, browser extensions, or platforms (e.g., ChatGPT, Grammarly, Canva, Copilot) do you or your team currently use for work or teaching tasks?\nQ2: Login & Account Type: Are these tools accessed using official Educore email logins, personal Google/Microsoft accounts, or shared department logins?\nQ3: Frequency & Workflows: How frequently are these tools used (daily, weekly, occasionally), and for what specific operational or academic tasks?\nQ4: Data Input Types: What types of information are input into these tools (e.g., student grades, financial figures, lesson plans, email drafts, code scripts)?\nQ5: PII & Sensitivity Check: Have any files containing student names, Zambian NRC numbers, staff appraisal notes, or financial ledgers been processed through public AI tools?\nQ6: Embedded Third-Party SaaS: Do any third-party software subscriptions currently used in your department contain built-in AI features (e.g., HR tools, accounting software)?\nQ7: Productivity Gains: What specific time savings or quality improvements have you observed from using AI in your department?\nQ8: Perceived Risks & Concerns: What are your primary concerns regarding AI adoption in your team (e.g., data privacy, accuracy errors, student cheating, workload)?\nQ9: Training & Support Needs: What specific training, guidance, or enterprise tools would help your team use AI safely and effectively?",
+    "id": "EDU-PDF-0652-W25-QP-21-S09-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - 1 2 3",
+    "content": "0652 W25 QP 21 - 1 2 3:\nA solute solution solvent\nB solute solvent solution\nC solution solute solvent\nD solution solvent solute\n5 Which row describes the properties of an ionic compound?\nvolatility solubility\nin water\nelectrical conductivity\nwhen molten\nA non-volatile insoluble poor\nB non-volatile soluble good\nC volatile insoluble good\nD volatile soluble poor\n6 Alum is a compound that contains the ions K+",
     "campus": "all",
     "clearance": "staff",
-    "category": "audit",
-    "classification": "INTERNAL - AUDIT INSTRUMENT",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "02_SPOKES_AUDIT/educore-doc-03-pre-rollout-discovery-survey-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-03-PRE-R-S01-003",
-    "title": "Educore Doc 03 Pre Rollout Discovery Survey V3 0: EDUCORE SERVICES PRE-ROLLOUT AI AUDIT & DISCOVERY SURVEY (Part 3)",
-    "content": "EDUCORE SERVICES PRE-ROLLOUT AI AUDIT & DISCOVERY SURVEY:\nQ9: Training & Support Needs: What specific training, guidance, or enterprise tools would help your team use AI safely and effectively?\nQ10: High-Value Use Cases: What routine, repetitive tasks in your department would benefit most from an authorized enterprise AI tool (e.g., M365 Copilot)?\n3. ISO 42001 AI Asset Inventory Register Schema\nAll discovered AI tools, scripts, and models must be logged into the central ISO 42001 Asset Register using the schema below:",
+    "id": "EDU-PDF-0652-W25-QP-21-S10-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - , SO4",
+    "content": "0652 W25 QP 21 - , SO4:\n2– and Al\n3+ only.\nWhat is the formula of alum?\nA KAlSO4 B KAl(SO4)2 C K2Al(SO4)2 D K2AlSO4\n7 What is the concentration of 2 g of sodium hydroxide, NaOH, dissolved in 100 cm3\nwater?\nA 0.005 mol /dm3\nB 0.05 mol /dm3\nC 0.5 mol / dm3\nD 2 mol / dm3",
     "campus": "all",
     "clearance": "staff",
-    "category": "audit",
-    "classification": "INTERNAL - AUDIT INSTRUMENT",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "02_SPOKES_AUDIT/educore-doc-03-pre-rollout-discovery-survey-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-03-PRE-R-S02-001",
-    "title": "Educore Doc 03 Pre Rollout Discovery Survey V3 0: Educore Doc 03 Pre Rollout Discovery Survey V3 0 - Table 1",
-    "content": "EDUCORE DOC 03 PRE ROLLOUT DISCOVERY SURVEY V3 0 - TABLE 1:\nTABLE DATA:\nAT-A-GLANCE AUDIT SUMMARY • Primary Objective: Conduct a 3-vector technical and operational audit prior to the Day 31 Enterprise Tenant Cutover to identify shadow IT, unencrypted PII, and SaaS tool proliferation. • Audit Scope: All Central Administration departments, Trident College, Sentinel Kabitaka, Frontier, and Educore Teacher Academies. • Key Deliverables: CASB/DNS Firewall Scan Report, SharePoint Purview PII Scan Logs (Zambian NRC Regex), 10-Question Survey Findings, ISO 42001 Asset Register Seed Data. • Audit Lead Contact: ai-governance@educore.ac.zm.",
+    "id": "EDU-PDF-0652-W25-QP-21-S11-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 4",
+    "content": "0652 W25 QP 21 - PAGE 4:\n4",
     "campus": "all",
     "clearance": "staff",
-    "category": "audit",
-    "classification": "INTERNAL - AUDIT INSTRUMENT",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "02_SPOKES_AUDIT/educore-doc-03-pre-rollout-discovery-survey-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-03-PRE-R-S03-001",
-    "title": "Educore Doc 03 Pre Rollout Discovery Survey V3 0: Educore Doc 03 Pre Rollout Discovery Survey V3 0 - Table 2",
-    "content": "EDUCORE DOC 03 PRE ROLLOUT DISCOVERY SURVEY V3 0 - TABLE 2:\nTABLE DATA:\nAsset ID & Name | System Owner | Data Sensitivity | Purview Label | EU AI Act Risk Tier | Approval Status\nAI-AST-001: M365 Copilot | IT Infrastructure Lead | Confidential Admin | Confidential | Minimal Risk | APPROVED (Tier 1)\nAI-AST-002: Azure Socratic RAG | Academic Director | Public Educational | Public | Minimal Risk | APPROVED (Tier 1)\nAI-AST-003: Grammarly Enterprise | Corporate Comms Lead | Internal Work | Internal | Minimal Risk | CONDITIONAL (Tier 2)\nAI-AST-004: ChatGPT Free Login | Unsanctioned / Public | High Risk PII | Unlabeled | High Risk (Unvetted) | PROHIBITED (Tier 3)",
+    "id": "EDU-PDF-0652-W25-QP-21-S12-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - © UCLES 2025 0652/21/O/N/25",
+    "content": "0652 W25 QP 21 - © UCLES 2025 0652/21/O/N/25:\n8 Which row describes the movement of the cations and what happens to the cations at the\nelectrode during the electrolysis of molten lead bromide?\nmovement of cations at the electrode\nA towards anode cations gain electrons\nB towards anode cations lose electrons\nC towards cathode cations gain electrons\nD towards cathode cations lose electrons\n9 Four statements about the effect of activation energy and the effect of temperature on the rate of\nreaction are listed.\n1 At higher temperatures, more reactant particles possess the activation energy.\n2 A lower activation energy leads to a faster reaction.\n3 If the temperature is low and the activation energy is high, the reactant particles\ncollide more frequently.\n4 The activation energy for the reaction decreases with an increase in temperature.\nWhich statements are correct?\nA 1 and 2 B 1 and 3 C 2 and 4 D 3 and 4\n10 Aluminium reacts with iron(III) oxide as shown.\n2Al + Fe2O3  Al 2O3 + 2Fe\nWhich substance is reduced?\nA Al B Fe2O3 C Al 2O3 D Fe\n11 Which statement about acids is correct?\nA They are proton donors in aqueous solution.\nB They have pH values greater than 7.\nC They react with bases to produce a salt and hydrogen only.\nD They react with carbonates to produce a salt and water only.",
     "campus": "all",
     "clearance": "staff",
-    "category": "audit",
-    "classification": "INTERNAL - AUDIT INSTRUMENT",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "02_SPOKES_AUDIT/educore-doc-03-pre-rollout-discovery-survey-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-COGNITIVE-BY-S01-001",
-    "title": "Educore Cognitive Bypass Audit Checklist V2 0: Educore Cognitive Bypass Audit Checklist V2 0 (Part 1)",
-    "content": "EDUCORE COGNITIVE BYPASS AUDIT CHECKLIST V2 0:\nEducore Cognitive Bypass Audit Checklist & Integrity Protocol\nAcademic Verification Matrix, 4-Level Assessment Mode Inspection & Viva Voce SOP | Version 2.0\n1. Pedagogical Integrity & Anti-Bypass Framework\nThis document provides educators, HODs, and academic auditors with a structured protocol for auditing student work, verifying genuine cognitive engagement, and mitigating 'cognitive bypass'—the unauthorized offloading of core critical thinking to generative AI tools.\n2. 4-Vector Academic Verification Audit Matrix\nVector 1: Artifact Sampling & Assessment Mode Inspection — Random monthly sampling of student submissions to verify compliance with assigned Assessment Use Mode Labels (Level 1 Prohibited, Level 2 Limited, Level 3 Supported, Level 4 Integrated).\nVector 2: Azure Socratic RAG System Log Audits — Automated inspection of system logs from student-facing Azure Socratic study tutors to ensure bots provide diagnostic hints without revealing direct answers.\nVector 3: Unassisted Viva Voce Oral Defenses & Synoptic Writes — Conducting brief, 3-minute unassisted oral defenses and in-class synoptic writing checks where students explain their research methodology, arguments, and source choices.\nVector 4: Gradebook Variance Benchmarking — Statistical analysis comparing student take-home assignment marks against supervised, in-class exam performance. Discrepancies exceeding 20% trigger a Viva Voce review.\n3. Student Intellectual Ownership & Declaration Protocol",
+    "id": "EDU-PDF-0652-W25-QP-21-S13-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 5",
+    "content": "0652 W25 QP 21 - PAGE 5:\n5\n© UCLES 2025 0652/21/O/N/25 [Turn over\n12 The results of tests on an aqueous solution, X, are shown.\nreagent result\naqueous sodium hydroxide green precipitate\ninsoluble in excess\naqueous silver nitrate\nacidified with dilute nitric acid\nwhite precipitate\nWhat is X?\nA iron(II) chloride\nB iron(II) sulfate\nC iron(III) chloride\nD iron(III) sulfate\n13 Rubidium is below potassium and above caesium in Group I of the Periodic Table.\nWhich statement about these elements is correct?\nA Rubidium is more reactive than caesium.\nB Rubidium, potassium and caesium all form acidic oxides.\nC Rubidium has a lower melting point than caesium.\nD Rubidium has a greater density than potassium.\n14 Part of the Periodic Table is shown.\nThe letters are not the symbols of the elements.\nWhich element forms coloured compounds that can act as catalysts?\nAC\nD\nB",
     "campus": "all",
     "clearance": "staff",
-    "category": "curriculum",
-    "classification": "INTERNAL - ACADEMIC AUDIT",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "03_SPOKES_AUDIT_TECH/educore-cognitive-bypass-audit-checklist-v2-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-COGNITIVE-BY-S01-002",
-    "title": "Educore Cognitive Bypass Audit Checklist V2 0: Educore Cognitive Bypass Audit Checklist V2 0 (Part 2)",
-    "content": "EDUCORE COGNITIVE BYPASS AUDIT CHECKLIST V2 0:\n3. Student Intellectual Ownership & Declaration Protocol\nAll major student submissions must include a signed Declaration of Intellectual Ownership, affirming sole authorship and acknowledging that the student stands ready to defend their submitted ideas during an unassisted Viva Voce examination.",
+    "id": "EDU-PDF-0652-W25-QP-21-S14-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 6",
+    "content": "0652 W25 QP 21 - PAGE 6:\n6",
     "campus": "all",
     "clearance": "staff",
-    "category": "curriculum",
-    "classification": "INTERNAL - ACADEMIC AUDIT",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "03_SPOKES_AUDIT_TECH/educore-cognitive-bypass-audit-checklist-v2-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-00-MASTE-S01-001",
-    "title": "Educore Doc 00 Master Launch Directory V3 0: EDUCORE SERVICES AI GOVERNANCE FRAMEWORK (Part 1)",
-    "content": "EDUCORE SERVICES AI GOVERNANCE FRAMEWORK:\nDOC-00: Master Launch Directory & Central Navigation Hub (v3.0)\n1. Executive Framework Architecture & 3-Tier Access Structure\nTo maximize operational efficiency, reference speed, and daily compliance across all Educore Services units (including Central Administration, Sentinel Kabitaka, Trident College, Frontier, and Educore Teacher Academies), the governance suite is structured into a 3-Tier Access Hierarchy. This ensures that staff can find their operational boundaries in under 10 seconds without wading through complex regulatory clauses or project management roadmaps.\n2. Foundational Principles & Core Guiding Philosophies\nThe entire Educore AI Governance Framework is anchored on three non-negotiable core principles established across our strategic plans:\n1. The North Star Principle (Trident Model): Artificial Intelligence is deployed to augment human capability, professional judgment, and educator intuition—never to replace essential human relationships, teacher-student connections, or executive accountability.\n2. Enable and Govern Philosophy: Educore maintains an active 'Enable and Govern' operational strategy. Central administration establishes firm security boundaries, identity controls, and compliance guardrails, while empowering individual campuses and departments to innovate within set parameters.",
+    "id": "EDU-PDF-0652-W25-QP-21-S15-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - © UCLES 2025 0652/21/O/N/25",
+    "content": "0652 W25 QP 21 - © UCLES 2025 0652/21/O/N/25:\n15 Four different metals W, X, Y and Z are added to solutions of their metal nitrates.\nThe results are shown.\nsolution of metal nitrate\nmetal added W nitrate X nitrate Y nitrate Z nitrate\nW \u0016 \u001a \u001a key\nX \u001a \u001a \u001a \u0016= reacts\nY \u0016 \u0016 \u001a \u001a = no reaction",
     "campus": "all",
     "clearance": "staff",
-    "category": "governance",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "educore-doc-00-master-launch-directory-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-00-MASTE-S01-002",
-    "title": "Educore Doc 00 Master Launch Directory V3 0: EDUCORE SERVICES AI GOVERNANCE FRAMEWORK (Part 2)",
-    "content": "EDUCORE SERVICES AI GOVERNANCE FRAMEWORK:\n3. Rigorous Pre-Pilot Screening: All proposed AI applications, tools, and workflows must pass the 5-dimension LTCES filter (Learning, Teachers, Community, Ethical, Sustainable) and the 7-Question Business Case Test prior to pilot approval or deployment.\n3. Master Version Control & Inter-Document Cross-Reference Matrix\nEvery document in the Hub & Spokes suite operates under active version control. When referencing specific rules across the suite, use the cross-reference grid below:\n4. Incident Intake, Support Routing & Governance SLA\nAll Educore staff, faculty, technical leads, and students have a mandatory duty to report suspected security breaches, data leaks, algorithmic hallucinations, or policy violations to the central intake channel:\nCentral Governance Email: ai-governance@educore.ac.zm\nInitial Acknowledgment SLA: Mandatory initial response and logging within 24 hours of submission.\nResolution SLA: Full investigation, Steering Committee review, and corrective action logging under ISO 42001 Clause 10.1 within 5 business days.",
+    "id": "EDU-PDF-0652-W25-QP-21-S16-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Z \u0016 \u0016 \u0016",
+    "content": "0652 W25 QP 21 - Z \u0016 \u0016 \u0016:\nWhat is the order of reactivity?\nleast reactive  most reactive",
     "campus": "all",
     "clearance": "staff",
-    "category": "governance",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "educore-doc-00-master-launch-directory-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-00-MASTE-S02-001",
-    "title": "Educore Doc 00 Master Launch Directory V3 0: Educore Doc 00 Master Launch Directory V3 0 - Table 1",
-    "content": "EDUCORE DOC 00 MASTER LAUNCH DIRECTORY V3 0 - TABLE 1:\nTABLE DATA:\nDOCUMENT CONTROL & AT-A-GLANCE NAVIGATION • Target Audience: All Educore Employees, Department Leads, Campus Principals, IT Leads, Educators, and Auditors. • Framework Model: 3-Tier Access Hierarchy (Hub & 4 Operational Spokes Model). • Primary Objective: Provide single-point directory navigation, inter-document cross-referencing, version control, and emergency incident routing. • Central Intake Channel: ai-governance@educore.ac.zm (24-Hour Acknowledgment SLA | 5-Day Resolution SLA). • Governing Body: Educore Cross-Functional AI Steering Committee & Executive Directorate. • Statutory Alignment: Zambian Data Protection Act (No. 3 of 2021) | ISO/IEC 42001:2023 AIMS | EU AI Act | NIST AI RMF.",
+    "id": "EDU-PDF-0652-W25-QP-21-S17-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - D Z Y W X",
+    "content": "0652 W25 QP 21 - D Z Y W X:\n16 Which statement about the extraction of iron in the blast furnace is correct?\nA Bauxite is the ore of iron used.\nB Carbon dioxide breaks down to form carbon and oxygen.\nC Carbon dioxide reacts with iron oxide to form iron metal.\nD Carbon reacts with carbon dioxide to produce the reducing agent.\n17 Nitrogen oxides are produced in a car engine.\nWhich type of reaction catalytically removes nitrogen oxides from the exhaust fumes?\nA combustion\nB oxidation\nC reduction\nD thermal decomposition",
     "campus": "all",
     "clearance": "staff",
-    "category": "governance",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "educore-doc-00-master-launch-directory-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-00-MASTE-S03-001",
-    "title": "Educore Doc 00 Master Launch Directory V3 0: Educore Doc 00 Master Launch Directory V3 0 - Table 2",
-    "content": "EDUCORE DOC 00 MASTER LAUNCH DIRECTORY V3 0 - TABLE 2:\nTABLE DATA:\nTier Level & Focus | Document ID & Filename | Target Audience | Primary Operational Function\nCENTRAL HUB Navigation | DOC-00 educore-doc-00-master-launch-directory-v3-0.docx | All Staff, Leads, Auditors | Central reception node, document directory, cross-reference matrix, emergency contact SLA.\nTIER 1 Daily Rules | DOC-01 educore-doc-01-organizational-governance-policy-v3-0.docx | ALL Staff, Faculty, Students | Daily Dos & Don'ts, 3-Tier Software Registry, Departmental Guardrails, LTCES Filter, 4 Assessment Modes.\nTIER 2 Execution & Audit | DOC-02 educore-doc-02-implementation-action-plan-v3-0.docx | Steering Comm, Dept Leads, PMs | 180-Day Execution Schedule, Day 31 Enterprise Tenant Cutover, RACI Matrix, 3-Year Horizon (2026–2029).\nTIER 2 Discovery & Assets | DOC-03 educore-doc-03-pre-rollout-discovery-survey-v3-0.docx | IT Leads, HODs, Compliance Officers | 3-Vector Pre-Rollout Discovery (CASB, Purview PII Scans), 10-Q Survey, ISO 42001 Asset Register Schema.\nTIER 3 Architecture & Standards | DOC-04 educore-doc-04-master-implementation-handbook-v3-0.docx | IT DevOps, Legal, Auditors, Leadership | Master Operating Authority, Microsoft Cloud & Purview DLP Topology, Agent Autonomy Spectrum, 38 ISO 42001 Controls.",
+    "id": "EDU-PDF-0652-W25-QP-21-S18-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 7",
+    "content": "0652 W25 QP 21 - PAGE 7:\n7\n© UCLES 2025 0652/21/O/N/25 [Turn over\n18 Which reaction takes place when calcium oxide is formed from calcium carbonate?\nA addition\nB combustion\nC oxidation\nD thermal decomposition\n19 The structures of three hydrocarbons are shown.\nHC\nH\nH\nC\nH\n1\nH\nH C\nH\nH\nC\nH\n2\nH\nHC\nH\nH\nC H\nH\n3\nC\nH\nWhich hydrocarbons decolourise aqueous bromine?\nA 1 and 2 B 1 only C 2 and 3 D 2 only\n20 Which row describes the starting material and conditions used to make ethanol?\nstarting material conditions\nA ethene high temperature, low pressure and a catalyst\nB ethene yeast and low temperature\nC glucose high temperature, low pressure and a catalyst\nD glucose yeast and low temperature",
     "campus": "all",
     "clearance": "staff",
-    "category": "governance",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "educore-doc-00-master-launch-directory-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-00-MASTE-S04-001",
-    "title": "Educore Doc 00 Master Launch Directory V3 0: Educore Doc 00 Master Launch Directory V3 0 - Table 3 (Part 1)",
-    "content": "EDUCORE DOC 00 MASTER LAUNCH DIRECTORY V3 0 - TABLE 3:\nTABLE DATA:\nFunctional Requirement / Topic | Primary Governing Document | Specific Reference Section | Key Operational Controls\nApproved AI Tools & Software Registry | DOC-01 Governance Policy | Section 2.0 (Page 2) | Tier 1 Enterprise M365/Azure, Tier 2 Conditional SSO, Tier 3 Prohibited Public LLMs.\nDepartmental Dos & Don'ts & Guardrails | DOC-01 Governance Policy | Section 3.1 – 3.8 | Procedural non-software guardrails for Finance, HR, IT, Procurement, Legal, Faculty, Students, Facilities.\nLTCES Pre-Pilot Screening Rubric | DOC-01 Policy / DOC-04 Handbook | DOC-01 Sec 1.2 / DOC-04 Sec 4.1 | 5-dimension evaluation filter (Learning, Teachers, Community, Ethical, Sustainable).\n4-Level Classroom Assessment Modes | DOC-01 Policy / DOC-04 Handbook | DOC-01 Sec 3.6 / DOC-04 Sec 5.2 | Level 1 Prohibited, Level 2 Limited, Level 3 Supported, Level 4 Integrated assignment labeling.\n180-Day Action Plan & Day 31 Switch | DOC-02 Action Plan | Section 2.0 & Section 3.1 | Phase 1 Pre-Rollout Discovery (Days 1–30), Day 31 Enterprise M365/Azure Tenant Cutover.\n3-Year Strategic Growth Horizon | DOC-02 Action Plan | Section 4.0 (2026–2029) | 4-Phase roadmap: Foundation, Controlled Pilots, Curriculum Integration, AI-Enabled Ecosystem.\nPre-Rollout Audit & PII Scans | DOC-03 Discovery Survey | Section 1.0 – 3.0 | CASB/DNS firewall scans, Purview SharePoint PII regex scans, 10-Question Survey, Asset Register.",
+    "id": "EDU-PDF-0652-W25-QP-21-S19-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 8",
+    "content": "0652 W25 QP 21 - PAGE 8:\n8",
     "campus": "all",
     "clearance": "staff",
-    "category": "governance",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "educore-doc-00-master-launch-directory-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
   },
   {
-    "id": "EDU-FW-EDUCORE-DOC-00-MASTE-S04-002",
-    "title": "Educore Doc 00 Master Launch Directory V3 0: Educore Doc 00 Master Launch Directory V3 0 - Table 3 (Part 2)",
-    "content": "EDUCORE DOC 00 MASTER LAUNCH DIRECTORY V3 0 - TABLE 3:\nPre-Rollout Audit & PII Scans | DOC-03 Discovery Survey | Section 1.0 – 3.0 | CASB/DNS firewall scans, Purview SharePoint PII regex scans, 10-Question Survey, Asset Register.\nMicrosoft Cloud Architecture & DLP | DOC-04 Master Handbook | Section 2.0 & 3.0 | Entra ID SSO, Azure RAG topology, Purview DLP containers (Confidential, Restricted, Internal, Public).\nAgent Autonomy Levels (Read to Act) | DOC-04 Master Handbook | Section 4.2 | 4-Stage Agent Autonomy Spectrum (Level 1 Read -> Level 4 Act) and AI Agent Register rules.\nISO 42001 Controls & Statutory Red Lines | DOC-04 Master Handbook | Section 6.0 & 7.0 | 38 Annex A AIMS controls, 6-Step AIIA SOP, Zambian Act No. 3 DPIA, EU AI Act Article 5 bans.",
+    "id": "EDU-PDF-0652-W25-QP-21-S20-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - © UCLES 2025 0652/21/O/N/25",
+    "content": "0652 W25 QP 21 - © UCLES 2025 0652/21/O/N/25:\n21 A car moves in a straight line.\nThe graph shows how the distance moved by the car varies with time.\nTwo distances P and Q, and two times X and Y are labelled.\n0\n0\ndistance\nQ\nP\nXY\ntime\nWhich expression gives the average speed of the car for the complete journey?\nA distance P  time X\nB\nX\nP\ntime\ndistance\nC distance Q  time Y\nD\nY\nQ\ntime\ndistance\n22 A plastic cube of side 2.0 cm is placed on a balance. The mass of the cube is shown on the\nbalance.\n7.2 g\n2.0 cm\nbalance\nWhat is the density of the plastic?\nA 0.90 g / cm3 B 1.2 g / cm3 C 1.8 g / cm3 D 3.6 g / cm3",
     "campus": "all",
     "clearance": "staff",
-    "category": "governance",
-    "classification": "INTERNAL - GOVERNANCE POLICY",
-    "purview_label": "Internal - Educational",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
     "allowed_roles": [
       "staff",
-      "counselor",
       "admin"
     ],
-    "source_file": "educore-doc-00-master-launch-directory-v3-0.docx"
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S21-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 9",
+    "content": "0652 W25 QP 21 - PAGE 9:\n9\n© UCLES 2025 0652/21/O/N/25 [Turn over\n23 The diagram shows three people standing on the ground.\nThe weight W of each person and the area A of contact with the ground for each person is\nshown.",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S22-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - W = 500N",
+    "content": "0652 W25 QP 21 - W = 500N:\nA = 300 cm2\n1",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S23-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - W = 600N",
+    "content": "0652 W25 QP 21 - W = 600N:\nA = 300cm2\n2",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S24-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - W = 650N",
+    "content": "0652 W25 QP 21 - W = 650N:\nA = 280 cm2\n3\nEach person exerts a pressure on the ground.\nWhat is the order of the pressures, from greatest pressure to smallest pressure?",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S25-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - A 1  2  3 B 2  1  3 C 3  1  2 D 3  2  1",
+    "content": "0652 W25 QP 21 - A 1  2  3 B 2  1  3 C 3  1  2 D 3  2  1:\n24 A student uses a newton meter to pull a box along a rough horizontal floor with a constant force.\nShe uses the reading on the newton meter to calculate the work done.\nWhich other quantity does she need to measure?\nA the distance moved by the box\nB the final speed of the box\nC the mass of the box\nD the time taken for the box to move",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S26-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 10",
+    "content": "0652 W25 QP 21 - PAGE 10:\n10",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S27-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - © UCLES 2025 0652/21/O/N/25",
+    "content": "0652 W25 QP 21 - © UCLES 2025 0652/21/O/N/25:\n25 The diagram shows a child of mass 40 kg on a swing.\nAt his highest position he is 2.0 m above his lowest position.\n2.0 m\nIn this highest position, the child has stopped moving upwards.\nHe starts to move downwards and his speed increases.\nThe gravitational field strength g is 10 N/ kg. Air resistance is negligible.\nWhat is the kinetic energy of the child when he reaches his lowest position?",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S28-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - A 20 J B 80 J C 200 J D 800 J",
+    "content": "0652 W25 QP 21 - A 20 J B 80 J C 200 J D 800 J:\n26 A fixed mass of gas is cooled at constant pressure.\nHow do the average speed of the particles and the volume of the gas change?\naverage speed\nof particles volume of gas\nA decreases decreases\nB decreases increases\nC increases decreases\nD increases increases",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S29-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 11",
+    "content": "0652 W25 QP 21 - PAGE 11:\n11\n© UCLES 2025 0652/21/O/N/25 [Turn over\n27 The diagram shows a liquid-in-glass thermometer.",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S30-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - –10 0 10 20 30 40 50 60 70 80 90 100 110 °C",
+    "content": "0652 W25 QP 21 - –10 0 10 20 30 40 50 60 70 80 90 100 110 °C:\ntube\nWhich change to the tube makes the thermometer more sensitive?\nA make the tube longer\nB make the tube shorter\nC make the tube thinner\nD make the tube wider\n28 A beaker of water in a laboratory is heated from 0 °C to 100 °C.\nWhich row states the temperatures at which evaporation and boiling of water occur?\nevaporation boiling\nA at 100 °C only at 100 °C only\nB at 100 °C only between 0 °C and 100 °C\nC between 0 °C and 100 °C at 100 °C only\nD between 0 °C and 100 °C between 0 °C and 100 °C\n29 The temperature of a small volume of air changes which causes this air to move downwards in a\nconvection current.\nWhich statement explains one process that causes this air to move downwards?\nA The air temperature decreases and the density of the air decreases.\nB The air temperature decreases and the density of the air increases.\nC The air temperature increases and the density of the air decreases.\nD The air temperature increases and the density of the air increases.",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S31-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 12",
+    "content": "0652 W25 QP 21 - PAGE 12:\n12",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S32-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - © UCLES 2025 0652/21/O/N/25",
+    "content": "0652 W25 QP 21 - © UCLES 2025 0652/21/O/N/25:\n30 A ship is at rest on the sea. A wave passes the ship, which causes the ship to move up and\ndown.\nThe ship moves from its lowest point to its highest point and then back to its lowest point three\ntimes in one minute. It takes 8.0 s for one wave crest to travel the length of the ship.\nThe ship has a length of 40 m.\nWhat is the wavelength of the wave passing the ship?\nA 13 m B 15 m C 100 m D 110 m\n31 A ray of light passes from air into a transparent material, as shown.\nair\nnormal\ntransparent\nmaterial\n25°\n40°\nWhat is the refractive index of the transparent material?",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S33-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 13",
+    "content": "0652 W25 QP 21 - PAGE 13:\n13\n© UCLES 2025 0652/21/O/N/25 [Turn over\n32 A thin converging lens forms a real image of an object. The image is 12.4 cm from the lens and\n3.1 cm from the nearer principal focus, as shown.\n3.1 cm\nlens\nprincipal focus principal focus\nimage\n12.4 cm\nWhat is the focal length of the lens?\nA 3.1 cm B 9.3 cm C 12.4 cm D 15.5 cm\n33 In a vacuum, how do the speed of radio waves and the speed of X-rays compare with the speed\nof light c?\nspeed of radio waves speed of X-rays\nA equal to c equal to c\nB equal to c greater than c\nC greater than c less than c\nD less than c greater than c\n34 An unmagnetised soft-iron bar is kept close to a strong permanent magnet. A temporary N pole is\ninduced at the left-hand end of the soft-iron bar.\nN S\nmagnet soft-iron bar\nThe soft-iron bar is continually tapped with a hammer.\nWhat happens to the induced N pole at the left-hand end of the soft-iron bar?\nA It gradually becomes a permanent N pole.\nB It gradually becomes a permanent S pole.\nC It gradually disappears.\nD It stays as a temporary N pole.",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S34-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 14",
+    "content": "0652 W25 QP 21 - PAGE 14:\n14",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S35-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - © UCLES 2025 0652/21/O/N/25",
+    "content": "0652 W25 QP 21 - © UCLES 2025 0652/21/O/N/25:\n35 Two resistors with resistances 4.0 and 5.0 are connected in parallel.\nThe combined resistance of the combination is R.\nWhich statement about R is correct?\nA R is less than 4.0.\nB R is equal to 4.5.\nC R is equal to 9.0.\nD R is greater than 9.0.\n36 There is a current of 4.0A in an electric heater.\nThe heater transfers 24 kJ of energy in a time of 6.0 min.\nWhat is the potential difference (p.d.) across the heater?",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S36-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - A 1.0V B 17V C 36V D 270V",
+    "content": "0652 W25 QP 21 - A 1.0V B 17V C 36V D 270V:\n37 The diagram shows a transformer.\ninput\n(primary coil)\noutput\n(secondary coil)\nsoft-iron core\nWhy is there an induced electromotive force (e.m.f.) across the secondary coil?\nA There is a changing magnetic field in the soft-iron core.\nB There is an alternating current in the soft-iron core.\nC There is a direct current in the primary coil.\nD There is a steady magnetic field in the soft-iron core.",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S37-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 15",
+    "content": "0652 W25 QP 21 - PAGE 15:\n15\n© UCLES 2025 0652/21/O/N/25 [Turn over\n38 A beam contains two types of emission, X and Y, from a radioactive source.\nThe diagram shows the beam passing through the electric field between two charged plates.\nEmission X is deflected and emission Y is not deflected.\n++++++\n––––––\nX\nY emissions\nX and Y\nWhat are the emissions X and Y?\nX Y\nA alpha-particles gamma-rays\nB beta-particles gamma-rays\nC gamma-rays alpha-particles\nD gamma-rays beta-particles\n39 A radioactive nucleus emits a beta-particle.\nWhat is the effect of this emission on the number of protons and the number of neutrons in the\nnucleus?\nnumber of protons number of neutrons\nA decreases by 2 decreases by 2\nB decreases by 2 does not change\nC increases by 1 decreases by 1\nD increases by 1 does not change",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S38-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 16",
+    "content": "0652 W25 QP 21 - PAGE 16:\n16",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S39-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - © UCLES 2025 0652/21/O/N/25",
+    "content": "0652 W25 QP 21 - © UCLES 2025 0652/21/O/N/25:\n40 The graph shows the decay curve for a radioactive isotope.",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S40-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - 1000",
+    "content": "0652 W25 QP 21 - 1000:\n500\n0\ntime/days\nrate of emission\nemissions /minute\nWhat is the half-life of this isotope?\nA 1.0 day B 1.5 days C 2.0 days D 2.5 days",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S41-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 17",
+    "content": "0652 W25 QP 21 - PAGE 17:\n17",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S42-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 18",
+    "content": "0652 W25 QP 21 - PAGE 18:\n18",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S43-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 19",
+    "content": "0652 W25 QP 21 - PAGE 19:\n19\nPermission to reproduce items where third-party owned material protected by copyright is included has been sought and cleared where possible. Every\nreasonable effort has been made by the publisher (UCLES) to trace copyright holders, but if any items requiring clearance have unwittingly been included, the\npublisher will be pleased to make amends at the earliest possible opportunity.\nTo avoid the issue of disclosure of answer-related information to candidates, all copyright acknowledgements are reproduced online in the Cambridge\nAssessment International Education Copyright Acknowledgements Booklet. This is produced for each series of examinations and is freely available to download\nat www.cambridgeinternational.org after the live examination series.\nCambridge Assessment International Education is part of Cambridge Assessment. Cambridge Assessment is the brand name of the University of Cambridge\nLocal Examinations Syndicate (UCLES), which is a department of the University of Cambridge.",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S44-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 20",
+    "content": "0652 W25 QP 21 - PAGE 20:\n20\n© UCLES 2025 0652/21/O/N/25 Group The Periodic Table of Elements\n1\nH\nhydrogen\n1\n2\nHe\nhelium\n4",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S45-001",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - I II III IV V VI VII VIII (Part 1)",
+    "content": "0652 W25 QP 21 - I II III IV V VI VII VIII:\n3\nLi\nlithium\n7\n4\nBe\nberyllium\n9\natomic number\natomic symbol\nKey\nname\nrelative atomic mass\n11\nNa\nsodium\n23\n12\nMg\nmagnesium\n24\n19\nK\npotassium\n39\n20\nCa\ncalcium\n40\n37\nRb\nrubidium\n85\n38\nSr\nstrontium\n88\n55\nCs\ncaesium\n133\n56\nBa\nbarium\n137\n87\nFr\nfrancium\n–\n88\nRa\nradium\n–\n5\nB\nboron\n11\n13\nAl\naluminium\n27\n31\nGa\ngallium\n70\n49\nIn\nindium\n115\n81\nTl\nthallium\n204\n113\nNh\nnihonium\n–\n6\nC\ncarbon\n12\n14\nSi\nsilicon\n28\n32\nGe\ngermanium\n73\n50\nSn\ntin\n119\n82\nPb\nlead\n207\n22\nTi\ntitanium\n48\n40\nZr\nzirconium\n91\n72\nHf\nhafnium\n178\n104\nRf\nrutherfordium\n–\n23\nV\nvanadium\n51\n41\nNb\nniobium\n93\n73\nTa\ntantalum\n181\n105\nDb\ndubnium\n–\n24\nCr\nchromium\n52\n42\nMo\nmolybdenum\n96\n74\nW\ntungsten\n184\n106\nSg\nseaborgium\n–\n25\nMn\nmanganese\n55\n43\nTc\ntechnetium\n–\n75\nRe\nrhenium\n186\n107\nBh\nbohrium\n–\n26\nFe\niron\n56\n44\nRu\nruthenium\n101\n76\nOs\nosmium\n190\n108\nHs\nhassium\n–\n27\nCo\ncobalt\n59\n45\nRh\nrhodium\n103\n77\nIr\niridium\n192\n109\nMt\nmeitnerium\n–\n28\nNi\nnickel\n59\n46\nPd\npalladium\n106\n78\nPt\nplatinum\n195\n110\nDs\ndarmstadtium\n–\n29\nCu\ncopper\n64\n47\nAg\nsilver\n108\n79\nAu\ngold\n197\n111\nRg\nroentgenium\n–\n30\nZn\nzinc\n65\n48\nCd\ncadmium\n112\n80\nHg\nmercury\n201\n112\nCn\ncopernicium\n–\n114\nFl\nflerovium\n–\n116\nLv\nlivermorium\n–\n7\nN\nnitrogen\n14\n15\nP\nphosphorus\n31\n33\nAs\narsenic\n75\n51\nSb\nantimony\n122\n83\nBi\nbismuth\n209\n115\nMc\nmoscovium\n–\n8\nO\noxygen\n16\n16\nS\nsulfur\n32\n34\nSe\nselenium\n79\n52\nTe\ntellurium\n128\n84\nPo\npolonium\n–\n9\nF\nfluorine\n19\n17\nCl\nchlorine\n35.5\n35\nBr\nbromine\n80\n53\nI\niodine\n127\n85\nAt\nastatine\n–\n117\nTs\ntennessine\n–\n10\nNe\nneon\n20\n18\nAr\nargon\n40\n36\nKr\nkrypton\n84\n54\nXe\nxenon\n131\n86\nRn\nradon\n–\n118\nOg\noganesson\n–\n21\nSc\nscandium\n45\n39\nY\nyttrium\n89\n57–71\nlanthanoids\n89–103\nactinoids\n57\nLa\nlanthanum\n139\n89\nAc\nlanthanoids\nactinoids\nThe volume of one mole of any gas is 24dm3 at room temperature and pressure (r.t.p.).\nactinium\n–\n58\nCe\ncerium\n140\n90\nTh\nthorium\n232\n59\nPr\npraseodymium\n141\n91\nPa\nprotactinium\n231\n60\nNd\nneodymium\n144\n92\nU\nuranium\n238\n61\nPm\npromethium\n–\n93\nNp",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
+  },
+  {
+    "id": "EDU-PDF-0652-W25-QP-21-S45-002",
+    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - I II III IV V VI VII VIII (Part 2)",
+    "content": "0652 W25 QP 21 - I II III IV V VI VII VIII:\nNp\nneptunium\n–\n62\nSm\nsamarium\n150\n94\nPu\nplutonium\n–\n63\nEu\neuropium\n152\n95\nAm\namericium\n–\n64\nGd\ngadolinium\n157\n96\nCm\ncurium\n–\n65\nTb\nterbium\n159\n97\nBk\nberkelium\n–\n66\nDy\ndysprosium\n163\n98\nCf\ncalifornium\n–\n67\nHo\nholmium\n165\n99\nEs\neinsteinium\n–\n68\nEr\nerbium\n167\n100\nFm\nfermium\n–\n69\nTm\nthulium\n169\n101\nMd\nmendelevium\n–\n70\nYb\nytterbium\n173\n102\nNo\nnobelium\n–\n71\nLu\nlutetium\n175\n103\nLr\nlawrencium\n–",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "examination",
+    "classification": "CONFIDENTIAL - EXAMINATION",
+    "purview_label": "Confidential - Examination",
+    "allowed_roles": [
+      "staff",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "0652_w25_qp_21.pdf"
   },
   {
     "id": "EDU-FW-EDU-2026-09-21-S01-001",
@@ -846,6 +1192,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "EDU-2026-09-21.docx"
   },
   {
@@ -863,6 +1210,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "September 2026 Purchases.docx"
   },
   {
@@ -880,832 +1228,8 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "September 2026 Purchases.docx"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-MS-21-S01-001",
-    "title": "0652 W25 Ms 21: 0652 W25 Ms 21 - Page 1",
-    "content": "0652 W25 MS 21 - PAGE 1:\nThis document consists of 3 printed pages.\n© Cambridge University Press & Assessment 2025 [Turn over\nCambridge IGCSE™",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_ms_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-MS-21-S02-001",
-    "title": "0652 W25 Ms 21: 0652 W25 Ms 21 - PHYSICAL SCIENCE 0652/21",
-    "content": "0652 W25 MS 21 - PHYSICAL SCIENCE 0652/21:\nPaper 2 Extended Multiple Choice October/November 2025",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_ms_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-MS-21-S03-001",
-    "title": "0652 W25 Ms 21: 0652 W25 Ms 21 - MARK SCHEME",
-    "content": "0652 W25 MS 21 - MARK SCHEME:\nMaximum Mark: 40\nPublished\nThis mark scheme is published as an aid to teachers and candidates, to indicate the requirements of the\nexamination.\nMark schemes should be read in conjunction with the question paper and the Principal Examiner Report for\nTeachers.\nCambridge International will not enter into discussions about these mark schemes.\nCambridge International is publishing the mark schemes for the October/November 2025 series for most\nCambridge IGCSE, Cambridge International A and AS Level components, and some Cambridge O Level\ncomponents.",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_ms_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-MS-21-S04-001",
-    "title": "0652 W25 Ms 21: 0652 W25 Ms 21 - Page 2",
-    "content": "0652 W25 MS 21 - PAGE 2:\n0652/21 Cambridge IGCSE – Mark Scheme",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_ms_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-MS-21-S05-001",
-    "title": "0652 W25 Ms 21: 0652 W25 Ms 21 - PUBLISHED",
-    "content": "0652 W25 MS 21 - PUBLISHED:\nOctober/November",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_ms_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-MS-21-S06-001",
-    "title": "0652 W25 Ms 21: 0652 W25 Ms 21 - 2025",
-    "content": "0652 W25 MS 21 - 2025:\n© Cambridge University Press & Assessment 2025 Page 2 of 3\nQuestion Answer Marks",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_ms_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-MS-21-S07-001",
-    "title": "0652 W25 Ms 21: 0652 W25 Ms 21 - Page 3",
-    "content": "0652 W25 MS 21 - PAGE 3:\n0652/21 Cambridge IGCSE – Mark Scheme",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_ms_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-MS-21-S08-001",
-    "title": "0652 W25 Ms 21: 0652 W25 Ms 21 - PUBLISHED",
-    "content": "0652 W25 MS 21 - PUBLISHED:\nOctober/November",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_ms_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-MS-21-S09-001",
-    "title": "0652 W25 Ms 21: 0652 W25 Ms 21 - 2025",
-    "content": "0652 W25 MS 21 - 2025:\n© Cambridge University Press & Assessment 2025 Page 3 of 3\nQuestion Answer Marks",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_ms_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S01-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 1",
-    "content": "0652 W25 QP 21 - PAGE 1:\nThis document has 20 pages. Any blank pages are indicated.",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S02-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - IB25 11_0652_21/RP",
-    "content": "0652 W25 QP 21 - IB25 11_0652_21/RP:\n© UCLES 2025 [Turn over\n*8578704285\n*\nCambridge IGCSE™",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S03-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - PHYSICAL SCIENCE 0652/21",
-    "content": "0652 W25 QP 21 - PHYSICAL SCIENCE 0652/21:\nPaper 2 Multiple Choice (Extended) October/November 2025\n45 minutes\nYou must answer on the multiple choice answer sheet.\nYou will need: Multiple choice answer sheet\nSoft clean eraser\nSoft pencil (type B or HB is recommended)",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S04-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - INSTRUCTIONS",
-    "content": "0652 W25 QP 21 - INSTRUCTIONS:\n There are forty questions on this paper. Answer all questions.\n For each question there are four possible answers A, B, C and D. Choose the one you consider correct\nand record your choice in soft pencil on the multiple choice answer sheet.\n Follow the instructions on the multiple choice answer sheet.\n Write in soft pencil.\n Write your name, centre number and candidate number on the multiple choice answer sheet in the\nspaces provided unless this has been done for you.\n Do not use correction fluid.\n Do not write on any bar codes.\n You may use a calculator.",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S05-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - INFORMATION",
-    "content": "0652 W25 QP 21 - INFORMATION:\n The total mark for this paper is 40.\n Each correct answer will score one mark.\n Any rough working should be done on this question paper.\n The Periodic Table is printed in the question paper.",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S06-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 2",
-    "content": "0652 W25 QP 21 - PAGE 2:\n2",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S07-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - © UCLES 2025 0652/21/O/N/25",
-    "content": "0652 W25 QP 21 - © UCLES 2025 0652/21/O/N/25:\n1 Which statement explains why oxygen, O2, diffuses faster than ozone, O3?\nA Oxygen has a lower molecular mass than ozone.\nB Oxygen has a higher molecular mass than ozone.\nC The atoms in oxygen have a higher mass than the atoms in ozone.\nD The atoms in oxygen have a lower mass than the atoms in ozone.\n2 Mixture X contains two different substances, Y and Z.\nMixture X is separated by paper chromatography.\nThe resulting chromatogram is shown.\nsolvent front\nbaseline\nX\nZ\nY\nP\nQ\nR\nWhich formula shows how the Rf value of Z is calculated?\nA\nQ\nP B\nP\nQ C\nR\nQ D\nQ\nR\n3 Which method is used to separate two liquids that have different boiling points?\nA crystallisation\nB filtration\nC fractional distillation\nD paper chromatography",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S08-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 3",
-    "content": "0652 W25 QP 21 - PAGE 3:\n3\n© UCLES 2025 0652/21/O/N/25 [Turn over\n4 When sodium reacts with water, hydrogen gas is released and aqueous sodium hydroxide is\nformed.\nThe aqueous sodium hydroxide is a ......1...... .\nThe sodium hydroxide is the ......2...... and water is the ......3...... .\nWhich words complete gaps 1, 2 and 3?",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S09-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - 1 2 3",
-    "content": "0652 W25 QP 21 - 1 2 3:\nA solute solution solvent\nB solute solvent solution\nC solution solute solvent\nD solution solvent solute\n5 Which row describes the properties of an ionic compound?\nvolatility solubility\nin water\nelectrical conductivity\nwhen molten\nA non-volatile insoluble poor\nB non-volatile soluble good\nC volatile insoluble good\nD volatile soluble poor\n6 Alum is a compound that contains the ions K+",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S10-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - , SO4",
-    "content": "0652 W25 QP 21 - , SO4:\n2– and Al\n3+ only.\nWhat is the formula of alum?\nA KAlSO4 B KAl(SO4)2 C K2Al(SO4)2 D K2AlSO4\n7 What is the concentration of 2 g of sodium hydroxide, NaOH, dissolved in 100 cm3\nwater?\nA 0.005 mol /dm3\nB 0.05 mol /dm3\nC 0.5 mol / dm3\nD 2 mol / dm3",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S11-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 4",
-    "content": "0652 W25 QP 21 - PAGE 4:\n4",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S12-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - © UCLES 2025 0652/21/O/N/25",
-    "content": "0652 W25 QP 21 - © UCLES 2025 0652/21/O/N/25:\n8 Which row describes the movement of the cations and what happens to the cations at the\nelectrode during the electrolysis of molten lead bromide?\nmovement of cations at the electrode\nA towards anode cations gain electrons\nB towards anode cations lose electrons\nC towards cathode cations gain electrons\nD towards cathode cations lose electrons\n9 Four statements about the effect of activation energy and the effect of temperature on the rate of\nreaction are listed.\n1 At higher temperatures, more reactant particles possess the activation energy.\n2 A lower activation energy leads to a faster reaction.\n3 If the temperature is low and the activation energy is high, the reactant particles\ncollide more frequently.\n4 The activation energy for the reaction decreases with an increase in temperature.\nWhich statements are correct?\nA 1 and 2 B 1 and 3 C 2 and 4 D 3 and 4\n10 Aluminium reacts with iron(III) oxide as shown.\n2Al + Fe2O3  Al 2O3 + 2Fe\nWhich substance is reduced?\nA Al B Fe2O3 C Al 2O3 D Fe\n11 Which statement about acids is correct?\nA They are proton donors in aqueous solution.\nB They have pH values greater than 7.\nC They react with bases to produce a salt and hydrogen only.\nD They react with carbonates to produce a salt and water only.",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S13-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 5",
-    "content": "0652 W25 QP 21 - PAGE 5:\n5\n© UCLES 2025 0652/21/O/N/25 [Turn over\n12 The results of tests on an aqueous solution, X, are shown.\nreagent result\naqueous sodium hydroxide green precipitate\ninsoluble in excess\naqueous silver nitrate\nacidified with dilute nitric acid\nwhite precipitate\nWhat is X?\nA iron(II) chloride\nB iron(II) sulfate\nC iron(III) chloride\nD iron(III) sulfate\n13 Rubidium is below potassium and above caesium in Group I of the Periodic Table.\nWhich statement about these elements is correct?\nA Rubidium is more reactive than caesium.\nB Rubidium, potassium and caesium all form acidic oxides.\nC Rubidium has a lower melting point than caesium.\nD Rubidium has a greater density than potassium.\n14 Part of the Periodic Table is shown.\nThe letters are not the symbols of the elements.\nWhich element forms coloured compounds that can act as catalysts?\nAC\nD\nB",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S14-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 6",
-    "content": "0652 W25 QP 21 - PAGE 6:\n6",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S15-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - © UCLES 2025 0652/21/O/N/25",
-    "content": "0652 W25 QP 21 - © UCLES 2025 0652/21/O/N/25:\n15 Four different metals W, X, Y and Z are added to solutions of their metal nitrates.\nThe results are shown.\nsolution of metal nitrate\nmetal added W nitrate X nitrate Y nitrate Z nitrate\nW \u0016 \u001a \u001a key\nX \u001a \u001a \u001a \u0016= reacts\nY \u0016 \u0016 \u001a \u001a = no reaction",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S16-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Z \u0016 \u0016 \u0016",
-    "content": "0652 W25 QP 21 - Z \u0016 \u0016 \u0016:\nWhat is the order of reactivity?\nleast reactive  most reactive",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S17-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - D Z Y W X",
-    "content": "0652 W25 QP 21 - D Z Y W X:\n16 Which statement about the extraction of iron in the blast furnace is correct?\nA Bauxite is the ore of iron used.\nB Carbon dioxide breaks down to form carbon and oxygen.\nC Carbon dioxide reacts with iron oxide to form iron metal.\nD Carbon reacts with carbon dioxide to produce the reducing agent.\n17 Nitrogen oxides are produced in a car engine.\nWhich type of reaction catalytically removes nitrogen oxides from the exhaust fumes?\nA combustion\nB oxidation\nC reduction\nD thermal decomposition",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S18-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 7",
-    "content": "0652 W25 QP 21 - PAGE 7:\n7\n© UCLES 2025 0652/21/O/N/25 [Turn over\n18 Which reaction takes place when calcium oxide is formed from calcium carbonate?\nA addition\nB combustion\nC oxidation\nD thermal decomposition\n19 The structures of three hydrocarbons are shown.\nHC\nH\nH\nC\nH\n1\nH\nH C\nH\nH\nC\nH\n2\nH\nHC\nH\nH\nC H\nH\n3\nC\nH\nWhich hydrocarbons decolourise aqueous bromine?\nA 1 and 2 B 1 only C 2 and 3 D 2 only\n20 Which row describes the starting material and conditions used to make ethanol?\nstarting material conditions\nA ethene high temperature, low pressure and a catalyst\nB ethene yeast and low temperature\nC glucose high temperature, low pressure and a catalyst\nD glucose yeast and low temperature",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S19-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 8",
-    "content": "0652 W25 QP 21 - PAGE 8:\n8",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S20-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - © UCLES 2025 0652/21/O/N/25",
-    "content": "0652 W25 QP 21 - © UCLES 2025 0652/21/O/N/25:\n21 A car moves in a straight line.\nThe graph shows how the distance moved by the car varies with time.\nTwo distances P and Q, and two times X and Y are labelled.\n0\n0\ndistance\nQ\nP\nXY\ntime\nWhich expression gives the average speed of the car for the complete journey?\nA distance P  time X\nB\nX\nP\ntime\ndistance\nC distance Q  time Y\nD\nY\nQ\ntime\ndistance\n22 A plastic cube of side 2.0 cm is placed on a balance. The mass of the cube is shown on the\nbalance.\n7.2 g\n2.0 cm\nbalance\nWhat is the density of the plastic?\nA 0.90 g / cm3 B 1.2 g / cm3 C 1.8 g / cm3 D 3.6 g / cm3",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S21-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 9",
-    "content": "0652 W25 QP 21 - PAGE 9:\n9\n© UCLES 2025 0652/21/O/N/25 [Turn over\n23 The diagram shows three people standing on the ground.\nThe weight W of each person and the area A of contact with the ground for each person is\nshown.",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S22-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - W = 500N",
-    "content": "0652 W25 QP 21 - W = 500N:\nA = 300 cm2\n1",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S23-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - W = 600N",
-    "content": "0652 W25 QP 21 - W = 600N:\nA = 300cm2\n2",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S24-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - W = 650N",
-    "content": "0652 W25 QP 21 - W = 650N:\nA = 280 cm2\n3\nEach person exerts a pressure on the ground.\nWhat is the order of the pressures, from greatest pressure to smallest pressure?",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S25-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - A 1  2  3 B 2  1  3 C 3  1  2 D 3  2  1",
-    "content": "0652 W25 QP 21 - A 1  2  3 B 2  1  3 C 3  1  2 D 3  2  1:\n24 A student uses a newton meter to pull a box along a rough horizontal floor with a constant force.\nShe uses the reading on the newton meter to calculate the work done.\nWhich other quantity does she need to measure?\nA the distance moved by the box\nB the final speed of the box\nC the mass of the box\nD the time taken for the box to move",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S26-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 10",
-    "content": "0652 W25 QP 21 - PAGE 10:\n10",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S27-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - © UCLES 2025 0652/21/O/N/25",
-    "content": "0652 W25 QP 21 - © UCLES 2025 0652/21/O/N/25:\n25 The diagram shows a child of mass 40 kg on a swing.\nAt his highest position he is 2.0 m above his lowest position.\n2.0 m\nIn this highest position, the child has stopped moving upwards.\nHe starts to move downwards and his speed increases.\nThe gravitational field strength g is 10 N/ kg. Air resistance is negligible.\nWhat is the kinetic energy of the child when he reaches his lowest position?",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S28-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - A 20 J B 80 J C 200 J D 800 J",
-    "content": "0652 W25 QP 21 - A 20 J B 80 J C 200 J D 800 J:\n26 A fixed mass of gas is cooled at constant pressure.\nHow do the average speed of the particles and the volume of the gas change?\naverage speed\nof particles volume of gas\nA decreases decreases\nB decreases increases\nC increases decreases\nD increases increases",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S29-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 11",
-    "content": "0652 W25 QP 21 - PAGE 11:\n11\n© UCLES 2025 0652/21/O/N/25 [Turn over\n27 The diagram shows a liquid-in-glass thermometer.",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S30-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - –10 0 10 20 30 40 50 60 70 80 90 100 110 °C",
-    "content": "0652 W25 QP 21 - –10 0 10 20 30 40 50 60 70 80 90 100 110 °C:\ntube\nWhich change to the tube makes the thermometer more sensitive?\nA make the tube longer\nB make the tube shorter\nC make the tube thinner\nD make the tube wider\n28 A beaker of water in a laboratory is heated from 0 °C to 100 °C.\nWhich row states the temperatures at which evaporation and boiling of water occur?\nevaporation boiling\nA at 100 °C only at 100 °C only\nB at 100 °C only between 0 °C and 100 °C\nC between 0 °C and 100 °C at 100 °C only\nD between 0 °C and 100 °C between 0 °C and 100 °C\n29 The temperature of a small volume of air changes which causes this air to move downwards in a\nconvection current.\nWhich statement explains one process that causes this air to move downwards?\nA The air temperature decreases and the density of the air decreases.\nB The air temperature decreases and the density of the air increases.\nC The air temperature increases and the density of the air decreases.\nD The air temperature increases and the density of the air increases.",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S31-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 12",
-    "content": "0652 W25 QP 21 - PAGE 12:\n12",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S32-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - © UCLES 2025 0652/21/O/N/25",
-    "content": "0652 W25 QP 21 - © UCLES 2025 0652/21/O/N/25:\n30 A ship is at rest on the sea. A wave passes the ship, which causes the ship to move up and\ndown.\nThe ship moves from its lowest point to its highest point and then back to its lowest point three\ntimes in one minute. It takes 8.0 s for one wave crest to travel the length of the ship.\nThe ship has a length of 40 m.\nWhat is the wavelength of the wave passing the ship?\nA 13 m B 15 m C 100 m D 110 m\n31 A ray of light passes from air into a transparent material, as shown.\nair\nnormal\ntransparent\nmaterial\n25°\n40°\nWhat is the refractive index of the transparent material?",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S33-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 13",
-    "content": "0652 W25 QP 21 - PAGE 13:\n13\n© UCLES 2025 0652/21/O/N/25 [Turn over\n32 A thin converging lens forms a real image of an object. The image is 12.4 cm from the lens and\n3.1 cm from the nearer principal focus, as shown.\n3.1 cm\nlens\nprincipal focus principal focus\nimage\n12.4 cm\nWhat is the focal length of the lens?\nA 3.1 cm B 9.3 cm C 12.4 cm D 15.5 cm\n33 In a vacuum, how do the speed of radio waves and the speed of X-rays compare with the speed\nof light c?\nspeed of radio waves speed of X-rays\nA equal to c equal to c\nB equal to c greater than c\nC greater than c less than c\nD less than c greater than c\n34 An unmagnetised soft-iron bar is kept close to a strong permanent magnet. A temporary N pole is\ninduced at the left-hand end of the soft-iron bar.\nN S\nmagnet soft-iron bar\nThe soft-iron bar is continually tapped with a hammer.\nWhat happens to the induced N pole at the left-hand end of the soft-iron bar?\nA It gradually becomes a permanent N pole.\nB It gradually becomes a permanent S pole.\nC It gradually disappears.\nD It stays as a temporary N pole.",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S34-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 14",
-    "content": "0652 W25 QP 21 - PAGE 14:\n14",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S35-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - © UCLES 2025 0652/21/O/N/25",
-    "content": "0652 W25 QP 21 - © UCLES 2025 0652/21/O/N/25:\n35 Two resistors with resistances 4.0 and 5.0 are connected in parallel.\nThe combined resistance of the combination is R.\nWhich statement about R is correct?\nA R is less than 4.0.\nB R is equal to 4.5.\nC R is equal to 9.0.\nD R is greater than 9.0.\n36 There is a current of 4.0A in an electric heater.\nThe heater transfers 24 kJ of energy in a time of 6.0 min.\nWhat is the potential difference (p.d.) across the heater?",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S36-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - A 1.0V B 17V C 36V D 270V",
-    "content": "0652 W25 QP 21 - A 1.0V B 17V C 36V D 270V:\n37 The diagram shows a transformer.\ninput\n(primary coil)\noutput\n(secondary coil)\nsoft-iron core\nWhy is there an induced electromotive force (e.m.f.) across the secondary coil?\nA There is a changing magnetic field in the soft-iron core.\nB There is an alternating current in the soft-iron core.\nC There is a direct current in the primary coil.\nD There is a steady magnetic field in the soft-iron core.",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S37-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 15",
-    "content": "0652 W25 QP 21 - PAGE 15:\n15\n© UCLES 2025 0652/21/O/N/25 [Turn over\n38 A beam contains two types of emission, X and Y, from a radioactive source.\nThe diagram shows the beam passing through the electric field between two charged plates.\nEmission X is deflected and emission Y is not deflected.\n++++++\n––––––\nX\nY emissions\nX and Y\nWhat are the emissions X and Y?\nX Y\nA alpha-particles gamma-rays\nB beta-particles gamma-rays\nC gamma-rays alpha-particles\nD gamma-rays beta-particles\n39 A radioactive nucleus emits a beta-particle.\nWhat is the effect of this emission on the number of protons and the number of neutrons in the\nnucleus?\nnumber of protons number of neutrons\nA decreases by 2 decreases by 2\nB decreases by 2 does not change\nC increases by 1 decreases by 1\nD increases by 1 does not change",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S38-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 16",
-    "content": "0652 W25 QP 21 - PAGE 16:\n16",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S39-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - © UCLES 2025 0652/21/O/N/25",
-    "content": "0652 W25 QP 21 - © UCLES 2025 0652/21/O/N/25:\n40 The graph shows the decay curve for a radioactive isotope.",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S40-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - 1000",
-    "content": "0652 W25 QP 21 - 1000:\n500\n0\ntime/days\nrate of emission\nemissions /minute\nWhat is the half-life of this isotope?\nA 1.0 day B 1.5 days C 2.0 days D 2.5 days",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S41-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 17",
-    "content": "0652 W25 QP 21 - PAGE 17:\n17",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S42-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 18",
-    "content": "0652 W25 QP 21 - PAGE 18:\n18",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S43-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 19",
-    "content": "0652 W25 QP 21 - PAGE 19:\n19\nPermission to reproduce items where third-party owned material protected by copyright is included has been sought and cleared where possible. Every\nreasonable effort has been made by the publisher (UCLES) to trace copyright holders, but if any items requiring clearance have unwittingly been included, the\npublisher will be pleased to make amends at the earliest possible opportunity.\nTo avoid the issue of disclosure of answer-related information to candidates, all copyright acknowledgements are reproduced online in the Cambridge\nAssessment International Education Copyright Acknowledgements Booklet. This is produced for each series of examinations and is freely available to download\nat www.cambridgeinternational.org after the live examination series.\nCambridge Assessment International Education is part of Cambridge Assessment. Cambridge Assessment is the brand name of the University of Cambridge\nLocal Examinations Syndicate (UCLES), which is a department of the University of Cambridge.",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S44-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - Page 20",
-    "content": "0652 W25 QP 21 - PAGE 20:\n20\n© UCLES 2025 0652/21/O/N/25 Group The Periodic Table of Elements\n1\nH\nhydrogen\n1\n2\nHe\nhelium\n4",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S45-001",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - I II III IV V VI VII VIII (Part 1)",
-    "content": "0652 W25 QP 21 - I II III IV V VI VII VIII:\n3\nLi\nlithium\n7\n4\nBe\nberyllium\n9\natomic number\natomic symbol\nKey\nname\nrelative atomic mass\n11\nNa\nsodium\n23\n12\nMg\nmagnesium\n24\n19\nK\npotassium\n39\n20\nCa\ncalcium\n40\n37\nRb\nrubidium\n85\n38\nSr\nstrontium\n88\n55\nCs\ncaesium\n133\n56\nBa\nbarium\n137\n87\nFr\nfrancium\n–\n88\nRa\nradium\n–\n5\nB\nboron\n11\n13\nAl\naluminium\n27\n31\nGa\ngallium\n70\n49\nIn\nindium\n115\n81\nTl\nthallium\n204\n113\nNh\nnihonium\n–\n6\nC\ncarbon\n12\n14\nSi\nsilicon\n28\n32\nGe\ngermanium\n73\n50\nSn\ntin\n119\n82\nPb\nlead\n207\n22\nTi\ntitanium\n48\n40\nZr\nzirconium\n91\n72\nHf\nhafnium\n178\n104\nRf\nrutherfordium\n–\n23\nV\nvanadium\n51\n41\nNb\nniobium\n93\n73\nTa\ntantalum\n181\n105\nDb\ndubnium\n–\n24\nCr\nchromium\n52\n42\nMo\nmolybdenum\n96\n74\nW\ntungsten\n184\n106\nSg\nseaborgium\n–\n25\nMn\nmanganese\n55\n43\nTc\ntechnetium\n–\n75\nRe\nrhenium\n186\n107\nBh\nbohrium\n–\n26\nFe\niron\n56\n44\nRu\nruthenium\n101\n76\nOs\nosmium\n190\n108\nHs\nhassium\n–\n27\nCo\ncobalt\n59\n45\nRh\nrhodium\n103\n77\nIr\niridium\n192\n109\nMt\nmeitnerium\n–\n28\nNi\nnickel\n59\n46\nPd\npalladium\n106\n78\nPt\nplatinum\n195\n110\nDs\ndarmstadtium\n–\n29\nCu\ncopper\n64\n47\nAg\nsilver\n108\n79\nAu\ngold\n197\n111\nRg\nroentgenium\n–\n30\nZn\nzinc\n65\n48\nCd\ncadmium\n112\n80\nHg\nmercury\n201\n112\nCn\ncopernicium\n–\n114\nFl\nflerovium\n–\n116\nLv\nlivermorium\n–\n7\nN\nnitrogen\n14\n15\nP\nphosphorus\n31\n33\nAs\narsenic\n75\n51\nSb\nantimony\n122\n83\nBi\nbismuth\n209\n115\nMc\nmoscovium\n–\n8\nO\noxygen\n16\n16\nS\nsulfur\n32\n34\nSe\nselenium\n79\n52\nTe\ntellurium\n128\n84\nPo\npolonium\n–\n9\nF\nfluorine\n19\n17\nCl\nchlorine\n35.5\n35\nBr\nbromine\n80\n53\nI\niodine\n127\n85\nAt\nastatine\n–\n117\nTs\ntennessine\n–\n10\nNe\nneon\n20\n18\nAr\nargon\n40\n36\nKr\nkrypton\n84\n54\nXe\nxenon\n131\n86\nRn\nradon\n–\n118\nOg\noganesson\n–\n21\nSc\nscandium\n45\n39\nY\nyttrium\n89\n57–71\nlanthanoids\n89–103\nactinoids\n57\nLa\nlanthanum\n139\n89\nAc\nlanthanoids\nactinoids\nThe volume of one mole of any gas is 24dm3 at room temperature and pressure (r.t.p.).\nactinium\n–\n58\nCe\ncerium\n140\n90\nTh\nthorium\n232\n59\nPr\npraseodymium\n141\n91\nPa\nprotactinium\n231\n60\nNd\nneodymium\n144\n92\nU\nuranium\n238\n61\nPm\npromethium\n–\n93\nNp",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
-  },
-  {
-    "id": "EDU-PDF-0652-W25-QP-21-S45-002",
-    "title": "0652 W25 Qp 21: 0652 W25 Qp 21 - I II III IV V VI VII VIII (Part 2)",
-    "content": "0652 W25 QP 21 - I II III IV V VI VII VIII:\nNp\nneptunium\n–\n62\nSm\nsamarium\n150\n94\nPu\nplutonium\n–\n63\nEu\neuropium\n152\n95\nAm\namericium\n–\n64\nGd\ngadolinium\n157\n96\nCm\ncurium\n–\n65\nTb\nterbium\n159\n97\nBk\nberkelium\n–\n66\nDy\ndysprosium\n163\n98\nCf\ncalifornium\n–\n67\nHo\nholmium\n165\n99\nEs\neinsteinium\n–\n68\nEr\nerbium\n167\n100\nFm\nfermium\n–\n69\nTm\nthulium\n169\n101\nMd\nmendelevium\n–\n70\nYb\nytterbium\n173\n102\nNo\nnobelium\n–\n71\nLu\nlutetium\n175\n103\nLr\nlawrencium\n–",
-    "campus": "all",
-    "clearance": "staff",
-    "category": "examination",
-    "classification": "CONFIDENTIAL - EXAMINATION",
-    "purview_label": "Confidential - Examination",
-    "allowed_roles": [
-      "staff",
-      "admin"
-    ],
-    "source_file": "0652_w25_qp_21.pdf"
   },
   {
     "id": "EDU-PDF-TRIDENT-AI-STRATEGIC-S01-001",
@@ -1722,6 +1246,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -1739,6 +1264,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -1756,6 +1282,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -1773,6 +1300,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -1790,6 +1318,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -1807,6 +1336,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -1824,6 +1354,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -1841,6 +1372,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -1858,6 +1390,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -1875,6 +1408,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -1892,6 +1426,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -1909,6 +1444,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -1926,6 +1462,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -1943,6 +1480,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -1960,6 +1498,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -1977,6 +1516,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -1994,6 +1534,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2011,6 +1552,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2028,6 +1570,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2045,6 +1588,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2062,6 +1606,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2079,6 +1624,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2096,6 +1642,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2113,6 +1660,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2130,6 +1678,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2147,6 +1696,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2164,6 +1714,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2181,6 +1732,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2198,6 +1750,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2215,6 +1768,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2232,6 +1786,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2249,6 +1804,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2266,6 +1822,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2283,6 +1840,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2300,6 +1858,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2317,6 +1876,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2334,6 +1894,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2351,6 +1912,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2368,6 +1930,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2385,6 +1948,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2402,6 +1966,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2419,6 +1984,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2436,6 +2002,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2453,6 +2020,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2470,6 +2038,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2487,6 +2056,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2504,6 +2074,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2521,6 +2092,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2538,6 +2110,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2555,6 +2128,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2572,6 +2146,7 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
   },
   {
@@ -2589,7 +2164,98 @@
       "counselor",
       "admin"
     ],
+    "target_shard": "public",
     "source_file": "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf"
+  },
+  {
+    "id": "EDU-FW-EDUCORE-DOC-00-MASTE-S01-001",
+    "title": "Educore Doc 00 Master Launch Directory V3 0: EDUCORE SERVICES AI GOVERNANCE FRAMEWORK (Part 1)",
+    "content": "EDUCORE SERVICES AI GOVERNANCE FRAMEWORK:\nDOC-00: Master Launch Directory & Central Navigation Hub (v3.0)\n1. Executive Framework Architecture & 3-Tier Access Structure\nTo maximize operational efficiency, reference speed, and daily compliance across all Educore Services units (including Central Administration, Sentinel Kabitaka, Trident College, Frontier, and Educore Teacher Academies), the governance suite is structured into a 3-Tier Access Hierarchy. This ensures that staff can find their operational boundaries in under 10 seconds without wading through complex regulatory clauses or project management roadmaps.\n2. Foundational Principles & Core Guiding Philosophies\nThe entire Educore AI Governance Framework is anchored on three non-negotiable core principles established across our strategic plans:\n1. The North Star Principle (Trident Model): Artificial Intelligence is deployed to augment human capability, professional judgment, and educator intuition—never to replace essential human relationships, teacher-student connections, or executive accountability.\n2. Enable and Govern Philosophy: Educore maintains an active 'Enable and Govern' operational strategy. Central administration establishes firm security boundaries, identity controls, and compliance guardrails, while empowering individual campuses and departments to innovate within set parameters.",
+    "campus": "all",
+    "clearance": "admin",
+    "category": "governance",
+    "classification": "CONFIDENTIAL - ADMIN / FINANCE",
+    "purview_label": "Confidential - Admin / Finance",
+    "allowed_roles": [
+      "admin"
+    ],
+    "target_shard": "admin",
+    "source_file": "educore-doc-00-master-launch-directory-v3-0.docx"
+  },
+  {
+    "id": "EDU-FW-EDUCORE-DOC-00-MASTE-S01-002",
+    "title": "Educore Doc 00 Master Launch Directory V3 0: EDUCORE SERVICES AI GOVERNANCE FRAMEWORK (Part 2)",
+    "content": "EDUCORE SERVICES AI GOVERNANCE FRAMEWORK:\n3. Rigorous Pre-Pilot Screening: All proposed AI applications, tools, and workflows must pass the 5-dimension LTCES filter (Learning, Teachers, Community, Ethical, Sustainable) and the 7-Question Business Case Test prior to pilot approval or deployment.\n3. Master Version Control & Inter-Document Cross-Reference Matrix\nEvery document in the Hub & Spokes suite operates under active version control. When referencing specific rules across the suite, use the cross-reference grid below:\n4. Incident Intake, Support Routing & Governance SLA\nAll Educore staff, faculty, technical leads, and students have a mandatory duty to report suspected security breaches, data leaks, algorithmic hallucinations, or policy violations to the central intake channel:\nCentral Governance Email: ai-governance@educore.ac.zm\nInitial Acknowledgment SLA: Mandatory initial response and logging within 24 hours of submission.\nResolution SLA: Full investigation, Steering Committee review, and corrective action logging under ISO 42001 Clause 10.1 within 5 business days.",
+    "campus": "all",
+    "clearance": "admin",
+    "category": "governance",
+    "classification": "CONFIDENTIAL - ADMIN / FINANCE",
+    "purview_label": "Confidential - Admin / Finance",
+    "allowed_roles": [
+      "admin"
+    ],
+    "target_shard": "admin",
+    "source_file": "educore-doc-00-master-launch-directory-v3-0.docx"
+  },
+  {
+    "id": "EDU-FW-EDUCORE-DOC-00-MASTE-S02-001",
+    "title": "Educore Doc 00 Master Launch Directory V3 0: Educore Doc 00 Master Launch Directory V3 0 - Table 1",
+    "content": "EDUCORE DOC 00 MASTER LAUNCH DIRECTORY V3 0 - TABLE 1:\nTABLE DATA:\nDOCUMENT CONTROL & AT-A-GLANCE NAVIGATION • Target Audience: All Educore Employees, Department Leads, Campus Principals, IT Leads, Educators, and Auditors. • Framework Model: 3-Tier Access Hierarchy (Hub & 4 Operational Spokes Model). • Primary Objective: Provide single-point directory navigation, inter-document cross-referencing, version control, and emergency incident routing. • Central Intake Channel: ai-governance@educore.ac.zm (24-Hour Acknowledgment SLA | 5-Day Resolution SLA). • Governing Body: Educore Cross-Functional AI Steering Committee & Executive Directorate. • Statutory Alignment: Zambian Data Protection Act (No. 3 of 2021) | ISO/IEC 42001:2023 AIMS | EU AI Act | NIST AI RMF.",
+    "campus": "all",
+    "clearance": "admin",
+    "category": "governance",
+    "classification": "CONFIDENTIAL - ADMIN / FINANCE",
+    "purview_label": "Confidential - Admin / Finance",
+    "allowed_roles": [
+      "admin"
+    ],
+    "target_shard": "admin",
+    "source_file": "educore-doc-00-master-launch-directory-v3-0.docx"
+  },
+  {
+    "id": "EDU-FW-EDUCORE-DOC-00-MASTE-S03-001",
+    "title": "Educore Doc 00 Master Launch Directory V3 0: Educore Doc 00 Master Launch Directory V3 0 - Table 2",
+    "content": "EDUCORE DOC 00 MASTER LAUNCH DIRECTORY V3 0 - TABLE 2:\nTABLE DATA:\nTier Level & Focus | Document ID & Filename | Target Audience | Primary Operational Function\nCENTRAL HUB Navigation | DOC-00 educore-doc-00-master-launch-directory-v3-0.docx | All Staff, Leads, Auditors | Central reception node, document directory, cross-reference matrix, emergency contact SLA.\nTIER 1 Daily Rules | DOC-01 educore-doc-01-organizational-governance-policy-v3-0.docx | ALL Staff, Faculty, Students | Daily Dos & Don'ts, 3-Tier Software Registry, Departmental Guardrails, LTCES Filter, 4 Assessment Modes.\nTIER 2 Execution & Audit | DOC-02 educore-doc-02-implementation-action-plan-v3-0.docx | Steering Comm, Dept Leads, PMs | 180-Day Execution Schedule, Day 31 Enterprise Tenant Cutover, RACI Matrix, 3-Year Horizon (2026–2029).\nTIER 2 Discovery & Assets | DOC-03 educore-doc-03-pre-rollout-discovery-survey-v3-0.docx | IT Leads, HODs, Compliance Officers | 3-Vector Pre-Rollout Discovery (CASB, Purview PII Scans), 10-Q Survey, ISO 42001 Asset Register Schema.\nTIER 3 Architecture & Standards | DOC-04 educore-doc-04-master-implementation-handbook-v3-0.docx | IT DevOps, Legal, Auditors, Leadership | Master Operating Authority, Microsoft Cloud & Purview DLP Topology, Agent Autonomy Spectrum, 38 ISO 42001 Controls.",
+    "campus": "all",
+    "clearance": "admin",
+    "category": "governance",
+    "classification": "CONFIDENTIAL - ADMIN / FINANCE",
+    "purview_label": "Confidential - Admin / Finance",
+    "allowed_roles": [
+      "admin"
+    ],
+    "target_shard": "admin",
+    "source_file": "educore-doc-00-master-launch-directory-v3-0.docx"
+  },
+  {
+    "id": "EDU-FW-EDUCORE-DOC-00-MASTE-S04-001",
+    "title": "Educore Doc 00 Master Launch Directory V3 0: Educore Doc 00 Master Launch Directory V3 0 - Table 3 (Part 1)",
+    "content": "EDUCORE DOC 00 MASTER LAUNCH DIRECTORY V3 0 - TABLE 3:\nTABLE DATA:\nFunctional Requirement / Topic | Primary Governing Document | Specific Reference Section | Key Operational Controls\nApproved AI Tools & Software Registry | DOC-01 Governance Policy | Section 2.0 (Page 2) | Tier 1 Enterprise M365/Azure, Tier 2 Conditional SSO, Tier 3 Prohibited Public LLMs.\nDepartmental Dos & Don'ts & Guardrails | DOC-01 Governance Policy | Section 3.1 – 3.8 | Procedural non-software guardrails for Finance, HR, IT, Procurement, Legal, Faculty, Students, Facilities.\nLTCES Pre-Pilot Screening Rubric | DOC-01 Policy / DOC-04 Handbook | DOC-01 Sec 1.2 / DOC-04 Sec 4.1 | 5-dimension evaluation filter (Learning, Teachers, Community, Ethical, Sustainable).\n4-Level Classroom Assessment Modes | DOC-01 Policy / DOC-04 Handbook | DOC-01 Sec 3.6 / DOC-04 Sec 5.2 | Level 1 Prohibited, Level 2 Limited, Level 3 Supported, Level 4 Integrated assignment labeling.\n180-Day Action Plan & Day 31 Switch | DOC-02 Action Plan | Section 2.0 & Section 3.1 | Phase 1 Pre-Rollout Discovery (Days 1–30), Day 31 Enterprise M365/Azure Tenant Cutover.\n3-Year Strategic Growth Horizon | DOC-02 Action Plan | Section 4.0 (2026–2029) | 4-Phase roadmap: Foundation, Controlled Pilots, Curriculum Integration, AI-Enabled Ecosystem.\nPre-Rollout Audit & PII Scans | DOC-03 Discovery Survey | Section 1.0 – 3.0 | CASB/DNS firewall scans, Purview SharePoint PII regex scans, 10-Question Survey, Asset Register.",
+    "campus": "all",
+    "clearance": "admin",
+    "category": "governance",
+    "classification": "CONFIDENTIAL - ADMIN / FINANCE",
+    "purview_label": "Confidential - Admin / Finance",
+    "allowed_roles": [
+      "admin"
+    ],
+    "target_shard": "admin",
+    "source_file": "educore-doc-00-master-launch-directory-v3-0.docx"
+  },
+  {
+    "id": "EDU-FW-EDUCORE-DOC-00-MASTE-S04-002",
+    "title": "Educore Doc 00 Master Launch Directory V3 0: Educore Doc 00 Master Launch Directory V3 0 - Table 3 (Part 2)",
+    "content": "EDUCORE DOC 00 MASTER LAUNCH DIRECTORY V3 0 - TABLE 3:\nPre-Rollout Audit & PII Scans | DOC-03 Discovery Survey | Section 1.0 – 3.0 | CASB/DNS firewall scans, Purview SharePoint PII regex scans, 10-Question Survey, Asset Register.\nMicrosoft Cloud Architecture & DLP | DOC-04 Master Handbook | Section 2.0 & 3.0 | Entra ID SSO, Azure RAG topology, Purview DLP containers (Confidential, Restricted, Internal, Public).\nAgent Autonomy Levels (Read to Act) | DOC-04 Master Handbook | Section 4.2 | 4-Stage Agent Autonomy Spectrum (Level 1 Read -> Level 4 Act) and AI Agent Register rules.\nISO 42001 Controls & Statutory Red Lines | DOC-04 Master Handbook | Section 6.0 & 7.0 | 38 Annex A AIMS controls, 6-Step AIIA SOP, Zambian Act No. 3 DPIA, EU AI Act Article 5 bans.",
+    "campus": "all",
+    "clearance": "admin",
+    "category": "governance",
+    "classification": "CONFIDENTIAL - ADMIN / FINANCE",
+    "purview_label": "Confidential - Admin / Finance",
+    "allowed_roles": [
+      "admin"
+    ],
+    "target_shard": "admin",
+    "source_file": "educore-doc-00-master-launch-directory-v3-0.docx"
   },
   {
     "id": "EDU-FW-PUBLIC-S01-001",
@@ -2608,5 +2274,175 @@
     ],
     "target_shard": "public",
     "source_file": "public.docx"
+  },
+  {
+    "id": "EDU-FW-EDUCORE-AI-FRAMEWORK-S01-001",
+    "title": "Educore Ai Framework Implementation Handbook V2 0: Educore Ai Framework Implementation Handbook V2 0 (Part 1)",
+    "content": "EDUCORE AI FRAMEWORK IMPLEMENTATION HANDBOOK V2 0:\nEducore AI Framework Implementation Handbook\nMaster Operating Authority, AIMS Architecture, LTCES Decision Filters & Technical Topology | Version 2.0\n1. Central Governance Charter & Modular Hub & Spokes Model\nThis Handbook serves as the master operating authority for the Educore AI Governance Framework. Operating under a modular Hub and Spokes architecture, central governance sets overarching strategy, data protection boundaries, security standards, and AIMS compliance, while individual spokes (Policy, Action Plan, Discovery Audit, Cognitive Bypass Checklist) govern domain-specific execution across Sentinel Kabitaka, Trident College, Frontier, and the Educore Teacher Academies.\n2. Microsoft Cloud, Identity & Purview Security Topology\nEducore's technical architecture leverages a Microsoft-first cloud stack: Microsoft Entra ID (Azure AD) Single Sign-On (SSO) for identity and role-based access control (RBAC); Microsoft Purview Information Protection for data loss prevention (DLP); Azure OpenAI Services for enterprise model endpoints; and Azure AI Search for secure, SharePoint-indexed Retrieval-Augmented Generation (RAG). All enterprise tenants operate under strict zero data retention contracts.\n3. Progressive Agent Autonomy Spectrum & AI Agent Register\nTo manage AI agents effectively, Educore establishes an explicit 4-level Progressive Agent Autonomy Spectrum:\nLevel 1 (Read Only): Agent queries documents and synthesizes summaries; zero system modification rights.",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "governance",
+    "classification": "INTERNAL - AIMS HANDBOOK",
+    "purview_label": "Internal - Educational",
+    "allowed_roles": [
+      "staff",
+      "counselor",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "00_HUB_MASTER/educore-ai-framework-implementation-handbook-v2-0.docx"
+  },
+  {
+    "id": "EDU-FW-EDUCORE-AI-FRAMEWORK-S01-002",
+    "title": "Educore Ai Framework Implementation Handbook V2 0: Educore Ai Framework Implementation Handbook V2 0 (Part 2)",
+    "content": "EDUCORE AI FRAMEWORK IMPLEMENTATION HANDBOOK V2 0:\nLevel 1 (Read Only): Agent queries documents and synthesizes summaries; zero system modification rights.\nLevel 2 (Recommend): Agent generates recommendations or draft options for human approval; zero direct execution.\nLevel 3 (Assist): Agent executes pre-approved sub-tasks under direct human supervision.\nLevel 4 (Act - Autonomous): Agent executes system actions independently. Restricted to low-risk administrative workflows following Steering Committee sign-off.\nAll deployed AI agents must be logged in the Central AI Agent Register, detailing agent name, business owner, technical scope, autonomy level, and risk tier.\n4. ISO/IEC 42001:2023 AIMS Control Framework & 6-Step AIIA SOP\nEducore aligns its Artificial Intelligence Management System (AIMS) with ISO/IEC 42001:2023 across 38 Annex A controls. Before any high-risk AI tool is deployed, it must complete the 6-Step AI Impact Assessment (AIIA) Workflow: (1) System Scoping & Intent; (2) Data & Privacy Impact Analysis; (3) Algorithmic Risk Identification; (4) Non-Software Guardrail Mapping; (5) Stakeholder Impact Review; and (6) Steering Committee Authorization.\n5. Trident LTCES Evaluation & 7-Question Business Case Review\nEvery proposed AI tool must pass the Trident LTCES Framework (Learning Purpose, Teacher Empowerment, Community Alignment, Ethical Safety, Sustainability) and the 7-Question Business Case Test to verify ROI, technical feasibility, and alignment before entering pilot testing.\n6. Statutory Alignment & Regulatory Frameworks",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "governance",
+    "classification": "INTERNAL - AIMS HANDBOOK",
+    "purview_label": "Internal - Educational",
+    "allowed_roles": [
+      "staff",
+      "counselor",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "00_HUB_MASTER/educore-ai-framework-implementation-handbook-v2-0.docx"
+  },
+  {
+    "id": "EDU-FW-EDUCORE-AI-FRAMEWORK-S01-003",
+    "title": "Educore Ai Framework Implementation Handbook V2 0: Educore Ai Framework Implementation Handbook V2 0 (Part 3)",
+    "content": "EDUCORE AI FRAMEWORK IMPLEMENTATION HANDBOOK V2 0:\n6. Statutory Alignment & Regulatory Frameworks\nThe framework satisfies international and national legal standards, including the Zambian Data Protection Act (No. 3 of 2021) for statutory data controller obligations, EU AI Act risk categorizations (Annex III high-risk compliance and Article 5 prohibited red lines), OECD AI Principles, NIST AI RMF, and the Council of Europe Framework Convention on Artificial Intelligence.",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "governance",
+    "classification": "INTERNAL - AIMS HANDBOOK",
+    "purview_label": "Internal - Educational",
+    "allowed_roles": [
+      "staff",
+      "counselor",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "00_HUB_MASTER/educore-ai-framework-implementation-handbook-v2-0.docx"
+  },
+  {
+    "id": "EDU-FW-EDUCORE-DOC-03-PRE-R-S01-001",
+    "title": "Educore Doc 03 Pre Rollout Discovery Survey V3 0: EDUCORE SERVICES PRE-ROLLOUT AI AUDIT & DISCOVERY SURVEY (Part 1)",
+    "content": "EDUCORE SERVICES PRE-ROLLOUT AI AUDIT & DISCOVERY SURVEY:\nDOC-03: Technical Discovery, 10-Question Survey & ISO 42001 Asset Schema (v3.0)\n1. 3-Vector Pre-Rollout Discovery Audit Methodology\nTo establish an accurate pre-policy risk baseline during Phase 1 (Days 1–30), IT Infrastructure and Compliance leads execute a 3-vector discovery methodology:\nVector 1: Technical Network & CASB Firewall Log Scans — IT security analyzes 90 days of DNS logs, CASB traffic, and proxy gateway data across all campus networks to identify active connections to public LLMs (OpenAI, Anthropic, Midjourney) and unauthorized EdTech platforms.\nVector 2: Purview SharePoint PII Content Scans — Automated Purview crawlers scan SharePoint Online and OneDrive libraries for unencrypted sensitive data, matching Zambian National Registration Card (NRC) regex patterns (\\b\\d{6}/\\d{2}/\\d{1}\\b), credit card strings, payroll ledgers, and student health files.\nVector 3: SaaS Expense & Financial Procurement Log Audits — Finance inspects corporate credit card logs, departmental expense claims, and IT procurement records for hidden SaaS subscriptions containing embedded AI capabilities.\n2. Tailored 10-Question Departmental Survey Instrument\nThe following survey is deployed across all administrative department leads, campus principals, HODs, and technical staff during Phase 1:\nQ1: Current Tool Usage: Which AI tools, browser extensions, or platforms (e.g., ChatGPT, Grammarly, Canva, Copilot) do you or your team currently use for work or teaching tasks?",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "audit",
+    "classification": "INTERNAL - AUDIT INSTRUMENT",
+    "purview_label": "Internal - Educational",
+    "allowed_roles": [
+      "staff",
+      "counselor",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "02_SPOKES_AUDIT/educore-doc-03-pre-rollout-discovery-survey-v3-0.docx"
+  },
+  {
+    "id": "EDU-FW-EDUCORE-DOC-03-PRE-R-S01-002",
+    "title": "Educore Doc 03 Pre Rollout Discovery Survey V3 0: EDUCORE SERVICES PRE-ROLLOUT AI AUDIT & DISCOVERY SURVEY (Part 2)",
+    "content": "EDUCORE SERVICES PRE-ROLLOUT AI AUDIT & DISCOVERY SURVEY:\nQ1: Current Tool Usage: Which AI tools, browser extensions, or platforms (e.g., ChatGPT, Grammarly, Canva, Copilot) do you or your team currently use for work or teaching tasks?\nQ2: Login & Account Type: Are these tools accessed using official Educore email logins, personal Google/Microsoft accounts, or shared department logins?\nQ3: Frequency & Workflows: How frequently are these tools used (daily, weekly, occasionally), and for what specific operational or academic tasks?\nQ4: Data Input Types: What types of information are input into these tools (e.g., student grades, financial figures, lesson plans, email drafts, code scripts)?\nQ5: PII & Sensitivity Check: Have any files containing student names, Zambian NRC numbers, staff appraisal notes, or financial ledgers been processed through public AI tools?\nQ6: Embedded Third-Party SaaS: Do any third-party software subscriptions currently used in your department contain built-in AI features (e.g., HR tools, accounting software)?\nQ7: Productivity Gains: What specific time savings or quality improvements have you observed from using AI in your department?\nQ8: Perceived Risks & Concerns: What are your primary concerns regarding AI adoption in your team (e.g., data privacy, accuracy errors, student cheating, workload)?\nQ9: Training & Support Needs: What specific training, guidance, or enterprise tools would help your team use AI safely and effectively?",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "audit",
+    "classification": "INTERNAL - AUDIT INSTRUMENT",
+    "purview_label": "Internal - Educational",
+    "allowed_roles": [
+      "staff",
+      "counselor",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "02_SPOKES_AUDIT/educore-doc-03-pre-rollout-discovery-survey-v3-0.docx"
+  },
+  {
+    "id": "EDU-FW-EDUCORE-DOC-03-PRE-R-S01-003",
+    "title": "Educore Doc 03 Pre Rollout Discovery Survey V3 0: EDUCORE SERVICES PRE-ROLLOUT AI AUDIT & DISCOVERY SURVEY (Part 3)",
+    "content": "EDUCORE SERVICES PRE-ROLLOUT AI AUDIT & DISCOVERY SURVEY:\nQ9: Training & Support Needs: What specific training, guidance, or enterprise tools would help your team use AI safely and effectively?\nQ10: High-Value Use Cases: What routine, repetitive tasks in your department would benefit most from an authorized enterprise AI tool (e.g., M365 Copilot)?\n3. ISO 42001 AI Asset Inventory Register Schema\nAll discovered AI tools, scripts, and models must be logged into the central ISO 42001 Asset Register using the schema below:",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "audit",
+    "classification": "INTERNAL - AUDIT INSTRUMENT",
+    "purview_label": "Internal - Educational",
+    "allowed_roles": [
+      "staff",
+      "counselor",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "02_SPOKES_AUDIT/educore-doc-03-pre-rollout-discovery-survey-v3-0.docx"
+  },
+  {
+    "id": "EDU-FW-EDUCORE-DOC-03-PRE-R-S02-001",
+    "title": "Educore Doc 03 Pre Rollout Discovery Survey V3 0: Educore Doc 03 Pre Rollout Discovery Survey V3 0 - Table 1",
+    "content": "EDUCORE DOC 03 PRE ROLLOUT DISCOVERY SURVEY V3 0 - TABLE 1:\nTABLE DATA:\nAT-A-GLANCE AUDIT SUMMARY • Primary Objective: Conduct a 3-vector technical and operational audit prior to the Day 31 Enterprise Tenant Cutover to identify shadow IT, unencrypted PII, and SaaS tool proliferation. • Audit Scope: All Central Administration departments, Trident College, Sentinel Kabitaka, Frontier, and Educore Teacher Academies. • Key Deliverables: CASB/DNS Firewall Scan Report, SharePoint Purview PII Scan Logs (Zambian NRC Regex), 10-Question Survey Findings, ISO 42001 Asset Register Seed Data. • Audit Lead Contact: ai-governance@educore.ac.zm.",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "audit",
+    "classification": "INTERNAL - AUDIT INSTRUMENT",
+    "purview_label": "Internal - Educational",
+    "allowed_roles": [
+      "staff",
+      "counselor",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "02_SPOKES_AUDIT/educore-doc-03-pre-rollout-discovery-survey-v3-0.docx"
+  },
+  {
+    "id": "EDU-FW-EDUCORE-DOC-03-PRE-R-S03-001",
+    "title": "Educore Doc 03 Pre Rollout Discovery Survey V3 0: Educore Doc 03 Pre Rollout Discovery Survey V3 0 - Table 2",
+    "content": "EDUCORE DOC 03 PRE ROLLOUT DISCOVERY SURVEY V3 0 - TABLE 2:\nTABLE DATA:\nAsset ID & Name | System Owner | Data Sensitivity | Purview Label | EU AI Act Risk Tier | Approval Status\nAI-AST-001: M365 Copilot | IT Infrastructure Lead | Confidential Admin | Confidential | Minimal Risk | APPROVED (Tier 1)\nAI-AST-002: Azure Socratic RAG | Academic Director | Public Educational | Public | Minimal Risk | APPROVED (Tier 1)\nAI-AST-003: Grammarly Enterprise | Corporate Comms Lead | Internal Work | Internal | Minimal Risk | CONDITIONAL (Tier 2)\nAI-AST-004: ChatGPT Free Login | Unsanctioned / Public | High Risk PII | Unlabeled | High Risk (Unvetted) | PROHIBITED (Tier 3)",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "audit",
+    "classification": "INTERNAL - AUDIT INSTRUMENT",
+    "purview_label": "Internal - Educational",
+    "allowed_roles": [
+      "staff",
+      "counselor",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "02_SPOKES_AUDIT/educore-doc-03-pre-rollout-discovery-survey-v3-0.docx"
+  },
+  {
+    "id": "EDU-FW-EDUCORE-COGNITIVE-BY-S01-001",
+    "title": "Educore Cognitive Bypass Audit Checklist V2 0: Educore Cognitive Bypass Audit Checklist V2 0 (Part 1)",
+    "content": "EDUCORE COGNITIVE BYPASS AUDIT CHECKLIST V2 0:\nEducore Cognitive Bypass Audit Checklist & Integrity Protocol\nAcademic Verification Matrix, 4-Level Assessment Mode Inspection & Viva Voce SOP | Version 2.0\n1. Pedagogical Integrity & Anti-Bypass Framework\nThis document provides educators, HODs, and academic auditors with a structured protocol for auditing student work, verifying genuine cognitive engagement, and mitigating 'cognitive bypass'—the unauthorized offloading of core critical thinking to generative AI tools.\n2. 4-Vector Academic Verification Audit Matrix\nVector 1: Artifact Sampling & Assessment Mode Inspection — Random monthly sampling of student submissions to verify compliance with assigned Assessment Use Mode Labels (Level 1 Prohibited, Level 2 Limited, Level 3 Supported, Level 4 Integrated).\nVector 2: Azure Socratic RAG System Log Audits — Automated inspection of system logs from student-facing Azure Socratic study tutors to ensure bots provide diagnostic hints without revealing direct answers.\nVector 3: Unassisted Viva Voce Oral Defenses & Synoptic Writes — Conducting brief, 3-minute unassisted oral defenses and in-class synoptic writing checks where students explain their research methodology, arguments, and source choices.\nVector 4: Gradebook Variance Benchmarking — Statistical analysis comparing student take-home assignment marks against supervised, in-class exam performance. Discrepancies exceeding 20% trigger a Viva Voce review.\n3. Student Intellectual Ownership & Declaration Protocol",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "curriculum",
+    "classification": "INTERNAL - ACADEMIC INTEGRITY",
+    "purview_label": "Internal - Educational",
+    "allowed_roles": [
+      "staff",
+      "counselor",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "03_SPOKES_AUDIT_TECH/educore-cognitive-bypass-audit-checklist-v2-0.docx"
+  },
+  {
+    "id": "EDU-FW-EDUCORE-COGNITIVE-BY-S01-002",
+    "title": "Educore Cognitive Bypass Audit Checklist V2 0: Educore Cognitive Bypass Audit Checklist V2 0 (Part 2)",
+    "content": "EDUCORE COGNITIVE BYPASS AUDIT CHECKLIST V2 0:\n3. Student Intellectual Ownership & Declaration Protocol\nAll major student submissions must include a signed Declaration of Intellectual Ownership, affirming sole authorship and acknowledging that the student stands ready to defend their submitted ideas during an unassisted Viva Voce examination.",
+    "campus": "all",
+    "clearance": "staff",
+    "category": "curriculum",
+    "classification": "INTERNAL - ACADEMIC INTEGRITY",
+    "purview_label": "Internal - Educational",
+    "allowed_roles": [
+      "staff",
+      "counselor",
+      "admin"
+    ],
+    "target_shard": "staff",
+    "source_file": "03_SPOKES_AUDIT_TECH/educore-cognitive-bypass-audit-checklist-v2-0.docx"
   }
 ]

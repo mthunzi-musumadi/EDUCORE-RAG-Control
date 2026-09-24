@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "C:\\Projects\\EDUCORE-RAG-Control\\logs\\.602eb9b765fa6df36463d74aab6cd18bff20c6c2-audit.json",
+    "files": [
+        {
+            "date": 1790253463069,
+            "name": "C:\\Projects\\EDUCORE-RAG-Control\\logs\\error-2026-09-24.log",
+            "hash": "81117931e12316b98869fa4652868c0fb3a5bd851184ae3519af867a2b3bdefb"
+        }
+    ],
+    "hashType": "sha256"
+}

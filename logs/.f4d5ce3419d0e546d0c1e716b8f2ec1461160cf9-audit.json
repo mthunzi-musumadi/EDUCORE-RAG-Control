@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "C:\\Projects\\EDUCORE-RAG-Control\\logs\\.f4d5ce3419d0e546d0c1e716b8f2ec1461160cf9-audit.json",
+    "files": [
+        {
+            "date": 1790253463239,
+            "name": "C:\\Projects\\EDUCORE-RAG-Control\\logs\\meiliSync-2026-09-24.log",
+            "hash": "cb57a6c5a1c25e11bf703a6546ad47662c8854cd6757abcc1a1df2469163f5f0"
+        }
+    ],
+    "hashType": "sha256"
+}

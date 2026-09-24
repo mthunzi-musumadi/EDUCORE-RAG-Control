@@ -1,0 +1,92 @@
+[
+  {
+    "code": "TCL",
+    "name": "Trident College (TCL)",
+    "cluster": "trident",
+    "location": "Solwezi",
+    "type": "Secondary College (Boarding & Day)",
+    "documents": 6,
+    "headOfCampus": "Austin Eaton",
+    "status": "active"
+  },
+  {
+    "code": "TPS",
+    "name": "Trident Prep Solwezi (TPS)",
+    "cluster": "trident",
+    "location": "Solwezi",
+    "type": "Preparatory Primary School",
+    "documents": 5,
+    "headOfCampus": "Kirsten Eaton",
+    "status": "active"
+  },
+  {
+    "code": "TPK",
+    "name": "Trident Prep Kalumbila (TPK)",
+    "cluster": "trident",
+    "location": "Kalumbila",
+    "type": "Preparatory Primary School",
+    "documents": 5,
+    "headOfCampus": "Debra Woods",
+    "status": "active"
+  },
+  {
+    "code": "TPL",
+    "name": "Trident Prep Lusaka (TPL)",
+    "cluster": "trident",
+    "location": "Lusaka",
+    "type": "Preparatory Primary School",
+    "documents": 5,
+    "headOfCampus": "Gemma Thomson",
+    "status": "active"
+  },
+  {
+    "code": "all",
+    "name": "All Campuses (Universal Purview)",
+    "cluster": "institutional",
+    "location": "Zambia Multi-Site",
+    "type": "Institutional Gateway",
+    "documents": 21,
+    "headOfCampus": "Executive Directorate",
+    "status": "active"
+  },
+  {
+    "code": "SKAB S",
+    "name": "Sentinel Kabitaka Secondatry",
+    "cluster": "trident",
+    "location": "Solwezi",
+    "type": "Secondary Day & Boarding School",
+    "documents": 0,
+    "headOfCampus": "Ryan De Wet",
+    "status": "active"
+  },
+  {
+    "code": "SKAB P",
+    "name": "Sentinel Kabitaka Primary",
+    "cluster": "trident",
+    "location": "Solwezi",
+    "type": "Primary School",
+    "documents": 0,
+    "headOfCampus": "Madamme Hamweenda",
+    "status": "active"
+  },
+  {
+    "code": "SKAL",
+    "name": "Sentinel Kalumbila School",
+    "cluster": "trident",
+    "location": "Solwezi",
+    "type": "Primary School",
+    "documents": 0,
+    "headOfCampus": "--null--",
+    "status": "active"
+  },
+  {
+    "code": "FNK",
+    "name": "Frontier Nkisu",
+    "cluster": "trident",
+    "location": "Solwezi",
+    "type": "Primary School",
+    "documents": 0,
+    "headOfCampus": "--null--",
+    "status": "active"
+  }
+]

@@ -9,41 +9,9 @@
         "EDU-FW-EDUCORE-AI-FRAMEWORK-S01-003"
       ],
       "chunk_count": 3,
-      "last_synced": 1790065208.713115
-    },
-    "01_SPOKES_POLICIES/educore-doc-01-organizational-governance-policy-v3-0.docx": {
-      "hash": "c35e7d816a57e4babd51e76dd11b3b1564b6c5bf8dfb6e4d82f903518ea55158",
-      "mtime": 1789996052.0,
-      "chunk_ids": [
-        "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-001",
-        "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-002",
-        "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-003",
-        "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-004",
-        "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-005",
-        "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-006",
-        "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-007",
-        "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-008",
-        "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-009",
-        "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-010",
-        "EDU-FW-EDUCORE-DOC-01-ORGAN-S01-011",
-        "EDU-FW-EDUCORE-DOC-01-ORGAN-S02-001",
-        "EDU-FW-EDUCORE-DOC-01-ORGAN-S03-001"
-      ],
-      "chunk_count": 13,
-      "last_synced": 1790065208.8810575
-    },
-    "01_SPOKES_POLICIES/educore-doc-02-implementation-action-plan-v3-0.docx": {
-      "hash": "fed9659a2b993245979ad34aa282d76935b42444e68f148578a9bf4c7024bcc9",
-      "mtime": 1789996055.0,
-      "chunk_ids": [
-        "EDU-FW-EDUCORE-DOC-02-IMPLE-S01-001",
-        "EDU-FW-EDUCORE-DOC-02-IMPLE-S01-002",
-        "EDU-FW-EDUCORE-DOC-02-IMPLE-S01-003",
-        "EDU-FW-EDUCORE-DOC-02-IMPLE-S02-001",
-        "EDU-FW-EDUCORE-DOC-02-IMPLE-S03-001"
-      ],
-      "chunk_count": 5,
-      "last_synced": 1790065208.927267
+      "last_synced": 1790228589.6495767,
+      "clearance": "staff",
+      "folder_clearance": "staff"
     },
     "02_SPOKES_AUDIT/educore-doc-03-pre-rollout-discovery-survey-v3-0.docx": {
       "hash": "8d2ed1a1fdc565c7975e73c96fe617cd0f9b6a7984ee79c945eb28e772d43369",
@@ -56,7 +24,9 @@
         "EDU-FW-EDUCORE-DOC-03-PRE-R-S03-001"
       ],
       "chunk_count": 5,
-      "last_synced": 1790065209.068285
+      "last_synced": 1790228589.8559544,
+      "clearance": "staff",
+      "folder_clearance": "staff"
     },
     "03_SPOKES_AUDIT_TECH/educore-cognitive-bypass-audit-checklist-v2-0.docx": {
       "hash": "8a22f80b224b84e5d68169ff80349ed069cb86ed77155e9e441bc95eca1e3634",
@@ -66,7 +36,9 @@
         "EDU-FW-EDUCORE-COGNITIVE-BY-S01-002"
       ],
       "chunk_count": 2,
-      "last_synced": 1790065209.1248312
+      "last_synced": 1790228589.8832412,
+      "clearance": "staff",
+      "folder_clearance": "staff"
     },
     "educore-doc-00-master-launch-directory-v3-0.docx": {
       "hash": "5eaf3e863812b22ce82f5bb5b42d444d9cbf947636983af31d0f88addd9352a5",
@@ -80,7 +52,9 @@
         "EDU-FW-EDUCORE-DOC-00-MASTE-S04-002"
       ],
       "chunk_count": 6,
-      "last_synced": 1790065256.6091743
+      "last_synced": 1790228589.6013653,
+      "clearance": "admin",
+      "folder_clearance": "public"
     },
     "EDU-2026-09-21.docx": {
       "hash": "1dbaa31460feba0402fa3f402d269d93df3d20f966beca014680cfdc36b2ad67",
@@ -89,7 +63,9 @@
         "EDU-FW-EDU-2026-09-21-S01-001"
       ],
       "chunk_count": 1,
-      "last_synced": 1790073785.0762434
+      "last_synced": 1790228589.4309804,
+      "clearance": "public",
+      "folder_clearance": "public"
     },
     "September 2026 Purchases.docx": {
       "hash": "3a57382276bda41c6cce12d696faf158e2d3fd6b21c25423c8e5e13055ac25bb",
@@ -99,7 +75,9 @@
         "EDU-FW-SEPTEMBER-2026-PURCH-S02-001"
       ],
       "chunk_count": 2,
-      "last_synced": 1790074674.987139
+      "last_synced": 1790228589.442408,
+      "clearance": "public",
+      "folder_clearance": "public"
     },
     "0652_w25_ms_21.pdf": {
       "hash": "82bed0acc3fb5ac77160ce1d965d0413fe49da4f536235fb8491f8c4f763a4fd",
@@ -116,7 +94,9 @@
         "EDU-PDF-0652-W25-MS-21-S09-001"
       ],
       "chunk_count": 9,
-      "last_synced": 1790079655.199426
+      "last_synced": 1790228589.3568513,
+      "clearance": "staff",
+      "folder_clearance": "public"
     },
     "0652_w25_qp_21.pdf": {
       "hash": "c91b9cd2ffe9c140c676319af6f3c3a2799e8a992e9b25a3f0f0a2e5fc86865a",
@@ -170,7 +150,9 @@
         "EDU-PDF-0652-W25-QP-21-S45-002"
       ],
       "chunk_count": 46,
-      "last_synced": 1790079655.27421
+      "last_synced": 1790228589.4006941,
+      "clearance": "staff",
+      "folder_clearance": "public"
     },
     "Trident_AI_Strategic_Project_Plan_2026-2029_FINAL.pdf": {
       "hash": "9efd0ee69113a6ee2b35ef41d91a14e43975b48f95867465dc665a23b1f3b336",
@@ -230,7 +212,9 @@
         "EDU-PDF-TRIDENT-AI-STRATEGIC-S28-001"
       ],
       "chunk_count": 52,
-      "last_synced": 1790082079.5304542
+      "last_synced": 1790228589.5521445,
+      "clearance": "public",
+      "folder_clearance": "public"
     },
     "public.docx": {
       "hash": "994e0f70711ecdd899689f31e36a1aa00ba1e047635d717e236c1e9478bb24c7",
@@ -239,11 +223,11 @@
         "EDU-FW-PUBLIC-S01-001"
       ],
       "chunk_count": 1,
-      "last_synced": 1790156451.9867256,
+      "last_synced": 1790228589.6106422,
       "clearance": "public",
       "folder_clearance": "public"
     }
   },
-  "last_sync_time": 1790156452.029263,
-  "total_chunks": 145
+  "last_sync_time": 1790228589.8938885,
+  "total_chunks": 127
 }

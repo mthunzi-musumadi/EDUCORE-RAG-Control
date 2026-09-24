@@ -51,30 +51,23 @@ $env:HF_HUB_OFFLINE = "1"
 $env:TRANSFORMERS_OFFLINE = "1"
 $env:DATA_DIR = "$RootDir\data\openwebui"
 
-# 2. Pre-Flight Provisioning: Ensure Branding, RBAC, Governance Filter & Laws of UX CSS are deployed
-$BackendPython = Join-Path $RootDir "framework_control\Scripts\python.exe"
-$BrandingScript = Join-Path $RootDir "src\governance\apply_educore_logos.py"
-$RbacScript = Join-Path $RootDir "src\governance\setup_openwebui_rbac.py"
-Write-Host "[0/3] Deploying Educore Branding & Laws of UX CSS fixes..." -ForegroundColor Cyan
-& "$BackendPython" "$BrandingScript" --base-dir "$RootDir"
-Write-Host "[0b/3] Synchronizing Open WebUI RBAC, Models & Governance Filter..." -ForegroundColor Cyan
-& "$BackendPython" "$RbacScript" --base-dir "$RootDir"
-
-# 3. Launch Backend
+# 2. Launch Backend
 Write-Host "[1/2] Launching Educore Enterprise RAG Governance Server (Port 8000)..." -ForegroundColor Yellow
+$BackendPython = Join-Path $RootDir "framework_control\Scripts\python.exe"
 $BackendScript = Join-Path $RootDir "src\backend\educore_enterprise_backend.py"
 Start-Process -FilePath $BackendPython -ArgumentList "`"$BackendScript`" 8000" -WindowStyle Normal
 
 Start-Sleep -Seconds 3
 
-# 3. Launch Open WebUI
-Write-Host "[2/2] Launching Open WebUI Frontend (Port 3000)..." -ForegroundColor Green
-$WebUIExe = Join-Path $RootDir ".openwebui_env\Scripts\open-webui.exe"
-Start-Process -FilePath $WebUIExe -ArgumentList "serve --port 3000" -WindowStyle Normal
+# 3. Launch Decoupled Educore Enterprise Frontend (Route B)
+Write-Host "[2/2] Launching Educore Enterprise Frontend (Port 3000)..." -ForegroundColor Green
+$FrontendScript = Join-Path $RootDir "serve_frontend.py"
+Start-Process -FilePath $BackendPython -ArgumentList "`"$FrontendScript`" 3000" -WindowStyle Normal
 
 Write-Host "==============================================================================" -ForegroundColor Cyan
-Write-Host "  EduCore Enterprise Platform Online!" -ForegroundColor Green
-Write-Host "  - Backend API: http://127.0.0.1:8000/v1" -ForegroundColor White
-Write-Host "  - Open WebUI:  http://127.0.0.1:3000" -ForegroundColor White
-Write-Host "  - Audit Log:   $RootDir\data\logs\aims_rag_audit.jsonl" -ForegroundColor White
+Write-Host "  Educore Enterprise Platform Online (Route B Decoupled Architecture)!" -ForegroundColor Green
+Write-Host "  - Frontend UI:  http://localhost:3000" -ForegroundColor White
+Write-Host "  - Backend API:  http://127.0.0.1:8000/v1" -ForegroundColor White
+Write-Host "  - Audit Ledger: http://127.0.0.1:8000/api/audit" -ForegroundColor White
+Write-Host "  - Audit File:   $RootDir\aims_rag_audit.jsonl" -ForegroundColor White
 Write-Host "==============================================================================" -ForegroundColor Cyan
