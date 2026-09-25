@@ -11,14 +11,14 @@ Write-Host "  Dual-Track Governance: Enterprise Operations & Academic Transforma
 Write-Host "  Frontend: Open WebUI | Backend: ISO 42001 Governed OpenAI API" -ForegroundColor Gray
 Write-Host "==============================================================================" -ForegroundColor Cyan
 
-# 0. Pre-Flight Cleanup: Clear legacy remote DB variables & release ports 8000 / 3000
+# 0. Pre-Flight Cleanup: Clear legacy remote DB variables & release ports 8000 / 3000 / 3080
 Write-Host "[PRE-FLIGHT] Resetting environment and releasing ports..." -ForegroundColor Cyan
 Remove-Item env:DATABASE_URL -ErrorAction SilentlyContinue
 Remove-Item env:WEBUI_SECRET_KEY -ErrorAction SilentlyContinue
 
-$LingeringConns = Get-NetTCPConnection -LocalPort 8000, 3000 -ErrorAction SilentlyContinue
+$LingeringConns = Get-NetTCPConnection -LocalPort 8000, 3000, 3080 -ErrorAction SilentlyContinue
 if ($LingeringConns) {
-    Write-Host "  Stopping previous instances on ports 8000 / 3000..." -ForegroundColor Yellow
+    Write-Host "  Stopping previous instances on ports 8000 / 3000 / 3080..." -ForegroundColor Yellow
     $LingeringConns | ForEach-Object {
         if ($_.OwningProcess -gt 0) {
             Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue
@@ -52,22 +52,43 @@ $env:TRANSFORMERS_OFFLINE = "1"
 $env:DATA_DIR = "$RootDir\data\openwebui"
 
 # 2. Launch Backend
-Write-Host "[1/2] Launching Educore Enterprise RAG Governance Server (Port 8000)..." -ForegroundColor Yellow
+Write-Host "[1/3] Launching Educore Enterprise RAG Governance Server (Port 8000)..." -ForegroundColor Yellow
 $BackendPython = Join-Path $RootDir "framework_control\Scripts\python.exe"
 $BackendScript = Join-Path $RootDir "src\backend\educore_enterprise_backend.py"
 Start-Process -FilePath $BackendPython -ArgumentList "`"$BackendScript`" 8000" -WindowStyle Normal
 
 Start-Sleep -Seconds 3
 
-# 3. Launch Decoupled Educore Enterprise Frontend (Route B)
-Write-Host "[2/2] Launching Educore Enterprise Frontend (Port 3000)..." -ForegroundColor Green
-$FrontendScript = Join-Path $RootDir "serve_frontend.py"
-Start-Process -FilePath $BackendPython -ArgumentList "`"$FrontendScript`" 3000" -WindowStyle Normal
+# 3. Launch Standalone MongoDB (Port 27017)
+$LibreChatDir = Join-Path $RootDir "prototypes\librechat"
+$MongoPortCheck = Test-NetConnection -ComputerName 127.0.0.1 -Port 27017 -InformationLevel Quiet
+if (-not $MongoPortCheck) {
+    Write-Host "[2/3] Launching Standalone MongoDB (Port 27017)..." -ForegroundColor Yellow
+    Start-Process -FilePath "node" -ArgumentList "$LibreChatDir\run_mongo.js" -WorkingDirectory $LibreChatDir -WindowStyle Minimized
+    Start-Sleep -Seconds 2
+} else {
+    Write-Host "[2/3] Standalone MongoDB is already active on port 27017." -ForegroundColor Green
+}
+
+# 4. Verify LibreChat Workspace Packages
+$DataProviderDist = Join-Path $LibreChatDir "packages\data-provider\dist"
+$DataSchemasDist = Join-Path $LibreChatDir "packages\data-schemas\dist"
+if ((-not (Test-Path $DataProviderDist)) -or (-not (Test-Path $DataSchemasDist))) {
+    Write-Host "  Building required LibreChat workspace packages..." -ForegroundColor Yellow
+    Push-Location $LibreChatDir
+    npm run build:packages
+    Pop-Location
+}
+
+# 5. Launch LibreChat Enterprise UI (Port 3080)
+Write-Host "[3/3] Launching Educore LibreChat Platform (Port 3080)..." -ForegroundColor Green
+Start-Process -FilePath "cmd.exe" -ArgumentList "/c cd /d `"$LibreChatDir`" && set PORT=3080 && npm run backend" -WindowStyle Normal
 
 Write-Host "==============================================================================" -ForegroundColor Cyan
-Write-Host "  Educore Enterprise Platform Online (Route B Decoupled Architecture)!" -ForegroundColor Green
-Write-Host "  - Frontend UI:  http://localhost:3000" -ForegroundColor White
+Write-Host "  Educore Enterprise Platform Online!" -ForegroundColor Green
+Write-Host "  - LibreChat UI: http://localhost:3080" -ForegroundColor White
 Write-Host "  - Backend API:  http://127.0.0.1:8000/v1" -ForegroundColor White
+Write-Host "  - MongoDB:      mongodb://127.0.0.1:27017" -ForegroundColor White
 Write-Host "  - Audit Ledger: http://127.0.0.1:8000/api/audit" -ForegroundColor White
 Write-Host "  - Audit File:   $RootDir\aims_rag_audit.jsonl" -ForegroundColor White
 Write-Host "==============================================================================" -ForegroundColor Cyan

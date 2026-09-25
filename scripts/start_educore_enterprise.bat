@@ -38,20 +38,28 @@ set TRANSFORMERS_OFFLINE=1
 set DATA_DIR=%ROOT_DIR%\data\openwebui
 
 REM 2. Start Educore Governance RAG Server in Background
-echo [1/2] Launching Educore Enterprise RAG Governance Server (Port 8000)...
+echo [1/3] Launching Educore Enterprise RAG Governance Server (Port 8000)...
 start "Educore Governance Server" "%ROOT_DIR%\framework_control\Scripts\python.exe" "%ROOT_DIR%\src\backend\educore_enterprise_backend.py" 8000
 
 REM Wait 3 seconds for backend to bind port
 timeout /t 3 /nobreak >nul
 
-REM 3. Start Decoupled Educore Enterprise Frontend (Route B)
-echo [2/2] Launching Educore Enterprise Frontend (Port 3000)...
-start "Educore Enterprise Frontend" "%ROOT_DIR%\framework_control\Scripts\python.exe" "%ROOT_DIR%\serve_frontend.py" 3000
+REM 3. Start Standalone MongoDB (Port 27017)
+echo [2/3] Launching Standalone MongoDB (Port 27017)...
+start "Educore MongoDB" /min node "%ROOT_DIR%\prototypes\librechat\run_mongo.js"
+
+REM Wait 2 seconds for mongo
+timeout /t 2 /nobreak >nul
+
+REM 4. Start LibreChat Enterprise UI (Port 3080)
+echo [3/3] Launching Educore LibreChat Platform (Port 3080)...
+start "Educore LibreChat" cmd /c "cd /d %ROOT_DIR%\prototypes\librechat && set PORT=3080 && npm run backend"
 
 echo ==============================================================================
-echo   EduCore Enterprise Platform Online (Route B Decoupled Architecture)!
-echo   - Frontend UI:  http://localhost:3000
+echo   EduCore Enterprise Platform Online!
+echo   - LibreChat UI: http://localhost:3080
 echo   - Backend API:  http://127.0.0.1:8000/v1
+echo   - MongoDB:      mongodb://127.0.0.1:27017
 echo   - Audit Ledger: http://127.0.0.1:8000/api/audit
 echo   - Audit File:   %ROOT_DIR%\aims_rag_audit.jsonl
 echo ==============================================================================
