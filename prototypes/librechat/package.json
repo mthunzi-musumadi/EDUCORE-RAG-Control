@@ -13,6 +13,7 @@
   ],
   "scripts": {
     "prepare": "node -e \"import('husky').then((h) => h.default()).catch(() => {})\"",
+    "seed": "node seed_users.js",
     "update": "node config/update.js",
     "add-balance": "node config/add-balance.js",
     "set-balance": "node config/set-balance.js",

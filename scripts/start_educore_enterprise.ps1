@@ -101,6 +101,10 @@ if (-not $MongoPortCheck) {
     Write-Host "[2/3] Standalone MongoDB is already active on port 27017." -ForegroundColor Green
 }
 
+# Ensure Admin & institutional users are seeded into MongoDB
+Write-Host "  Verifying database users (admin@localhost.com / Password123!)..." -ForegroundColor Cyan
+node "$LibreChatDir\seed_users.js"
+
 # 4. Verify LibreChat Workspace Packages
 $DataProviderDist = Join-Path $LibreChatDir "packages\data-provider\dist"
 $DataSchemasDist = Join-Path $LibreChatDir "packages\data-schemas\dist"
