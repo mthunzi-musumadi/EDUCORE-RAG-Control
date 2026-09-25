@@ -24,6 +24,7 @@ share/python-wheels/
 framework_control/
 .openwebui_env/
 frontend/node_modules/
+prototypes/librechat/node_modules/
 *.egg-info/
 .installed.cfg
 *.egg
