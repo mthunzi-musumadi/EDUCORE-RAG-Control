@@ -14,9 +14,9 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
-parts/
+/lib/
+/lib64/
+/parts/
 sdist/
 var/
 wheels/
@@ -193,3 +193,7 @@ data_provenance_audit.jsonl
 chroma_enterprise_store/
 
 scratch/mongo-test/node_modules/
+
+# LibreChat Educore configuration
+!prototypes/librechat/.env
+!prototypes/librechat/data/*.json

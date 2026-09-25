@@ -1,0 +1,119 @@
+[
+  {
+    "educore_id": "6a35996c-8bf9-46fa-961e-891caa7afa76",
+    "name": "Admin",
+    "username": "admin@localhost",
+    "email": "admin@localhost",
+    "role": "ADMIN",
+    "password": "$2b$12$s9Yo1iWzLl9ZhZYREEJjIOVDE1RHv5WBfkCwqFqwjAd/DhbXmwso.",
+    "provider": "local"
+  },
+  {
+    "educore_id": "dafadcc8-6b33-4d12-8ed0-52b2e4f0ef19",
+    "name": "Financial Coordinator",
+    "username": "financialcoordinator@educoreservices.com",
+    "email": "financialcoordinator@educoreservices.com",
+    "role": "USER",
+    "password": "$2b$12$FYS5Angk8FbCjljlU3kUfOHevWnpQb14PZxLfdRAk7FjCUkPW9yTi",
+    "provider": "local"
+  },
+  {
+    "educore_id": "995d6e9c-5d2b-4cb0-a2e0-36e50526cc55",
+    "name": "SKAB P Teacher",
+    "username": "teacher-p@sentinel-kabitaka.com",
+    "email": "teacher-p@sentinel-kabitaka.com",
+    "role": "USER",
+    "password": "$2b$12$FYS5Angk8FbCjljlU3kUfOHevWnpQb14PZxLfdRAk7FjCUkPW9yTi",
+    "provider": "local"
+  },
+  {
+    "educore_id": "78114de7-dbec-4267-b120-afd5f2224b23",
+    "name": "SKAL Teacher",
+    "username": "skal@sentinel-kalumbila.com",
+    "email": "skal@sentinel-kalumbila.com",
+    "role": "USER",
+    "password": "$2b$12$FYS5Angk8FbCjljlU3kUfOHevWnpQb14PZxLfdRAk7FjCUkPW9yTi",
+    "provider": "local"
+  },
+  {
+    "educore_id": "c3b75df1-a2f1-45ac-95ce-b031f91e33fc",
+    "name": "TCL Teacher",
+    "username": "tcl@trident-college.com",
+    "email": "tcl@trident-college.com",
+    "role": "USER",
+    "password": "$2b$12$FYS5Angk8FbCjljlU3kUfOHevWnpQb14PZxLfdRAk7FjCUkPW9yTi",
+    "provider": "local"
+  },
+  {
+    "educore_id": "4c69ecd7-8120-473d-b03e-35963dad9107",
+    "name": "TPS Teacher",
+    "username": "tps@trident-prep-solwezi.com",
+    "email": "tps@trident-prep-solwezi.com",
+    "role": "USER",
+    "password": "$2b$12$FYS5Angk8FbCjljlU3kUfOHevWnpQb14PZxLfdRAk7FjCUkPW9yTi",
+    "provider": "local"
+  },
+  {
+    "educore_id": "8f94304d-8866-4ebc-86be-f444a12c4903",
+    "name": "TPK Teacher",
+    "username": "tpk@trident-prep-kalumbila.com",
+    "email": "tpk@trident-prep-kalumbila.com",
+    "role": "USER",
+    "password": "$2b$12$FYS5Angk8FbCjljlU3kUfOHevWnpQb14PZxLfdRAk7FjCUkPW9yTi",
+    "provider": "local"
+  },
+  {
+    "educore_id": "175aaa5b-475d-4063-8821-f69037bc37ed",
+    "name": "TPL Teacher",
+    "username": "tpl@trident-prep-lusaka.com",
+    "email": "tpl@trident-prep-lusaka.com",
+    "role": "USER",
+    "password": "$2b$12$FYS5Angk8FbCjljlU3kUfOHevWnpQb14PZxLfdRAk7FjCUkPW9yTi",
+    "provider": "local"
+  },
+  {
+    "educore_id": "f9996228-934b-4e04-9fec-0b66931abd9a",
+    "name": "SKAB S Teacher",
+    "username": "teacher-s@sentinel-kabitaka.com",
+    "email": "teacher-s@sentinel-kabitaka.com",
+    "role": "USER",
+    "password": "$2b$12$FYS5Angk8FbCjljlU3kUfOHevWnpQb14PZxLfdRAk7FjCUkPW9yTi",
+    "provider": "local"
+  },
+  {
+    "educore_id": "c6b42342-0112-42e5-a728-3bac71f5d76b",
+    "name": "Frontier Nkisu Teacher",
+    "username": "frontier@frontier-nkisu.com",
+    "email": "frontier@frontier-nkisu.com",
+    "role": "USER",
+    "password": "$2b$12$FYS5Angk8FbCjljlU3kUfOHevWnpQb14PZxLfdRAk7FjCUkPW9yTi",
+    "provider": "local"
+  },
+  {
+    "educore_id": "7abe0909-5922-4f31-a664-1ff2e33dc22a",
+    "name": "SKAB S Student",
+    "username": "student@sentinel-kabitaka.com",
+    "email": "student@sentinel-kabitaka.com",
+    "role": "USER",
+    "password": "$2b$12$FYS5Angk8FbCjljlU3kUfOHevWnpQb14PZxLfdRAk7FjCUkPW9yTi",
+    "provider": "local"
+  },
+  {
+    "educore_id": "1164439c-dfa1-46c3-8a9a-68902a250265",
+    "name": "TCL Student",
+    "username": "student@trident-college.com",
+    "email": "student@trident-college.com",
+    "role": "USER",
+    "password": "$2b$12$FYS5Angk8FbCjljlU3kUfOHevWnpQb14PZxLfdRAk7FjCUkPW9yTi",
+    "provider": "local"
+  },
+  {
+    "educore_id": "8d704954-90c5-45a9-840f-79be622638fd",
+    "name": "Faculty Intern",
+    "username": "intern@educoreservices.com",
+    "email": "intern@educoreservices.com",
+    "role": "USER",
+    "password": null,
+    "provider": "local"
+  }
+]

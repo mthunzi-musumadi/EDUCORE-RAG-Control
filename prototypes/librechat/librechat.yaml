@@ -1,0 +1,76 @@
+# ==============================================================================
+# Educore Enterprise AI — LibreChat Governance & Model Specification
+# Strict adherence to EDUCORE_AI_FRAMEWORK (EDU-AIMS-HBK-v1.0 & EDU-AIMS-POL-v1.0)
+# ==============================================================================
+version: 1.3.17
+cache: true
+
+endpoints:
+  custom:
+    - name: "Educore Enterprise AI"
+      apiKey: "${EDUCORE_BACKEND_API_KEY}"
+      baseURL: "http://127.0.0.1:8000/v1"
+      models:
+        default: ["educore-rag-control", "educore-enterprise-all"]
+        fetch: false
+      titleConvo: true
+      titleModel: "educore-rag-control"
+      dropParams: ["stop", "temperature", "top_p"]
+      customParams:
+        defaultParamsEndpoint: "custom"
+      modelDisplayLabel: "Educore Enterprise AI"
+
+modelSpecs:
+  enforce: true
+  prioritize: true
+  list:
+    - name: "educore-governed-core"
+      label: "Educore AI (Governed Core)"
+      description: "Institutional assistant operating under Educore AI Framework policies."
+      iconURL: "/assets/educore.png"
+      preset:
+        endpoint: "Educore Enterprise AI"
+        model: "educore-rag-control"
+        temperature: 0.1
+        system: |
+          You are the official Educore Enterprise AI assistant.
+          You must operate strictly within the boundaries of the Educore AI Framework Governance Policy.
+          You are prohibited from assisting with cognitive bypass, academic dishonesty, or policy circumvention.
+          All interactions are logged, monitored, and audited for institutional compliance.
+
+interface:
+  modelSelect: false
+  parameters: false
+  sidePanel: false
+  presets: false
+
+  prompts:
+    use: true
+    create: false
+    share: false
+    public: false
+
+  agents:
+    use: false
+    create: false
+    share: false
+    public: false
+
+  mcpServers:
+    use: false
+    create: false
+
+  privacyPolicy:
+    externalUrl: "https://educoreservices.com/privacy"
+    openNewTab: true
+
+  termsOfService:
+    externalUrl: ""
+    openNewTab: false
+    modalAcceptance: true
+    modalTitle: "Educore AI Framework Governance Compliance"
+    modalContent: |
+      By accessing this service, you agree to comply with the Educore Organizational Governance Policy 
+      and AI Implementation Action Plan. Unauthorized access, cognitive bypass attempts, and sharing of 
+      confidential institutional data are strictly prohibited. Conversations are permanently logged and audited.
+

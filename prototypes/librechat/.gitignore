@@ -3,7 +3,9 @@
 # Logs
 data-node
 meili_data*
-data/
+data/mongo/
+data/diagnostic.data/
+data/journal/
 logs
 *.log
 
@@ -193,3 +195,15 @@ scripts/activity-labels/results/
 !e2e/lighthouse/librechat.yaml
 /.lighthouse/
 /e2e/lighthouse/.test-results/
+
+# Educore Enterprise Configuration & Overrides
+!librechat.yaml
+!librechat.yml
+!.env
+!docker-compose.override.yml
+!docker-compose.override.yaml
+!data/*.json
+!packages/**/src/**/*.d.ts
+!packages/**/types/**/*.d.ts
+!packages/**/types/
+

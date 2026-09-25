@@ -1,0 +1,14 @@
+services:
+  api:
+    volumes:
+      - ./librechat.yaml:/app/librechat.yaml
+    environment:
+      - CONFIG_PATH=/app/librechat.yaml
+    extra_hosts:
+      - "educore_backend:host-gateway"
+
+  client:
+    volumes:
+      - ./assets/educore.png:/app/client/public/assets/educore.png
+      - ./assets/educore.png:/app/client/public/assets/logo.svg
+      - ./assets/educore.png:/app/client/public/favicon.ico
