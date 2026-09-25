@@ -46,14 +46,14 @@ function educoreRequest(method, reqPath, body = null, headers = {}) {
 function getCampusFilePath() {
   const possiblePaths = [
     path.resolve(__dirname, '../../../../../../data/campus_directory.json'),
+    path.resolve(__dirname, '../../../../../data/campus_directory.json'),
     path.resolve(process.cwd(), '../../data/campus_directory.json'),
     path.resolve(process.cwd(), 'data/campus_directory.json'),
-    'c:/Projects/EDUCORE-RAG-Control/data/campus_directory.json'
   ];
   for (const p of possiblePaths) {
     if (fs.existsSync(p)) return p;
   }
-  return 'c:/Projects/EDUCORE-RAG-Control/data/campus_directory.json';
+  return path.resolve(__dirname, '../../../../../../data/campus_directory.json');
 }
 
 function readCampuses() {
