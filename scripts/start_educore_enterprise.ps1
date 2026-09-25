@@ -51,21 +51,52 @@ $env:HF_HUB_OFFLINE = "1"
 $env:TRANSFORMERS_OFFLINE = "1"
 $env:DATA_DIR = "$RootDir\data\openwebui"
 
-# 2. Launch Backend
+# 2. Resolve Python & Launch Backend
+$PythonCandidates = @(
+    (Join-Path $RootDir "framework_control\Scripts\python.exe"),
+    (Join-Path $RootDir ".venv\Scripts\python.exe"),
+    (Join-Path $RootDir "venv\Scripts\python.exe")
+)
+$BackendPython = $null
+foreach ($cand in $PythonCandidates) {
+    if (Test-Path $cand) {
+        $BackendPython = $cand
+        break
+    }
+}
+if (-not $BackendPython) {
+    $SysPython = Get-Command python -ErrorAction SilentlyContinue
+    $BackendPython = if ($SysPython) { $SysPython.Source } else { "python" }
+}
+
 Write-Host "[1/3] Launching Educore Enterprise RAG Governance Server (Port 8000)..." -ForegroundColor Yellow
-$BackendPython = Join-Path $RootDir "framework_control\Scripts\python.exe"
 $BackendScript = Join-Path $RootDir "src\backend\educore_enterprise_backend.py"
 Start-Process -FilePath $BackendPython -ArgumentList "`"$BackendScript`" 8000" -WindowStyle Normal
 
 Start-Sleep -Seconds 3
 
-# 3. Launch Standalone MongoDB (Port 27017)
+# 3. Check LibreChat dependencies & Launch Standalone MongoDB (Port 27017)
 $LibreChatDir = Join-Path $RootDir "prototypes\librechat"
+$LibreChatNodeModules = Join-Path $LibreChatDir "node_modules"
+if (-not (Test-Path $LibreChatNodeModules)) {
+    Write-Host "  Installing LibreChat dependencies (npm install)..." -ForegroundColor Yellow
+    Push-Location $LibreChatDir
+    npm install
+    Pop-Location
+}
+
 $MongoPortCheck = Test-NetConnection -ComputerName 127.0.0.1 -Port 27017 -InformationLevel Quiet
 if (-not $MongoPortCheck) {
     Write-Host "[2/3] Launching Standalone MongoDB (Port 27017)..." -ForegroundColor Yellow
     Start-Process -FilePath "node" -ArgumentList "$LibreChatDir\run_mongo.js" -WorkingDirectory $LibreChatDir -WindowStyle Minimized
-    Start-Sleep -Seconds 2
+    
+    # Wait for MongoDB to bind port 27017
+    for ($i = 0; $i -lt 15; $i++) {
+        Start-Sleep -Seconds 1
+        if (Test-NetConnection -ComputerName 127.0.0.1 -Port 27017 -InformationLevel Quiet) {
+            break
+        }
+    }
 } else {
     Write-Host "[2/3] Standalone MongoDB is already active on port 27017." -ForegroundColor Green
 }
